@@ -1,0 +1,59 @@
+{"maxevents": 20,
+ "events": [
+ {
+  "jahr":1,
+  "monat":1,
+  "tag":1,
+  "text": "Happy New Year!",
+  "farbe":5,
+  "audionr":733,
+  "preani": "FEUERWERK",
+  "postani": "FEUERWERK",
+  "intervall":120
+ },
+ {
+  "jahr":1,
+  "monat":12,
+  "tag":24,
+  "text": "Frohe Weihnachten!",
+  "farbe":1,
+  "audionr":719,
+  "preani": "KERZE",
+  "postani": "WINTER",
+  "intervall":60
+ },
+ {
+  "jahr":1,
+  "monat":12,
+  "tag":25,
+  "text": "Frohes Fest!",
+  "farbe":1,
+  "audionr":719,
+  "preani": "BAUM",
+  "postani": "KERZE",
+  "intervall":60
+ },
+ {
+  "jahr":1,
+  "monat":12,
+  "tag":26,
+  "text": "Frohe Weihnachten!",
+  "farbe":1,
+  "audionr":719,
+  "preani": "WINTER",
+  "postani": "KERZE",
+  "intervall":120
+ },
+ {
+  "jahr":1879,
+  "monat":3,
+  "tag":14,
+  "text": "Alles gute zum YY. Geburtstag Albert Einstein",
+  "farbe":9,
+  "audionr":726,
+  "preani": "HERZ",
+  "postani": "HERZ",
+  "intervall":60
+ }
+ ]
+}

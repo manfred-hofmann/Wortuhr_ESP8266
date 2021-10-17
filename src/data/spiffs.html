@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="spiffsstyle.css">
+    <title>Wortuhr Datei Manager</title>
+    <script>
+	  var to = JSON.parse(localStorage.getItem('sortBy'));
+      document.addEventListener('DOMContentLoaded', () => {
+	    list(to);
+        fs.addEventListener('change', () => {
+		  for (var bytes = 0, j = 0; j < event.target.files.length; j++) bytes += event.target.files[j].size;
+          for (var out = `${bytes} Byte`, i = 0, circa = bytes / 1024; circa > 1; circa /= 1024) {
+            out = circa.toFixed(2) + [' KB', ' MB', ' GB'][i++];
+          }
+          if (bytes > free) {
+            si.innerHTML = `<li><b> ${out}</b><strong> Ungenügend Speicher frei</strong></li>`;
+            up.setAttribute('disabled', 'disabled');
+          }
+          else {
+            si.innerHTML = `<li><b>Dateigröße:</b> ${out}</li>`;
+            up.removeAttribute('disabled');
+          }
+        });
+		btn.addEventListener('click', () => {
+	      if (!confirm(`Wirklich formatieren? Alle Daten gehen verloren.\nDu musst anschließend spiffs.html wieder laden.`)) event.preventDefault();
+	    });
+	  });
+	  function list(arg){
+		let myList = document.querySelector('main');
+        fetch('list?sort='+arg).then( (response) => {
+          return response.json();
+        }).then((json) => {
+		  myList.innerHTML = '';
+          for (var i = 0; i < json.length - 1; i++) {
+            let dir = `<li><a href="${json[i].name}">${json[i].name}</a><small> ${json[i].size}</small>`;
+			dir += `<a href="${json[i].name}"download="${json[i].name}"> Download </a>or <a href="?delete=/${json[i].name}">Delete </a>`;
+            myList.insertAdjacentHTML('beforeend', dir);
+          }
+          myList.insertAdjacentHTML('beforeend', `<li><b id="so">${to ? '&#9660;' : '&#9650;'} SPIFFS</b> belegt ${json[i].usedBytes} von ${json[i].totalBytes}`);
+		  document.querySelectorAll('[href*=delete]').forEach(node => {
+            node.addEventListener('click', () => {
+	          if (!confirm('Sicher!')) event.preventDefault();
+			});
+		  });
+          free = json[i].freeBytes;
+		  so.addEventListener('click', () => {
+			list(to=++to%2);
+			localStorage.setItem('sortBy', JSON.stringify(to));
+	      });
+        });
+      }	
+    </script>
+  </head>
+  <body>
+    <h2>Wortuhr Datei Manager</h2>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+      <input id="fs" type="file" name="upload[]" multiple>
+      <input id="up" type="submit" value="Upload" disabled>
+    </form>
+    <div>
+      <span id="si"></span>
+      <main></main>
+    </div>
+	<hr>
+    <form action="/format" method="POST">
+	<button class="buttons" title="zur&uuml;ck" id="back" type="button" onclick="window.location.href='/'">&#128281; zur&uuml;ck</button>
+	<button class="buttons" title="Format SPIFFS" id="btn"  type="submit" value="Format SPIFFS">&#10060;Format SPIFFS</button>
+	</form>
+  </body>
+</html>

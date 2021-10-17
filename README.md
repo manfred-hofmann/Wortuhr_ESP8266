@@ -11,7 +11,7 @@ Wortuhr mit ESP8266 WeMos D1 mini und NeoPixel WS2812B LEDs mit mp3 Sounds, Anim
   Diese sind per Touch oder als physikalischer Taster in configuration.h einstellbar.  
 * Sonnenauf-/untergangsanimation   
 * Ausführen von Adhoc Events mit http-Request:   
-z.B.: http://<wortuhr-ip>/setEvent?text=I+love+you&color=1&audio=701&preani=HERZ&postani=HERZ  
+z.B.: http://wortuhr-ip/setEvent?text=I+love+you&color=1&audio=701&preani=HERZ&postani=HERZ  
 
 
 ## Temperatur und Luftdruck:  
@@ -86,7 +86,7 @@ Bricks
 * Dateimanager für den SPIFFS.  
 ![Spiffs2](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/spiffs2.JPG "Spiffs2")
 * Angabe der Location und Höhe über 0 in Settings (wird für die WetterAPI und Berechnung des Luftdrucks auf Meereshöhe benötigt).  
-* Es wird kein API-Key benötigt!  
+* Hier API-Key von OpenWeather eintragen!  
 * Eingabe des Automodeintervall in Settings  ( Intervall wie oft verschiedene Modes Wetter, Temperatur, Mondphase... angezeigt werden)  
 * Highscores können hier gelöscht werden.  
 * Stundensound pro Wochentag einstellbar und Testmöglichkeit der Sounds.  
@@ -161,7 +161,12 @@ Möchte man auf die "Alarm LED" verzichten, so muss in der configuration.h die A
 	* Evt. EspSoftwareSerial Version 6.12.6
 	* Openweather API-Key (https://openweathermap.org/) für die Wetterinformationen.  
 * Die mp3 Files (Sound) in den Ordner "mp3" auf die SD-Karte kopieren welche in den mp3-Player kommt. Es reicht eine 4GB Karte.
-* Software mit Arduino IDE (min. Version 1.8.12) auf den ESP8266 laden. 
+* Software mit Arduino IDE (min. Version 1.8.12) auf den ESP8266 laden.  
+Einstellungen für das Board: (LOLIN(WEMOS) D1 R2 & mini)  
+CPU Frequenz auf 160 MHz  
+Flash Size 4MB ( FS:2MB OTA~1019KB)  
+SLL Support Basic  
+
 * SPIFFS  (Sketch Data Upload):  
 Das Favicon, Events, Animationen, html Seiten und css Files liegen im SPIFFS des ESP.
 Dazu muss das data Verzeichniss über "Sketch Data upload" übertragen werden.
@@ -187,8 +192,11 @@ Hier sind folgende Punkte wichtig:
 -----
 
 Alles weiter findet sich auf 
-  http://diskussion.christians-bastel-laden.de/viewtopic.php?f=23&t=3846&sid=a6ac77fb774177c3168e12998a42e791
+  http://diskussion.christians-bastel-laden.de/viewtopic.php?f=23&t=3846&sid=a6ac77fb774177c3168e12998a42e791  
 Ein Beispielvideo ist hier zu sehen:   
-https://www.youtube.com/watch?v=rQZoOGkao-w
+https://www.youtube.com/watch?v=rQZoOGkao-w  
+
+Viel Spaß damit!  
+
   
 
