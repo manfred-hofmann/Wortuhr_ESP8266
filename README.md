@@ -191,8 +191,8 @@ Hier sind folgende Punkte wichtig:
 
 -----
 * Hier mein Aufbau:
-![WU_links](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/WU_links.jpg "WU_links")  
-![WU_unten](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/WU_unten.jpg "WU_unten")  
+![WU_links](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/WU_links.jpg =233x472 "WU_links")  
+![WU_unten](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/WU_unten.jpg =751x370 "WU_unten")  
   
 -----  
   
