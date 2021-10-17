@@ -190,8 +190,13 @@ Hier sind folgende Punkte wichtig:
 * restliche Einstellungen sind auf der Settings Seite zu finden  
 
 -----
-
-Alles weiter findet sich auf 
+* Hier mein Aufbau:
+![WU_links](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/WU_links.jpg "WU_links")  
+![WU_unten](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/WU_unten.jpg "WU_unten")  
+  
+-----  
+  
+Alles weiter findet sich auf  
   http://diskussion.christians-bastel-laden.de/viewtopic.php?f=23&t=3846&sid=a6ac77fb774177c3168e12998a42e791  
 Ein Beispielvideo ist hier zu sehen:   
 https://www.youtube.com/watch?v=rQZoOGkao-w  
