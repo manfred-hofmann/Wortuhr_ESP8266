@@ -10,6 +10,8 @@ Wortuhr mit ESP8266 WeMos D1 mini und NeoPixel WS2812B LEDs mit mp3 Sounds, Anim
 * Zwei Eingabe Taster sind möglich: On/Off und Mode. 
   Diese sind per Touch oder als physikalischer Taster in configuration.h einstellbar.  
 * Sonnenauf-/untergangsanimation   
+* Ausführen von Adhoc Events mit http-Request:   
+z.B.: http://<wortuhr-ip>/setEvent?text=I+love+you&color=1&audio=701&preani=HERZ&postani=HERZ  
 
 
 ## Temperatur und Luftdruck:  
@@ -45,22 +47,22 @@ Wortuhr mit ESP8266 WeMos D1 mini und NeoPixel WS2812B LEDs mit mp3 Sounds, Anim
 
 ## Animationen:  
 * Es können eigene Animationen für Deine Events erstellt werden.  
-![Herz](https://github.com/manfred-hofmann/Wortuhr_ESP32_mp3/blob/main/pic/HERZ.gif "Herz")  
+![Herz](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/HERZ.gif "Herz")  
 * Über den eingebauten Animationseditor können Animationen erstellt werden  
-![Animationsmenue](https://github.com/manfred-hofmann/Wortuhr_ESP32_mp3/blob/main/pic/Animationsmenue.jpg "Animationsmenue")  
-![Animationsmenue2](https://github.com/manfred-hofmann/Wortuhr_ESP32_mp3/blob/main/pic/Animationsmenue2.jpg "Animationsmenue2")  
+![Animationsmenue](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Animationsmenue.jpg "Animationsmenue")  
+![Animationsmenue2](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Animationsmenue2.jpg "Animationsmenue2")  
 * Animationen mit bis zu 25 Frames möglich  
 * Dadurch der gif2animation Konverter von kollabierer (https://www.kollabierer.de/farbe) direkt nutzbar.   
 * Animationen mit Namen ZHHMM werden zur jeweiligen Stunde und Minute angezeigt (z.B. Z1200 startet eine Animation um 12 Uhr)  
 * Animation mit Name ALARM wird während des Alarms angezeigt.  
-![Alarm](https://github.com/manfred-hofmann/Wortuhr_ESP32_mp3/blob/main/pic/ALARM.gif "Alarm")   
+![Alarm](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/ALARM.gif "Alarm")   
 * Alle Animationen werden im SPIFFS unter dem Name ani_ANINAME.json gespeichert und können über den Dateimanager gesichert/kopiert werden.  
 
 
 ## Events:   
 * Verschiedene Melodien werden passend zu den Events abgespielt.  
 * Events werden über die Weboberfläche gepflegt.  
-![Events](https://github.com/manfred-hofmann/Wortuhr_ESP32_mp3/blob/main/pic/Events.jpg "Events") 
+![Events](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Events.jpg "Events") 
 * Es können eigene Animationen für Deine Events erstellt werden.  
 * Alle Events werden im SPIFFS unter dem Namen events.json abgelegt und können über den Dateimanager gesichert/kopiert werden.  
 
@@ -68,12 +70,12 @@ Wortuhr mit ESP8266 WeMos D1 mini und NeoPixel WS2812B LEDs mit mp3 Sounds, Anim
 ## Spiele:  
 * 4 Wortuhrspiele integriert: 
 Snake   
-![Snake](https://github.com/manfred-hofmann/Wortuhr_ESP32_mp3/blob/main/pic/snake.gif "Snake")  
+![Snake](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/snake.gif "Snake")  
 Tetris  
-![Tetris](https://github.com/manfred-hofmann/Wortuhr_ESP32_mp3/blob/main/pic/tetris.gif "Tetris")  
+![Tetris](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/tetris.gif "Tetris")  
 Bricks  
-![Bricks](https://github.com/manfred-hofmann/Wortuhr_ESP32_mp3/blob/main/pic/bricks.gif "Bricks")  
-4 gewinnt  
+![Bricks](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/bricks.gif "Bricks")  
+4 gewinnt  *neu* 
 * Sichern der Highscores im NVS  
 
 
@@ -82,6 +84,7 @@ Bricks
 * Systemname,WLan Parameter in Settings.  
 * Soundtest in Settings  
 * Dateimanager für den SPIFFS.  
+![Spiffs2](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/spiffs2.JPG "Spiffs2")
 * Angabe der Location und Höhe über 0 in Settings (wird für die WetterAPI und Berechnung des Luftdrucks auf Meereshöhe benötigt).  
 * Es wird kein API-Key benötigt!  
 * Eingabe des Automodeintervall in Settings  ( Intervall wie oft verschiedene Modes Wetter, Temperatur, Mondphase... angezeigt werden)  
@@ -140,7 +143,7 @@ Die Zahlen entsprechen der LED-Nummer in der LED-Kette:
 ```
 
 Hier ein Beispiel Layout:  
-![LED-Layout](https://github.com/manfred-hofmann/Wortuhr_ESP32_mp3/blob/main/pic/LED-Beispiel-Layout.jpg "LED-Layout")   
+![LED-Layout](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/LED-Beispiel-Layout.jpg "LED-Layout")   
 
 Möchte man auf die "Alarm LED" verzichten, so muss in der configuration.h die Anzahl der LEDs angepasst werden:  
 #define NUMPIXELS 114 -> ohne eigen Alarm LED  
@@ -149,31 +152,42 @@ Möchte man auf die "Alarm LED" verzichten, so muss in der configuration.h die A
 
 ## Inbetriebnahme:  
 * folgende Libraries werden benötigt (min. Versionen) (alle zu finden unter Bibliotheken verwalten):  
-    * ESP32 Board Version 1.0.6  
+    * ESP8266 Board Version 2.6.3   
 	* MP3-Player - DFRobotDFPlayer Version 1.0.5  
 	* BME280 - Adafruit BME280 Version 2.1.4  
 	* Adafruit Unified Sensor Version 1.1.4  
 	* Adafruit Neopixel: Version 1.8.0  
-	* SunRise: Version 2.0.1  
-	* Evt. EspSoftwareSerial Version 6.12.6 wenn die Fehlermeldung "gpio.h fehlt" erscheint.
+	* SunRise: Version 2.0.1  (nur wenn kein Openweather API-Key vorhanden ist)
+	* Evt. EspSoftwareSerial Version 6.12.6
+	* Openweather API-Key (https://openweathermap.org/) für die Wetterinformationen.  
 * Die mp3 Files (Sound) in den Ordner "mp3" auf die SD-Karte kopieren welche in den mp3-Player kommt. Es reicht eine 4GB Karte.
-* Software mit Arduino IDE (min. Version 1.8.12) auf den ESP32 laden.  
-* ESP32 starten und mit dem Handy das WLAN der Wortuhr (WU_ESP32) suchen und anmelden.  
+* Software mit Arduino IDE (min. Version 1.8.12) auf den ESP8266 laden. 
+* SPIFFS  (Sketch Data Upload):  
+Das Favicon, Events, Animationen, html Seiten und css Files liegen im SPIFFS des ESP.
+Dazu muss das data Verzeichniss über "Sketch Data upload" übertragen werden.
+(vorher den Seriellen Monitor zumachen!)
+
+Wenn du den Menüpunkt nicht hast, hier die Anleitung dazu:  
+https://www.az-delivery.de/blogs/azdelivery-blog-fur-arduino-und-raspberry-pi/entwurf-daten-in-den-flash-speicher-des-esp-ablegen  
+Und die neueste Version dazu:  
+https://github.com/esp8266/arduino-esp8266fs-plugin/releases/download/0.5.0/ESP8266FS-0.5.0.zip  
+* ESP8266 starten und mit dem Handy das WLAN der Wortuhr (Wortuhr) suchen und anmelden.  
 * Dann sollte automatisch der Browser starten. Hier die WLAN Zugangsdaten eingeben.  
 (Falls der Browser nicht startet die Default IP des AP ist 172.20.2.1)  
-(Falls es damit auch Probleme gibt können die WLAN Parameter auch direkt in configuration.h gepflegt werden.)  
-* Danach startet der ESP32 neu. Jetzt mit dem Laptop auf die spiffs.html Webseite der ESP-Adresse gehen:  
-    http://ESP32-IP/spiffs.html  
-![Spiffs1](https://github.com/manfred-hofmann/Wortuhr_ESP32_mp3/blob/main/pic/spiffs1.JPG "Spiffs1")
-* Hier das komplette data Verzeichniss hochladen.  
-![Spiffs2](https://github.com/manfred-hofmann/Wortuhr_ESP32_mp3/blob/main/pic/spiffs2.JPG "Spiffs2")
+* Danach den ESP8266 neustarten und über die Webadresse des ESP in den Menüpunkt Settings die Wortuhr anpassen.  
+Hier sind folgende Punkte wichtig:
+- Systemname    
+- Zeitserver  
+- API-Key von OpenWeather + Standort + Höhe über Meeresspiegel.  
+
+
 * __Evtl. nochmal die configuration.h durchgehen und die Einstellungen den eigenen Gegebenheiten anpassen!__   
 * restliche Einstellungen sind auf der Settings Seite zu finden  
 
 -----
 
-Alles weiter findet sich auf http://diskussion.christians-bastel-laden.de/viewforum.php?f=23   
-  
+Alles weiter findet sich auf 
+  http://diskussion.christians-bastel-laden.de/viewtopic.php?f=23&t=3846&sid=a6ac77fb774177c3168e12998a42e791
 Ein Beispielvideo ist hier zu sehen:   
 https://www.youtube.com/watch?v=rQZoOGkao-w
   
