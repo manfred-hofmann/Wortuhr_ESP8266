@@ -50,7 +50,8 @@ void handleGameControl()
 {
   bool buttonret;
   String webreturn;
-  if ( webServer.arg("button") == "start" ) {
+  if ( webServer.arg("button") == "start" ) 
+  {
 
 #ifdef DEBUG_GAME
       webreturn += "1#" + String(highscore[aktgame]) + "#" + String(aktscore) + "#" + String(debugval);
@@ -59,13 +60,17 @@ void handleGameControl()
 #endif 
 
     webServer.send(200, "text/plain", webreturn); 
+    handle_Webserver(__LINE__);
+    delay(0);
     ButtonClear();
     setMode(MODE_GAME);
-    if ( aktgame == SNAKE )  runSnake();
-    if ( aktgame == TETRIS ) runTetris();
-    if ( aktgame == BRICKS ) runBricks();
+    if ( aktgame == SNAKE       ) runSnake();
+    if ( aktgame == TETRIS      ) runTetris();
+    if ( aktgame == BRICKS      ) runBricks();
     if ( aktgame == VIERGEWINNT ) runViergewinnt();
-    
+    handle_Webserver(__LINE__);
+    delay(0);
+    ButtonClear();
 #ifdef DEBUG_GAME
   Serial.println(F("Game over"));
 #endif
