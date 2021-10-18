@@ -76,7 +76,7 @@ Tetris
 Bricks  
 ![Bricks](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/bricks.gif "Bricks")  
 4 gewinnt  *neu* 
-* Sichern der Highscores im NVS  
+* Sichern der Highscores im EEPROM   
 
 
 ## Settings:  
