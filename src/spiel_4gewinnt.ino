@@ -54,18 +54,18 @@ void runViergewinnt()
         #ifdef DEBUG_GAME
           Serial.println(F("Unendschieden!"));
         #endif    
-        gameisrunning = false; 
         ViergewinntRunning = false;
         delay(200);
         #ifdef AUDIO_SOUND
           AUDIO_FILENR = ANSAGEBASE + 198;   // unendschieden
           if (gamesound) Play_MP3(AUDIO_FILENR,false,33*gamesound);
         #endif
-        for ( uint8_t d=0; d<50;d++)
+        for ( uint8_t d=0; d<10;d++)
         {
-          delay(100);
+          delay(500);
           webServer.handleClient();
         }
+        leereBoard();
         break;
       }
       g_maxDepth = gamelevel + 3;
@@ -98,7 +98,8 @@ void runViergewinnt()
       if ( highscore[VIERGEWINNT] < 999 ) highscore[VIERGEWINNT]++;
       break;
     }
-    else {
+    else 
+    {
       int8_t move;
       int score;
       if ( firstmove ) 
@@ -111,7 +112,8 @@ void runViergewinnt()
       if ( B_wirfStein )
       while ( wirfStein(g_4g_eingeworfen, SPIELER_B));
       ShowBoard();
-      if (move != -1) {
+      if (move != -1) 
+      {
         #ifdef DEBUG_GAME
           Serial.printf("ESP wirft in Spalte: %d\n",move + 1);
         #endif
@@ -140,19 +142,19 @@ void runViergewinnt()
       {
         #ifdef DEBUG_GAME
           Serial.println(F("Unendschieden!"));
-        #endif    
-        gameisrunning = false; 
+        #endif     
         ViergewinntRunning = false;
         delay(200);
         #ifdef AUDIO_SOUND
           AUDIO_FILENR = ANSAGEBASE + 198;   // unendschieden
           if (gamesound) Play_MP3(AUDIO_FILENR,false,33*gamesound);
         #endif
-        for ( uint8_t d=0; d<50;d++)
+        for ( uint8_t d=0; d<10;d++)
         {
-          delay(100);
+          delay(500);
           webServer.handleClient();
         }
+        leereBoard();
         break;
       }
     }
@@ -513,14 +515,14 @@ void markiereGewinnSteine()
       }
     }
     ledDriver.show();
-    webServer.handleClient();
-    delay (100);
-    ButtonClear();
-    gameisrunning = false; 
-    ViergewinntRunning = false;
+    delay (120);
   }
-  BoardInit();
-  ShowBoard();
+
+  delay (100);
+  webServer.handleClient();
+  ButtonClear();
+  leereBoard();
+  ViergewinntRunning = false;
 }
 
 bool innerhalb(int y, int x)
@@ -530,7 +532,6 @@ bool innerhalb(int y, int x)
 
 void ShowBoard()
 {
-  
   // Hintergrund magenta
   uint8_t rahmen = MAGENTA;
   if ( g_maxDepth <5 ) rahmen = GREEN;
@@ -555,8 +556,34 @@ void ShowBoard()
       ledDriver.setPixel(j+1,i+1,YELLOW,abcBrightness);
     }
   }  
-    
   ledDriver.show();
+}
+
+// Leert Board nach unten
+void leereBoard()
+{
+   for ( int d=0;d<HEIGHT;d++)
+   {
+     for (int y=HEIGHT-1;y>=d;y--)
+     { 
+       if ( y > d) 
+       { 
+         for ( int x=0;x<WIDTH;x++)
+         {
+           board[y][x] = board[y-1][x];
+         }
+       }
+       else
+       {
+         for ( int x=0;x<WIDTH;x++)
+         {
+           board[y][x] = LEERES_FELD;
+         }
+       }
+     }
+     ShowBoard();
+     delay (HEIGHT*20-d*15);
+   }
 }
 
 void BoardInit()
