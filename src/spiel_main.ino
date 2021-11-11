@@ -163,6 +163,7 @@ void handleGameControl()
     else
     {
       screenBufferNeedsUpdate = true;
+	  setMode(MODE_TIME);
     }
     
 #ifdef DEBUG_GAME
