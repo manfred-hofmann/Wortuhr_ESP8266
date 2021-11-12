@@ -76,17 +76,17 @@ Tetris
 Bricks  
 ![Bricks](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/bricks.gif "Bricks")  
 4 gewinnt  
-![4gewinnt](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/4gewinnt.gif "4Gewinnt")
+![4gewinnt](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/4gewinnt.gif "4Gewinnt")  
 Tier Memory / Musik Memory  
 Ein Spiel für die ganze Familie!  
 Es können bis zu 4 Spieler spielen  
-![Memory_01](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/memory_01.jpg "Memory_01")
+![Memory_01](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/memory_01.jpg "Memory_01")  
 Spieler müssen sich mit der URL  
  http://wortuhr-ip/spieler  
 am Spiel anmelden.  
 Jeder Spieler bekommt eine andere Farbe zugewiesen.   
 Spieler2:  
-![Memory_02](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/memory_02.jpg "Memory_02")
+![Memory_02](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/memory_02.jpg "Memory_02")  
 Spieler3:  
 ![Memory_02](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/memory_03.jpg "Memory_03")  
 Spieler4:  
@@ -96,7 +96,7 @@ Ziel ist es ein passendes Sound/Musik Paar zu finden:
 Nach einem Spiel müssen die einzelnen Mitspieler jeweils nur die WebSeite refreshen um sich wieder anzumelden.  
 Welche Spieler angemeldet sind erkennt man in der Hauptspielseite an den farbigen Spielerpunkten (siehe oben).  
   
-Viel Spaß mit den Spielen! 
+Viel Spaß mit den Spielen!  
     
 * Sichern der Highscores im EEPROM    
 
