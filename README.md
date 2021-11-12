@@ -68,7 +68,7 @@ z.B.: http://wortuhr-ip/setEvent?text=I+love+you&color=1&audio=701&preani=HERZ&p
 
 
 ## Spiele:  
-* 4 Wortuhrspiele integriert: 
+* 6 Wortuhrspiele integriert: 
 Snake   
 ![Snake](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/snake.gif "Snake")  
 Tetris  
@@ -82,7 +82,7 @@ Ein Spiel für die ganze Familie!
 Es können bis zu 4 Spieler spielen  
 ![Memory_01](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/memory_01.jpg "Memory_01")
 Spieler müssen sich mit der URL  
-wortuhr-ip/spieler  
+ http://wortuhr-ip/spieler  
 am Spiel anmelden.  
 Jeder Spieler bekommt eine andere Farbe zugewiesen.   
 Spieler2:  
@@ -92,7 +92,9 @@ Spieler3:
 Spieler4:  
 ![Memory_04](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/memory_04.jpg "Memory_04")  
 Ziel ist es ein passendes Sound/Musik Paar zu finden:  
-![Memory_05t](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/memory_05t.jpg "Memory_05t")   
+![Memory_05t](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/memory_05t.jpg "Memory_05t")  
+Nach einem Spiel müssen die einzelnen Mitspieler jeweils nur die WebSeite refreshen um sich wieder anzumelden.  
+Welche Spieler angemeldet sind erkennt man in der Hauptspielseite an den farbigen Spielerpunkten (siehe oben).  
   
 Viel Spaß mit den Spielen! 
     
@@ -101,9 +103,8 @@ Viel Spaß mit den Spielen!
 
 ## Settings:  
 * Eingabe des Zeitservers über die Settings.  
-* Systemname,WLan Parameter in Settings.  
-* Soundtest in Settings  
-* Dateimanager für den SPIFFS.  
+* Systemname in Settings.    
+* Hier ist der Dateimanager für den SPIFFS.  
 ![Spiffs2](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/spiffs2.JPG "Spiffs2")
 * Angabe der Location und Höhe über 0 in Settings (wird für die WetterAPI und Berechnung des Luftdrucks auf Meereshöhe benötigt).  
 * Hier API-Key von OpenWeather eintragen!  
@@ -113,7 +114,7 @@ Viel Spaß mit den Spielen!
 * "Wochenend Lautstärke Erhöhung" wählbar. Am Wochenende zwischen 5 und 11 Uhr 2 h später lauter.  
 * Sprecher Vicki oder Hans.  
 * Stundenansage Vicki/Hans 12h oder 24h Format  
-* definieren einer Hintergrundfarbe  
+* definieren einer beliebigen Hintergrundfarbe  
 * und vieles mehr  
 
 
@@ -172,7 +173,7 @@ Möchte man auf die "Alarm LED" verzichten, so muss in der configuration.h die A
 
 ## Inbetriebnahme:  
 * folgende Libraries werden benötigt (min. Versionen) (alle zu finden unter Bibliotheken verwalten):  
-    * ESP8266 Board Version 2.6.3   
+    * ESP8266 Board Version 2.6.3 (oder 2.7.4. Es geht auch 3.0.2, wird aber nicht empfohlen)  
 	* MP3-Player - DFRobotDFPlayer Version 1.0.5  
 	* BME280 - Adafruit BME280 Version 2.1.4  
 	* Adafruit Unified Sensor Version 1.1.4  
@@ -198,7 +199,7 @@ Und die neueste Version dazu:
 https://github.com/esp8266/arduino-esp8266fs-plugin/releases/download/0.5.0/ESP8266FS-0.5.0.zip  
 * ESP8266 starten und mit dem Handy das WLAN der Wortuhr (Wortuhr) suchen und anmelden.  
 * Dann sollte automatisch der Browser starten. Hier die WLAN Zugangsdaten eingeben.  
-(Falls der Browser nicht startet die Default IP des AP ist 172.20.2.1)  
+(Falls der Browser nicht startet, die Default IP des AP ist 172.20.2.1)  
 * Danach den ESP8266 neustarten und über die Webadresse des ESP in den Menüpunkt Settings die Wortuhr anpassen.  
 Hier sind folgende Punkte wichtig:
 - Systemname    
@@ -218,7 +219,7 @@ Hier sind folgende Punkte wichtig:
   
 Alles weiter findet sich auf  
   http://diskussion.christians-bastel-laden.de/viewtopic.php?f=23&t=3846&sid=a6ac77fb774177c3168e12998a42e791  
-Ein Beispielvideo ist hier zu sehen:   
+Ein Beispielvideo einer Vorvorvorversion ist hier zu sehen:   
 https://www.youtube.com/watch?v=rQZoOGkao-w  
 
 Viel Spaß damit!  
