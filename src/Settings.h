@@ -12,8 +12,8 @@
 #include "Languages.h"
 #include "Modes.h"
 
-#define SETTINGS_MAGIC_NUMBER 0x20
-#define SETTINGS_VERSION 7
+#define SETTINGS_MAGIC_NUMBER 0x12
+#define SETTINGS_VERSION 1
 
 
 class Settings
@@ -56,11 +56,13 @@ public:
         uint8_t  enable_bg_color;                     // Hintergrundfarbe 0 = aus 1 = zeit ein 2 = immer
         char openweatherapikey[35] = {};              // OpenWeather API-Key
         char openweatherlocation[40] = {};            // Standort für OpenWeather z.B.: Baden-Baden,de
-        int16_t highscore[5] = {};                    // Highscore Werte
+        int16_t highscore[9] = {};                    // Highscore Werte
         int16_t standort_hoehe;                       // Höhe über NN
         uint8_t auto_mode_change;                     // Minuten bis zum nächsten AutoModeChange
         boolean ani_sunrise;                          // Sonnenaufgang Ankündigung
         boolean ani_sunset;                           // Sonnenuntergang Ankündigung
+        double latitude;                              // Standort Latitude
+        double longitude;                             // Standort Longitude
     } mySettings;
 
     void saveToEEPROM();

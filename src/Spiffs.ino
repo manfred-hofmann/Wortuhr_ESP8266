@@ -45,7 +45,10 @@ void handleList() {                           // Senden aller Daten an den Clien
   Dir dir = SPIFFS.openDir("/");              // Auflistung aller im Spiffs vorhandenen Dateien
   typedef std::pair<String, int> prop;
   std::list<prop> dirList;                                                               // Liste anlegen
-  while (dir.next()) dirList.emplace_back(dir.fileName().substring(1), dir.fileSize());  // Liste füllen
+  while (dir.next()) 
+  {
+    dirList.emplace_back(dir.fileName().substring(1), dir.fileSize());                   // Liste füllen
+  }
   dirList.sort([](const prop & f, const prop & l) {                                      // Liste sortieren
     if (webServer.arg(0) == "1") {
       return f.second > l.second;
@@ -57,15 +60,40 @@ void handleList() {                           // Senden aller Daten an den Clien
       return false;
     }
   });
+  
+  webServer.setContentLength(CONTENT_LENGTH_UNKNOWN);
+
+  uint8_t jsonoutteil = 0;
+  bool jsonoutfirst = true;
+  
   String temp = "[";
   for (auto& p : dirList) {
-    if (temp != "[") temp += ',';
+    
+    if (temp != "[") temp += ",";
     temp += "{\"name\":\"" + p.first + "\",\"size\":\"" + formatBytes(p.second) + "\"}";
+    jsonoutteil++;
+    if ( jsonoutteil > 10 ) 
+    {
+      jsonoutteil = 0;
+      if ( jsonoutfirst )
+      {
+        jsonoutfirst = false;
+        webServer.send(200, "application/json", temp);
+      }
+      else
+      {
+        webServer.sendContent(temp);
+      }
+      temp = "";
+      delay(0);
+    }
   }
   temp += ",{\"usedBytes\":\"" + formatBytes(fs_info.usedBytes * 1.05) + "\"," +             // Berechnet den verwendeten Speicherplatz + 5% Sicherheitsaufschlag
           "\"totalBytes\":\"" + formatBytes(fs_info.totalBytes) + "\",\"freeBytes\":\"" +    // Zeigt die Größe des Speichers
           (fs_info.totalBytes - (fs_info.usedBytes * 1.05)) + "\"}]";                        // Berechnet den freien Speicherplatz + 5% Sicherheitsaufschlag
-  webServer.send(200, "application/json", temp);
+  webServer.sendContent(temp);
+  webServer.sendContent("");
+  temp = "";
 }
 
 bool handleFile(String&& path) {
@@ -79,6 +107,8 @@ bool handleFile(String&& path) {
   }
   if (!SPIFFS.exists("/spiffs.html"))webServer.send(200, "text/html", SPIFFS.begin() ? HELPER : WARNING);     // ermöglicht das hochladen der spiffs.html
   if (path.endsWith("/")) path += "index.html";
+  if (path.endsWith("player")) path="/spieler.html";
+  if (path.endsWith("spieler")) path="/spieler.html";
   return SPIFFS.exists(path) ? ({File f = SPIFFS.open(path, "r"); webServer.streamFile(f, spiffsgetContentType(path)); f.close(); true;}) : false;
 }
 

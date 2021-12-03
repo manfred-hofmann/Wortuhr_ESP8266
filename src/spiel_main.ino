@@ -1,6 +1,6 @@
 #include "spiel_main.h"
 
-// Starte Animationsmenü
+// Starte Spiel
 void startGame()
 {
  String webstring;
@@ -18,6 +18,12 @@ void startGame()
     gamestring = "BRICKS";
   if ( aktgame == VIERGEWINNT )
     gamestring = "VIERGEWINNT";
+  if ( aktgame == TIERMEMORY )
+    gamestring = "MEMORY";
+  if ( aktgame == MUSIKMEMORY )
+    gamestring = "MEMORY";
+  if ( aktgame == ABBAMEMORY )
+    gamestring = "MEMORY";
   aktscore = 0;
   webstring = F("<!doctype html><html><head><script>window.onload=function(){window.location.replace('/GameControl.html?game=");
   webstring += gamestring;
@@ -34,29 +40,40 @@ void startGame()
     webstring += F("&level=");
     webstring += String(gamelevel);
   }
+  if (aktgame == TIERMEMORY || aktgame == MUSIKMEMORY || aktgame == ABBAMEMORY ) 
+  {
+    webstring += F("&size=");
+    webstring += String(gamesize);
+  }
    
   webstring += F("');}</script></head></html>");
   webServer.send(200, "text/html",webstring);
 #ifdef AUDIO_SOUND
       AUDIO_FILENR = ANSAGEBASE + 180 + aktgame;
-      if (gamesound) Play_MP3(AUDIO_FILENR,false,33*gamesound);
+      if ( gamesound < 3 ) Play_MP3(AUDIO_FILENR,false,33*gamesound + 20);
+      else Play_MP3(AUDIO_FILENR,false,33*gamesound);
 #endif
   curControl= BTN_NONE;  
   handle_Webserver(__LINE__);
   delay(0);
+  anzPlayer = 1;
 }
 
 void handleGameControl()
 {
   bool buttonret;
   String webreturn;
+  uint8_t playerret;
+  uint8_t playerbuttonadd = 0;
+  if ( gameisrunning) playerret = anzPlayer; else playerret = 0;
+  
   if ( webServer.arg("button") == "start" ) 
   {
 
 #ifdef DEBUG_GAME
-      webreturn += "1#" + String(highscore[aktgame]) + "#" + String(aktscore) + "#" + String(debugval);
+      webreturn += "1#" + String(aktgame) + "#" + String(anzPlayer) + "#" + String(highscore[aktgame]) + "#" + String(aktscore) + "#" + String(debugval);
 #else
-      webreturn += "1#" + String(highscore[aktgame]) + "#" + String(aktscore) + "#0";
+      webreturn += "1#" + String(aktgame) + "#" + String(anzPlayer) + "#" + String(highscore[aktgame]) + "#" + String(aktscore) + "#0";
 #endif 
 
     webServer.send(200, "text/plain", webreturn); 
@@ -68,6 +85,13 @@ void handleGameControl()
     if ( aktgame == TETRIS      ) runTetris();
     if ( aktgame == BRICKS      ) runBricks();
     if ( aktgame == VIERGEWINNT ) runViergewinnt();
+    if ( aktgame == TIERMEMORY )  runMemory();
+    if ( aktgame == MUSIKMEMORY ) runMemory();
+    if ( aktgame == ABBAMEMORY ) runMemory();
+    for ( uint8_t pip=0;pip<4;pip++)
+    {
+      PlayerIP[pip]="";
+    }
     handle_Webserver(__LINE__);
     delay(0);
     ButtonClear();
@@ -92,7 +116,7 @@ void handleGameControl()
     }
     delay(500);
     webServer.handleClient();
-    if (curControl != BTN_STOP && aktgame != VIERGEWINNT)
+    if (curControl != BTN_STOP && aktgame != VIERGEWINNT && aktgame != TIERMEMORY && aktgame != MUSIKMEMORY && aktgame != ABBAMEMORY )
     {
       delay(800);
 #ifdef AUDIO_SOUND
@@ -163,8 +187,9 @@ void handleGameControl()
     else
     {
       screenBufferNeedsUpdate = true;
+      setMode(MODE_TIME);
     }
-    
+    anzPlayer = 1;
 #ifdef DEBUG_GAME
   Serial.println(F("zurück zur Uhr..."));
 #endif
@@ -186,11 +211,15 @@ void handleGameControl()
       if (gamesound) Play_MP3(700,false,33*gamesound);
 #endif
     }
-    
-    if ( webServer.arg("gb") == "up" ) buttonret = ButtonIn(BTN_UP);
-    if ( webServer.arg("gb") == "down" ) buttonret = ButtonIn(BTN_DOWN);
-    if ( webServer.arg("gb") == "left" ) buttonret = ButtonIn(BTN_LEFT);
-    if ( webServer.arg("gb") == "right" ) buttonret = ButtonIn(BTN_RIGHT);
+    playerbuttonadd = 0;
+    if ( webServer.arg("player") == "2" ) playerbuttonadd = 10;
+    if ( webServer.arg("player") == "3" ) playerbuttonadd = 20;
+    if ( webServer.arg("player") == "4" ) playerbuttonadd = 30;
+    if ( webServer.arg("gb") == "up" ) buttonret = ButtonIn(BTN_UP + playerbuttonadd);
+    if ( webServer.arg("gb") == "down" ) buttonret = ButtonIn(BTN_DOWN + playerbuttonadd);
+    if ( webServer.arg("gb") == "left" ) buttonret = ButtonIn(BTN_LEFT + playerbuttonadd);
+    if ( webServer.arg("gb") == "right" ) buttonret = ButtonIn(BTN_RIGHT + playerbuttonadd);
+    if ( webServer.arg("gb") == "middle" ) buttonret = ButtonIn(BTN_MIDDLE + playerbuttonadd);
 
     if ( webServer.arg("level").length() > 0) 
     {
@@ -200,12 +229,20 @@ void handleGameControl()
 #endif      
     }
     
+    if ( webServer.arg("size").length() > 0) 
+    {
+      gamesize = webServer.arg("size").toInt();
+#ifdef DEBUG_GAME
+      Serial.printf("GameSize: %i\n",gamesize);
+#endif      
+    }
+    
     if ( webServer.arg("button") == "back" )
     {
 #ifdef DEBUG_GAME
-      webreturn += "0#" + String(highscore[aktgame]) + "#" + String(aktscore) + "#" + String(debugval);
+      webreturn += "0#" + String(aktgame) + "#" + String(anzPlayer) + "#" + String(highscore[aktgame]) + "#" + String(aktscore) + "#" + String(debugval);
 #else
-      webreturn += "0#" + String(highscore[aktgame]) + "#" + String(aktscore) + "#0";
+      webreturn += "0#" + String(aktgame) + "#" + String(anzPlayer) + "#" + String(highscore[aktgame]) + "#" + String(aktscore) + "#0";
 #endif
 
       webServer.send(200, "text/plain", webreturn); 
@@ -216,20 +253,77 @@ void handleGameControl()
     }
     if ( webServer.arg("poll") == "poll" ) 
     {
-#ifdef DEBUG_GAME
+       playerret = anzPlayer;
+#ifdef DEBUG_WEB
       Serial.println(F("Web Poll"));
-#endif
-    }
-#ifdef DEBUG_GAME
       Serial.printf("Debugval: %i\n",debugval);
 #endif
-    if ( gameisrunning ) webreturn = "1#"; else webreturn = "0#";
+    }
+//################################################################
+    if ( webServer.arg("newplayer") == "init" ) 
+    {  
+       if (aktgame == TIERMEMORY || aktgame == MUSIKMEMORY || aktgame == ABBAMEMORY )
+       {
+         if ( gameisrunning ) 
+         {
+           playerret = 0; 
+           for ( uint8_t pip=0;pip<4;pip++)
+           {
+             if (PlayerIP[pip] == webServer.client().remoteIP().toString() )  // Spieler mit der gleichen IP bekommen wieder die gleiche Spielernummer/Farbe
+             {
+               playerret = pip+1;
+  #ifdef DEBUG_GAME
+               Serial.print(F("Player refresh: "));
+               Serial.println(playerret);
+               Serial.print(F(" IP: "));
+               Serial.println(PlayerIP[pip]);
+  #endif
+               if ( random(0,2) == 0 ) break;
+             }
+           }
+         }
+         else
+         {
+           if ( anzPlayer < 4 ) 
+           {
+             PlayerIP[anzPlayer] = webServer.client().remoteIP().toString();
+             anzPlayer++;            // Spieler hinzu
+             playerret = anzPlayer;
+  #ifdef DEBUG_GAME
+             Serial.print(F("Neuer Player: "));
+             Serial.println(anzPlayer);
+             Serial.print(F(" IP: "));
+             Serial.println(PlayerIP[anzPlayer-1]);
+  #endif
+            }
+            else
+            {
+              playerret = 0;          // kein neuer Spieler mehr möglich
+            }
+          }
+       }
+       else
+       {
+         playerret = 0;              // nur bei Mehrspieler Modus ist ein neuer Spieler möglich
+       }
+    }
+
+    
+    if ( gameisrunning ) 
+    {
+      webreturn = "1#"; 
+    }
+    else 
+    {
+      webreturn = "0#";
+    }
 #ifdef DEBUG_GAME
-    webreturn += String(highscore[aktgame]) + "#" + String(aktscore)+ "#" + String(debugval);
+    webreturn += String(aktgame) + "#" + String(playerret) + "#" + String(highscore[aktgame]) + "#" + String(aktscore)+ "#" + String(debugval);
 #else
-    webreturn += String(highscore[aktgame]) + "#" + String(aktscore) + "#0";
+    webreturn += String(aktgame) + "#" + String(playerret) + "#" + String(highscore[aktgame]) + "#" + String(aktscore) + "#0";
 #endif
     webServer.send(200, "text/plain", webreturn);
+    
   }
 }
 

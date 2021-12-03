@@ -2,19 +2,18 @@
   * 4 gewinnt
 */
 
-#define BUTTONPIN D0
-#define WIDTH 9
-#define HEIGHT 8
+#define VG_WIDTH 9
+#define VG_HEIGHT 8
 #define SPIELER_A_WINS  1000000
 #define SPIELER_B_WINS -1000000
 #define SPIELER_A 1
 #define SPIELER_B -1
 #define LEERES_FELD 0
-#define STEINGESCHW HEIGHT*HEIGHT*4
+#define STEINGESCHW VG_HEIGHT*VG_HEIGHT*4
 
 uint8_t g_maxDepth = 5;
 uint8_t g_maxLDepth = 0;
-int8_t board[HEIGHT][WIDTH] = {0};
+//int8_t board[VG_HEIGHT+1][VG_WIDTH] = {0};
 boolean ViergewinntRunning;
 unsigned long steinzeit;  //:-)
 int8_t g_4g_posy = 0;
@@ -163,32 +162,32 @@ void runViergewinnt()
 }
 
 
-int ScoreBoard(int8_t scores[][WIDTH])
+int ScoreBoard(int8_t scores[][VG_WIDTH])
 {
     int counters[9] = {0,0,0,0,0,0,0,0,0};
     int x,y;
   
     // Horizontal spans
-    for(y=0; y<HEIGHT; y++) {
+    for(y=0; y<VG_HEIGHT; y++) {
         int score = scores[y][0] + scores[y][1] + scores[y][2];
-        for(x=3; x<WIDTH; x++) {
+        for(x=3; x<VG_WIDTH; x++) {
             score += scores[y][x];
             counters[score+4]++;
             score -= scores[y][x-3];
     }
   }
     // Vertical spans
-    for(x=0; x<WIDTH; x++) {
+    for(x=0; x<VG_WIDTH; x++) {
         int score = scores[0][x] + scores[1][x] + scores[2][x];
-        for(y=3; y<HEIGHT; y++) {
+        for(y=3; y<VG_HEIGHT; y++) {
             score += scores[y][x];
             counters[score+4]++;
             score -= scores[y-3][x];
     }
   }
     // Down-right (and up-left) diagonals
-    for(y=0; y<HEIGHT-3; y++) {
-        for(x=0; x<WIDTH-3; x++) {
+    for(y=0; y<VG_HEIGHT-3; y++) {
+        for(x=0; x<VG_WIDTH-3; x++) {
             int score=0, idx=0;
             for(idx=0; idx<4; idx++) {
                 score += scores[y+idx][x+idx];
@@ -197,8 +196,8 @@ int ScoreBoard(int8_t scores[][WIDTH])
     }
   }
     // up-right (and down-left) diagonals
-    for(y=3; y<HEIGHT; y++) {
-        for(x=0; x<WIDTH-3; x++) {
+    for(y=3; y<VG_HEIGHT; y++) {
+        for(x=0; x<VG_WIDTH-3; x++) {
             int score=0, idx=0;
             for(idx=0; idx<4; idx++) {
                 score += scores[y-idx][x+idx];
@@ -217,10 +216,10 @@ int ScoreBoard(int8_t scores[][WIDTH])
 }
 
 
-int8_t dropDisk(int8_t board[][WIDTH], int8_t column, int8_t spieler)
+int8_t dropDisk(int8_t board[][VG_WIDTH], int8_t column, int8_t spieler)
 {
     int8_t y;
-    for (y=HEIGHT-1; y>=0; y--)
+    for (y=VG_HEIGHT-1; y>=0; y--)
   if (board[y][column] == LEERES_FELD) {
     board[y][column] = spieler;
     return y;
@@ -228,11 +227,11 @@ int8_t dropDisk(int8_t board[][WIDTH], int8_t column, int8_t spieler)
     return -1;
 }
 
-void abMinimax(int maximizeOrMinimize, int8_t spieler, uint8_t depth, int8_t board[][WIDTH], int8_t* move, int* score )
+void abMinimax(int maximizeOrMinimize, int8_t spieler, uint8_t depth, int8_t board[][VG_WIDTH], int8_t* move, int* score )
 {
     int bestScore=maximizeOrMinimize?-10000000:10000000;
     int8_t bestMove=-1, column;
-    for (column=0; column<WIDTH; column++) 
+    for (column=0; column<VG_WIDTH; column++) 
     {
       if (board[0][column]!=LEERES_FELD) continue;
       int8_t rowFilled = dropDisk(board, column, spieler);
@@ -322,7 +321,7 @@ int8_t warteAufEinwurf()
   ButtonClear();
   if ( !gameisrunning )
   {
-    for (int8_t j = 1; j < WIDTH ; j++)
+    for (int8_t j = 1; j < VG_WIDTH ; j++)
     {
       ledDriver.setPixelRGB(j,0,0,0,0);  // Eingabespalte löschen
     }
@@ -387,7 +386,7 @@ int8_t warteAufEinwurf()
 int8_t freieSpalteWahl(int8_t pos, bool lr, int8_t spieler)
 {
   int8_t retval = -1;
-  for (int8_t j=0; j<WIDTH; j++) {
+  for (int8_t j=0; j<VG_WIDTH; j++) {
     if (board[0][j]==LEERES_FELD)
     {
       retval = 0;
@@ -400,8 +399,8 @@ int8_t freieSpalteWahl(int8_t pos, bool lr, int8_t spieler)
   
   if ( lr ) 
   {
-    if ( pos == WIDTH-1) retval = pos;
-    for (int8_t j = pos+1; j < WIDTH ; j++)
+    if ( pos == VG_WIDTH-1) retval = pos;
+    for (int8_t j = pos+1; j < VG_WIDTH ; j++)
     {
       ledDriver.setPixelRGB(j,0,0,0,0);
       if (board[0][j] == LEERES_FELD) 
@@ -473,9 +472,9 @@ void markiereGewinnSteine()
   #ifdef DEBUG_GAME
     Serial.println(F("GewinnSteine:"));
   #endif
-  for(uint8_t x=0;x<FIELD_WIDTH;x++)
+  for(uint8_t x=0;x<VG_WIDTH;x++)
   {
-    for(uint8_t y=0;y<FIELD_HEIGHT;y++)
+    for(uint8_t y=0;y<VG_HEIGHT;y++)
     { 
       for( uint8_t r=0;r<4;r++ )          // Prüfe 4 Richtungen
       {
@@ -527,7 +526,7 @@ void markiereGewinnSteine()
 
 bool innerhalb(int y, int x)
 {
-    return y>=0 && y<HEIGHT && x>=0 && x<WIDTH;
+    return y>=0 && y<VG_HEIGHT && x>=0 && x<VG_WIDTH;
 }
 
 void ShowBoard()
@@ -546,8 +545,8 @@ void ShowBoard()
   }
   
   //board
-  for (uint8_t i = 0; i < HEIGHT ; i++){
-    for (uint8_t j = 0; j < WIDTH ; j++){
+  for (uint8_t i = 0; i < VG_HEIGHT ; i++){
+    for (uint8_t j = 0; j < VG_WIDTH ; j++){
       if (board[i][j] == LEERES_FELD)
       ledDriver.setPixel(j+1,i+1,BLUE,abcBrightness/5);
       if (board[i][j] == SPIELER_A)
@@ -562,35 +561,35 @@ void ShowBoard()
 // Leert Board nach unten
 void leereBoard()
 {
-   for ( int d=0;d<HEIGHT;d++)
+   for ( int d=0;d<VG_HEIGHT;d++)
    {
-     for (int y=HEIGHT-1;y>=d;y--)
+     for (int y=VG_HEIGHT-1;y>=d;y--)
      { 
        if ( y > d) 
        { 
-         for ( int x=0;x<WIDTH;x++)
+         for ( int x=0;x<VG_WIDTH;x++)
          {
            board[y][x] = board[y-1][x];
          }
        }
        else
        {
-         for ( int x=0;x<WIDTH;x++)
+         for ( int x=0;x<VG_WIDTH;x++)
          {
            board[y][x] = LEERES_FELD;
          }
        }
      }
      ShowBoard();
-     delay (HEIGHT*20-d*15);
+     delay (VG_HEIGHT*20-d*15);
    }
 }
 
 void BoardInit()
 {
-  for (uint8_t i = 0; i < HEIGHT ; i++)
+  for (uint8_t i = 0; i < VG_HEIGHT ; i++)
   {
-    for (uint8_t j = 0; j < WIDTH ; j++)
+    for (uint8_t j = 0; j < VG_WIDTH ; j++)
     {
       board[i][j] = 0;
     }

@@ -153,6 +153,32 @@ h1,h2 {
 	float:right;
 }
 
+.p1,.p2,.p3,.p4 {
+	font-size:45px;
+}
 
+.tooltip {
+	color: black;
+	cursor: help;
+	position: relative;
+}
+
+.tooltip span[role=tooltip] {
+	display: none;
+}
+
+.tooltip:hover span[role=tooltip] {
+	display: block;
+	position: absolute;
+	bottom: 1em;
+	left: -6em;
+	width: 15em;
+	padding: 0.5em;
+	z-index: 100;
+	color: #000;
+	background-color: var(--grey);
+	border: solid 1px black;
+	border-radius: 0.5em;
+}
 
 

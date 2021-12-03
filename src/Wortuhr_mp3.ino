@@ -21,12 +21,12 @@
 // ******************************************************************************
 // ******************************************************************************
 
-// Einstellungen für das Board: (LOLIN(WEMOS) D1 R2 & mini)
+// Einstellungen für das Board: (LOLIN(WEMOS) D1 R2 & mini) (wichtig: Board Version 2.6.3 bis 2.7.4)
 // CPU Frequenz auf 160 MHz
 // Flash Size 4MB ( FS:2MB OTA~1019KB)
 // SLL Support Basic
 
-// Im Normalbetrieb immer alle DEBUG Schalter aus.
+// Im Normalbetrieb immer alle DEBUG Schalter aus. (configuration.h ab Zeile 305!)
 
 // folgende Libraries werden benötigt:
 
@@ -51,7 +51,13 @@
 //Then search for Neopixel strip using the search bar.
 //Click on the text area and then select the specific version and install it.
 
-#define FIRMWARE_VERSION 20211016
+// SunRise Library:
+//In the Arduino IDE, navigate to Sketch > Include Library > Manage Libraries
+//Then the Library Manager will open and you will find a list of libraries that are already installed or ready for installation.
+//Then search for SunRise using the search bar.
+//Click on the text area SunRise by Cyrus Rahman and then select the specific Version 2.0.2 and install it.
+
+#define FIRMWARE_VERSION 20211202 //Palindrom
 
 #include <Arduino.h>
 #include <Arduino_JSON.h>
@@ -244,8 +250,6 @@ uint8_t web_moonphase = 0;
 
 
 #ifdef SunRiseLib
-double latitude = LATITUDE;
-double longitude = LONGITUDE;
 time_t sunRiseTime;
 time_t sunSetTime;
 SunRise sr;
@@ -359,6 +363,10 @@ void setup()
 	Serial.println();
 	Serial.println("****** " + String(settings.mySettings.systemname) + " ******");
 	Serial.println("Firmware: " + String(FIRMWARE_VERSION));
+#ifdef DEBUG
+  Serial.printf("Size of Settings: %i byte\n",sizeof(settings));
+  Serial.printf("ESP BoardVersion: %s\n",ESP.getCoreVersion());
+#endif
 
 #ifdef POWERON_SELFTEST
 	renderer.setAllScreenBuffer(matrix);
@@ -663,29 +671,29 @@ void setup()
 // Get weather from OpenWeather
 #ifdef APIKEY
 #ifdef DEBUG_OW
-    Serial.println(F("Getting outdoor weather (INIT):"));
+      Serial.println(F("Getting outdoor weather (INIT):"));
 #endif
-    delay(1000); 
-    retcodeOutdoorWeather = outdoorWeather.getOutdoorConditions(String(settings.mySettings.openweatherlocation), String(settings.mySettings.openweatherapikey));
-    if ( retcodeOutdoorWeather > 0 ) 
-    {
+      delay(1000); 
+      retcodeOutdoorWeather = outdoorWeather.getOutdoorConditions(String(settings.mySettings.openweatherlocation), String(settings.mySettings.openweatherapikey));
+      if ( retcodeOutdoorWeather > 0 ) 
+      {
 #ifdef DEBUG_OW
-     Serial.println(F("OpenWeather Error"));
+       Serial.println(F("OpenWeather Error"));
 #endif
-      errorCounterOutdoorWeather++;
-      LastOutdoorWeatherTime = 0;
-    }
-    else
-    {
-      LastOutdoorWeatherTime = startTime;
-    }
+       errorCounterOutdoorWeather++;
+       LastOutdoorWeatherTime = 0;
+      }
+      else
+      {
+        LastOutdoorWeatherTime = startTime;
+      }
+#ifdef DEBUG_OW
+      Serial.println(outdoorWeather.description);
+      Serial.println(outdoorWeather.temperature);
+      Serial.println(outdoorWeather.humidity);
+      Serial.println(outdoorWeather.pressure);
+#endif
     sunriseset();
-#ifdef DEBUG_OW
-    Serial.println(outdoorWeather.description);
-    Serial.println(outdoorWeather.temperature);
-    Serial.println(outdoorWeather.humidity);
-    Serial.println(outdoorWeather.pressure);
-#endif
 #endif
   }
 
@@ -722,7 +730,7 @@ void setup()
     for (int m = 0 ; m < 60; m = m + 20) 
     {
       
-      temperatur_hist[temp_init_z].stundeminute = stunde;
+      temperatur_hist[temp_init_z].stundeminute = String(stunde);
       if ( stunde < 10 ) temperatur_hist[temp_init_z].stundeminute = "0" + temperatur_hist[temp_init_z].stundeminute;
       String c_minuten = String(m);
       if ( m < 10 ) c_minuten = "0" + c_minuten;
@@ -801,7 +809,7 @@ void loop()
 
 // SunRise
 #ifdef SunRiseLib
-  sr.calculate(latitude, longitude, timeZone.toUTC(now()) );
+  sr.calculate(settings.mySettings.latitude,settings.mySettings.longitude, timeZone.toUTC(now()) );
   sunRiseTime = timeZone.toLocal(sr.riseTime);
   sunSetTime = timeZone.toLocal(sr.setTime);
   sunriseset();
@@ -853,13 +861,9 @@ void loop()
       }
    
     Modecount = 0;
-    gamecount[SNAKE] = 0;
-    gamecount[TETRIS] = 0;
-    gamecount[BRICKS] = 0;
-    gamecount[VIERGEWINNT] = 0;
+    for ( uint8_t gc = 0; gc <9;gc++) gamecount[gc] = 0;  // löschen der Spiele pro Tag
 #ifdef APIKEY
     errorCounterOutdoorWeather = 0;
-    retcodeOutdoorWeather = 0;
 #endif
     WLAN_reconnect = 0;
     maxesptimedrift = 0;
@@ -901,7 +905,7 @@ void loop()
 
 		// Hourly beep
 #ifdef BUZZER
-		if ((settings.mySettings.hourBeep == true) && (mode == MODE_TIME))
+		if ((settings.mySettings.hourBeep == true) && (mode == MODE_TIME) && minute() < 2 )
 		{
 			digitalWrite(PIN_BUZZER, HIGH);
 			delay(25);
@@ -913,7 +917,7 @@ void loop()
 #endif
 
 #ifdef AUDIO_SOUND
-    if ((settings.mySettings.hourBeep == true) && (mode == MODE_TIME))
+    if ((settings.mySettings.hourBeep == true) && (mode == MODE_TIME) && minute() < 2 )
     {
       AUDIO_HOUR = aktHour;
 #ifdef DEBUG
@@ -1101,7 +1105,7 @@ void loop()
 
 #ifdef APIKEY
     // ************************************************************************
-    // Alle 10 minutes +4 neue Wetterdaten holen, wenn die 
+    // Alle 10 minutes +4 neue Wetterdaten holen
     // ************************************************************************
     if ( aktMinute % 10 == 4 && timeZone.toUTC(now()) > LastOutdoorWeatherTime + OPENWEATHER_PERIODE && errorCounterOutdoorWeather < OPENWEATHER_MAX_ERROR )  
     {
@@ -1140,7 +1144,7 @@ void loop()
 #ifdef SunRiseLib
     if (aktMinute == randomMinute + 1 )
     {
-      sr.calculate(latitude, longitude, timeZone.toUTC(now()) );
+      sr.calculate(settings.mySettings.latitude,settings.mySettings.longitude, timeZone.toUTC(now()) );
       sunRiseTime = timeZone.toLocal(sr.riseTime);
       sunSetTime = timeZone.toLocal(sr.setTime);
     #ifdef DEBUG
@@ -1425,7 +1429,7 @@ void loop()
     				{
     				case 0:
     #ifdef APIKEY
-    					if (WiFi.isConnected()) setMode(MODE_EXT_TEMP);
+    					if (WiFi.isConnected() && strlen(settings.mySettings.openweatherapikey) > 25 ) setMode(MODE_EXT_TEMP);
     #endif
     					autoMode = 1;
     					break;
@@ -1435,7 +1439,7 @@ void loop()
     					setMode(MODE_TEMP);
     #else
     #ifdef APIKEY
-    					if (WiFi.isConnected()) setMode(MODE_EXT_TEMP);
+    					if (WiFi.isConnected() && strlen(settings.mySettings.openweatherapikey) > 25 ) setMode(MODE_EXT_TEMP);
     #else
     #ifdef SHOW_MODE_DATE
               setMode(MODE_DATE);
@@ -1462,7 +1466,7 @@ void loop()
             case 4:
     #ifdef APIKEY
     #ifdef SHOW_MODE_WETTER
-              setMode(MODE_WETTER);
+              if ( strlen(settings.mySettings.openweatherapikey) > 25 ) setMode(MODE_WETTER);
     #endif
     #else
     #ifdef SHOW_MODE_MOONPHASE
@@ -1874,6 +1878,8 @@ void loop()
 #ifdef APIKEY
 // #################### WETTER START #################
 #ifdef SHOW_MODE_WETTER
+  if ( strlen(settings.mySettings.openweatherapikey) > 25 )
+  {
     case MODE_WETTER:
       
     if ( ModeSequenz == 1 ) 
@@ -2000,6 +2006,7 @@ void loop()
       }
     }
    break;
+  }
 #endif
 // ######################## WETTER ENDE ##############
 		case MODE_EXT_TEMP:
@@ -2356,21 +2363,25 @@ void loop()
       writeScreenBuffer(matrix, YELLOW, brightness);
       break;
 #ifdef APIKEY
+
     case MODE_WETTER:
     break;
     case MODE_EXT_TEMP:
-      if (outdoorWeather.temperature < -10 ) Tempcolor = VIOLET;
-      else if (outdoorWeather.temperature >= -10  && outdoorWeather.temperature < -5) Tempcolor = BLUE;
-      else if (outdoorWeather.temperature >= -5  && outdoorWeather.temperature < 0) Tempcolor = LIGHTBLUE;
-      else if (outdoorWeather.temperature >= 0  && outdoorWeather.temperature < 5) Tempcolor = CYAN;
-      else if (outdoorWeather.temperature >= 5  && outdoorWeather.temperature < 10) Tempcolor = MINTGREEN;
-      else if (outdoorWeather.temperature >= 10  && outdoorWeather.temperature < 15) Tempcolor = GREEN;
-      else if (outdoorWeather.temperature >= 15  && outdoorWeather.temperature < 20) Tempcolor = GREENYELLOW;
-      else if (outdoorWeather.temperature >= 20  && outdoorWeather.temperature < 25) Tempcolor = YELLOW;
-      else if (outdoorWeather.temperature >= 25  && outdoorWeather.temperature < 30) Tempcolor = ORANGE;
-      else if (outdoorWeather.temperature >= 30  && outdoorWeather.temperature < 40) Tempcolor = RED;
-      else if (outdoorWeather.temperature >= 40  ) Tempcolor = RED_50;
-      writeScreenBuffer(matrix, Tempcolor, brightness);
+      if ( strlen(settings.mySettings.openweatherapikey) > 25 )
+      {
+        if (outdoorWeather.temperature < -10 ) Tempcolor = VIOLET;
+        else if (outdoorWeather.temperature >= -10  && outdoorWeather.temperature < -5) Tempcolor = BLUE;
+        else if (outdoorWeather.temperature >= -5  && outdoorWeather.temperature < 0) Tempcolor = LIGHTBLUE;
+        else if (outdoorWeather.temperature >= 0  && outdoorWeather.temperature < 5) Tempcolor = CYAN;
+        else if (outdoorWeather.temperature >= 5  && outdoorWeather.temperature < 10) Tempcolor = MINTGREEN;
+        else if (outdoorWeather.temperature >= 10  && outdoorWeather.temperature < 15) Tempcolor = GREEN;
+        else if (outdoorWeather.temperature >= 15  && outdoorWeather.temperature < 20) Tempcolor = GREENYELLOW;
+        else if (outdoorWeather.temperature >= 20  && outdoorWeather.temperature < 25) Tempcolor = YELLOW;
+        else if (outdoorWeather.temperature >= 25  && outdoorWeather.temperature < 30) Tempcolor = ORANGE;
+        else if (outdoorWeather.temperature >= 30  && outdoorWeather.temperature < 40) Tempcolor = RED;
+        else if (outdoorWeather.temperature >= 40  ) Tempcolor = RED_50;
+        writeScreenBuffer(matrix, Tempcolor, brightness);
+      }
       break;
 #endif
 #ifdef SENSOR_BME280     
@@ -3262,6 +3273,10 @@ void writeScreenBufferFade(uint16_t screenBufferOld[], uint16_t screenBufferNew[
 	{
 		for (uint8_t y = 0; y <= 9; y++)
 		{
+      if ( lastMode == MODE_DATE && mode == MODE_TIME )
+      {
+        if ( y > 4 ) colorold = LIGHTBLUE; else colorold = YELLOW;
+      }
 			for (uint8_t x = 0; x <= 11; x++)
 			{
 //        if (!(bitRead(screenBufferOld[y], 15 - x)) && (bitRead(screenBufferNew[y], 15 - x))) brightnessBuffer[y][x]++;
@@ -3349,6 +3364,10 @@ void writeScreenBufferFade(uint16_t screenBufferOld[], uint16_t screenBufferNew[
 	transitionInProgress = false;
   colorold = color;
   cornercolorold = settings.mySettings.corner_color;
+  if ( lastMode == MODE_DATE && mode == MODE_TIME )
+  {
+    lastMode = MODE_TIME;
+  }
 }
 
 void writeScreenBuffer(uint16_t screenBuffer[], uint8_t color, uint8_t brightness)
@@ -3777,7 +3796,14 @@ void getRoomConditions()
 		roomHumidity = bmeHumidity + BME_HUMIDITY_OFFSET;
     Pressure = bmePressure;
 #ifdef APIKEY
-    Pressure_red = Pressure * pow ( EULERSCHE_ZAHL ,(( FALLBESCHLEUNIGUNG / ( GASKONSTANTE * ( KELVIN_0 + outdoorWeather.temperature + TEMPERATURGRADIENT * float(settings.mySettings.standort_hoehe) ))) * float(settings.mySettings.standort_hoehe) ));
+    if ( strlen(settings.mySettings.openweatherapikey) > 25 )
+    {
+      Pressure_red = Pressure * pow ( EULERSCHE_ZAHL ,(( FALLBESCHLEUNIGUNG / ( GASKONSTANTE * ( KELVIN_0 + outdoorWeather.temperature + TEMPERATURGRADIENT * float(settings.mySettings.standort_hoehe) ))) * float(settings.mySettings.standort_hoehe) ));
+    }
+    else
+    {
+      Pressure_red = Pressure * pow ( EULERSCHE_ZAHL ,(( FALLBESCHLEUNIGUNG / ( GASKONSTANTE * ( KELVIN_0 + 20 + TEMPERATURGRADIENT * float(settings.mySettings.standort_hoehe) ))) * float(settings.mySettings.standort_hoehe) ));
+    }
 #else
     Pressure_red = Pressure * pow ( EULERSCHE_ZAHL ,(( FALLBESCHLEUNIGUNG / ( GASKONSTANTE * ( KELVIN_0 + 20 + TEMPERATURGRADIENT * float(settings.mySettings.standort_hoehe) ))) * float(settings.mySettings.standort_hoehe) ));
 #endif
@@ -3807,7 +3833,7 @@ void getRoomConditions()
 // Historisierung Temperatur
     c_stunden = String(stunde);
     if ( stunde < 10 ) c_stunden = "0" + c_stunden;
-    c_minuten = minute();
+    c_minuten = String(minute());
     if ( minute() < 10 ) c_minuten = "0" + c_minuten;
     if ( (minute()%20) - 1  == 0 ) // Werte alle 20 Minuten (01,21,41)
     {
@@ -3854,43 +3880,52 @@ void sunriseset()
   sunsetHour = 0;
   sunsetMinute = 0;
   sunsetSecond = 0;
-#ifdef SunRiseLib
-  if ( hour(sunRiseTime) > 0 ) 
-  {
-    sunriseHour = hour(sunRiseTime);
-    sunriseMinute = minute(sunRiseTime);
-    sunriseSecond = second(sunRiseTime);
-    if ( sunriseSecond > 40 ) sunriseSecond = 40;
-    if ( sunriseSecond < 10 ) sunriseSecond = 10;
-  }
-  if ( hour(sunSetTime) > 0 ) 
-  {
-    sunsetHour  = hour(sunSetTime);
-    sunsetMinute  = minute(sunSetTime);
-    sunsetSecond  = second(sunSetTime);
-    if ( sunsetSecond > 40 ) sunsetSecond = 40;
-    if ( sunsetSecond < 10 ) sunsetSecond = 10;
-  }
-#else
+
 #ifdef APIKEY
-  if ( hour(outdoorWeather.sunrise) > 0 ) 
+  if ( strlen(settings.mySettings.openweatherapikey) > 25 )
   {
-    sunriseHour = hour(outdoorWeather.sunrise);
-    sunriseMinute = minute(outdoorWeather.sunrise);
-    sunriseSecond = second(outdoorWeather.sunrise);
-    if ( sunriseSecond > 40 ) sunriseSecond = 40;
-    if ( sunriseSecond < 10 ) sunriseSecond = 10;
+    if ( hour(outdoorWeather.sunrise) > 0 ) 
+    {
+      sunriseHour = hour(outdoorWeather.sunrise);
+      sunriseMinute = minute(outdoorWeather.sunrise);
+      sunriseSecond = second(outdoorWeather.sunrise);
+      if ( sunriseSecond > 40 ) sunriseSecond = 40;
+      if ( sunriseSecond < 10 ) sunriseSecond = 10;
+    }
+    if ( hour(outdoorWeather.sunset) > 0 ) 
+    {
+      sunsetHour = hour(outdoorWeather.sunset);
+      sunsetMinute = minute(outdoorWeather.sunset);
+      sunsetSecond = second(outdoorWeather.sunset);
+      if ( sunsetSecond > 40 ) sunsetSecond = 40;
+      if ( sunsetSecond < 10 ) sunsetSecond = 10;
+    }
   }
-  if ( hour(outdoorWeather.sunset) > 0 ) 
+  else
   {
-    sunsetHour = hour(outdoorWeather.sunset);
-    sunsetMinute = minute(outdoorWeather.sunset);
-    sunsetSecond = second(outdoorWeather.sunset);
-    if ( sunsetSecond > 40 ) sunsetSecond = 40;
-    if ( sunsetSecond < 10 ) sunsetSecond = 10;
+#endif // APIKEY
+#ifdef SunRiseLib
+    if ( hour(sunRiseTime) > 0 ) 
+    {
+      sunriseHour = hour(sunRiseTime);
+      sunriseMinute = minute(sunRiseTime);
+      sunriseSecond = second(sunRiseTime);
+      if ( sunriseSecond > 40 ) sunriseSecond = 40;
+      if ( sunriseSecond < 10 ) sunriseSecond = 10;
+    }
+    if ( hour(sunSetTime) > 0 ) 
+    {
+      sunsetHour  = hour(sunSetTime);
+      sunsetMinute  = minute(sunSetTime);
+      sunsetSecond  = second(sunSetTime);
+      if ( sunsetSecond > 40 ) sunsetSecond = 40;
+      if ( sunsetSecond < 10 ) sunsetSecond = 10;
+    }
+#endif  // SunRiseLib
+#ifdef APIKEY
   }
 #endif
-#endif
+
 //  sunriseHour = 14;
 //  sunriseMinute = 18;
 //  sunsetHour = 18;
@@ -4336,15 +4371,15 @@ message += F("<hr>\n");
 #ifdef SHOW_MODE_MOONPHASE
 
   message += F("<table><tr>");
-  message += F("<th style=\"width:30%\">");
+  message += F("<td style=\"width:30%\">");
   message += F("<img id=\"Sonnen\" title=\"Sonnenaufgang\" src=\"/web_sonnenaufgang.png\" alt=\"Sonnenaufgang\">");
-  message += F("</th>\n");
+  message += F("</td>\n");
   
-  message += F("<th style=\"width:30%\">");
+  message += F("<td style=\"width:30%\">");
   message += F("<img id=\"Sonnen\" title=\"Sonnenuntergang\" src=\"/web_sonnenuntergang.png\" alt=\"Sonnenuntergang\">");
-  message += F("</th>\n");
+  message += F("</td>\n");
   
-  message += F("<th style=\"padding-top: 17px;width:40%\">");
+  message += F("<td style=\"padding-top: 17px;width:40%\">");
   message += F("<span id=\"Mond\" title=\"Mondphase\">");
   switch (web_moonphase)
   {
@@ -4365,7 +4400,7 @@ message += F("<hr>\n");
     case 7: message += F("&#127768;");
   }
   message += F("</span>");
-  message += F("</th>\n");
+  message += F("</td>\n");
   message += F("</tr>\n");
   message += F("<tr>");
   message += F("<td>");
@@ -4529,6 +4564,8 @@ delay(0);
 
 // Abschnitt Außentemperatur + Luftfeuchtigkeit
 #ifdef APIKEY
+if ( strlen(settings.mySettings.openweatherapikey) > 25 )
+{
   message += F("<br>");
   message += F("<span style=\"font-size:30px;\">&#127794;</span>");  //Baum
   message += F("<br><span style=\"font-size:24px;\">&#127777;</span><span style=\"font-size:20px;\">"); 
@@ -4560,6 +4597,7 @@ delay(0);
 webServer.sendContent(message); 
 message = "";
 delay(0);
+}
 #endif
 
 #ifdef SENSOR_BME280
@@ -4728,41 +4766,53 @@ message += F("</span>");
     Serial.printf("minFreeBlockSize: %i Codezeile: %u\n", minFreeBlockSize,codeline); 
 #endif   
   }
+  message = "";
 }
 
 //debugClock
 void debugClock()
 {
 #ifdef DEBUG
-  Serial.println("Info Seite refresh!");
+    Serial.println("Info Seite refresh!");
 #endif
-  String message = F("<!doctype html>"
-    "<html>"
-    "<head>");
-    message += "<title>" + String(settings.mySettings.systemname) + " Info</title>";  
-    message += F("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
-    "<meta http-equiv=\"refresh\" content=\"10\" charset=\"UTF-8\">"
-    "<link rel=\"icon\" type=\"image/png\" sizes=\"192x192\" href=\"/android-icon-192x192.png\">"
-    "<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon-32x32.png\">"
-    "<link rel=\"icon\" type=\"image/png\" sizes=\"96x96\" href=\"/favicon-96x96.png\">"
-    "<link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/favicon-16x16.png\">"
-    "<style>"
-    "body{background-color:#FFFFFF;text-align:center;color:#333333;font-family:Sans-serif;font-size:16px;}"
-    "input[type=submit]{background-color:#1FA3EC;text-align:center;color:#FFFFFF;width:200px;padding:12px;border:5px solid #FFFFFF;font-size:20px;border-radius:10px;}"
-    "table{border-collapse:collapse;margin:0px auto;} td{padding:12px;border-bottom:1px solid #ddd;} tr:first-child{border-top:1px solid #ddd;} td:first-child{text-align:right;} td:last-child{text-align:left;}"
-    "select{font-size:16px;}"
-    "button{background-color:#1FA3EC;text-align:center;color:#FFFFFF;width:200px;padding:10px;border:5px solid #FFFFFF;font-size:24px;border-radius:10px;}"
-    "</style>"
-    "</head>"
-    "<body>");
+  delay(0);
+  webServer.setContentLength(CONTENT_LENGTH_UNKNOWN);
+  String message;
+  message = F("<!doctype html>"
+  "<html>"
+  "<head>");
+  message += "<title>" + String(settings.mySettings.systemname) + " Info</title>";  
+  message += F("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
+  "<meta http-equiv=\"refresh\" content=\"30\" charset=\"UTF-8\">"
+  "<link rel=\"icon\" type=\"image/png\" sizes=\"192x192\" href=\"/android-icon-192x192.png\">"
+  "<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon-32x32.png\">"
+  "<link rel=\"icon\" type=\"image/png\" sizes=\"96x96\" href=\"/favicon-96x96.png\">"
+  "<link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/favicon-16x16.png\">"
+  "<style>"
+  "body{background-color:#FFFFFF;color:#333333;font-family:Sans-serif;font-size:16px;}"
+  "</style>"
+  "</head>\n"
+  "<body>");
+  // ################### sende html Teil 1
+  webServer.send(200, "text/html", message);
+  message = "";
+  delay(0);
+  
   message += "<h2>" + String(settings.mySettings.systemname) + " Info</h2>";
   message += F("<hr>\n"
     "<small><br></small>");
-  message += F("Firmware: ");
+  message += F("<big><b>&bull;  Firmware: ");
   message += String(FIRMWARE_VERSION);
-  message += F("<br>WLan-SID: ");
+  message += F("</b></big>\n");
+  message += F("<a href=\"https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/Bedienungsanleitung_Wortuhr_mp3.pdf\" target=\"_blank\" style=\"font-size:30px;\">&#128214;</a>\n");
+  message += F("<ul>\n"
+// ######################### WIFI/NETZWERK ##################
+    "<li><b>WiFi/Netzwerk</b>\n"
+    "<ul>\n");
+  message += F("<li>WLan-SID: ");
   message += WiFi.SSID();
-  message += F("<br>Signalst&aumlrke: ");
+  message += F("</li>\n");
+  message += F("<li>Signalst&auml;rke: ");
   message += WiFi.RSSI();
   message += F(" dBm (");
   if ( WiFi.RSSI() >= -50 ) message += F("ausgezeichnet");
@@ -4772,54 +4822,173 @@ void debugClock()
   if ( WiFi.RSSI() >= -80 && WiFi.RSSI() < -75 ) message += F("schlecht");
   if ( WiFi.RSSI() >= -90 && WiFi.RSSI() < -80 ) message += F("sehr schlecht");
   if ( WiFi.RSSI() < -90 ) message += F("ungen&uumlgend");
-  message += F(")<br>IP-Addresse: ");
+  message += F(")</li>\n");
+  message += F("<li>WLAN Reconnect pro Tag: "); 
+  message += String(WLAN_reconnect) + "</li>\n";
+  message += F("<li>IP-Addresse: ");
   message += String(myIP[0]) + '.' + String(myIP[1]) + '.' + String(myIP[2]) + '.' + String(myIP[3]);
-  
+  message += F("</li>\n<li>Client IP-Addr: ");
+  message += webServer.client().remoteIP().toString();
+  message += F("</li>\n");
+  message += F("</ul>\n</li>\n");
+
+// ######################### ZEIT ##################
+  message += F("<li><b>Zeit</b>\n"
+     "<ul>\n"); 
+  message += "<li>NTP-Server: " + String(settings.mySettings.ntphost) + "</li>\n"
+    "<li>Error (NTP): " + String(errorCounterNTP) + "</li>\n" 
+    "<li>ESP-Time Drift in sek: " + String(esptimedrift) + " <small>(max: " + String(maxesptimedrift) + ")</small></li>\n";  
   time_t tempEspTime = now();
-  message += "<br>Zeit: " + String(hour(tempEspTime)) + ":";
+  message += "<li>Zeit: " + String(hour(tempEspTime)) + ":";
   if (minute(tempEspTime) < 10) message += "0";
   message += String(minute(tempEspTime));
   message += ":";
   if (second(tempEspTime) < 10) message += "0";
   message += String(second(tempEspTime));
   if (timeZone.locIsDST(now())) message += " (Sommerzeit)";
-  message += "<br>UTC-TST:" + String(timeZone.toUTC(tempEspTime)) +
-   "<br>" + String(dayStr(weekday(tempEspTime))) + ", " + String(monthStr(month(tempEspTime))) + " " + String(day(tempEspTime)) + ". " + String(year(tempEspTime)) +
-
-   "<br>\nUptime: " + String(int(upTime / 86400)) + " Tage, " + String(hour(upTime)) + " Std, " + String(minute(upTime)) + " Min, " + String(second(upTime)) + " Sek";
-  
+  message += "<li>Datum:" + String(dayStr(weekday(tempEspTime))) + ", " + String(day(tempEspTime)) + ". " + String(monthStr(month(tempEspTime))) + " "  + String(year(tempEspTime)) + "</li>\n";
+  message += "</li>\n<li>UTC-TST:" + String(timeZone.toUTC(tempEspTime)) + "</li>\n" +
+   "<li>Uptime: " + String(int(upTime / 86400)) + " d, " + String(hour(upTime)) + " h, " + String(minute(upTime)) + " m, " + String(second(upTime)) + " s</li>\n";
   time_t lokalstartTime = timeZone.toLocal(startTime);
-  message += "<br>Startzeit: " + String(hour(lokalstartTime)) + ":";
+  message += "<li>Startzeit: " + String(hour(lokalstartTime)) + ":";
   if (minute(lokalstartTime) < 10) message += "0";
   message += String(minute(lokalstartTime));
   message += ":";
   if (second(lokalstartTime) < 10) message += "0";
   message += String(second(lokalstartTime));
-  message += " " + String(day(lokalstartTime)) + "." + String(month(lokalstartTime)) + "." + String(year(lokalstartTime));
-  
-  message +="<br>tgl. Stunde: " + String(randomHour) + ", stdl. Minute: " + String(randomMinute) +
-   "<br>Mondphase Uhr: " + String(moonphase) + " Web: " + String(web_moonphase) +
-   "<br>Free RAM: " + String(ESP.getFreeHeap()) + " bytes"
-   "<br>MaxFreeBlockSize: " + String(ESP.getMaxFreeBlockSize()) + " bytes"
-   "<br><small>MinFreeBlockSize: " + String(minFreeBlockSize) + "bytes Codezeile: " + String(codeline) + "</small>"
-   "<br>HeapFragmentation: " + String(ESP.getHeapFragmentation()) + " %"
-   "<br>CpuFreq: " + String(ESP.getCpuFreqMHz()) + " MHz";
+  message += " " + String(day(lokalstartTime)) + "." + String(month(lokalstartTime)) + "." + String(year(lokalstartTime)) + "</li>\n";
+  message +="<li>tgl. Stunde: " + String(randomHour) + ", stdl. Minute: " + String(randomMinute) + "</li>\n" +
+   "<li>Mondphase Uhr: " + String(moonphase) + " Web: " + String(web_moonphase) + "</li>\n";
+  message += F("</ul>\n"
+    "</li>\n");
+
+// ######################### SYSTEM ##################
+  message += F("<li><b>System</b>\n"
+     "<ul>\n");   
+  message += "<li>ESP-BoardVersion: " + String(ESP.getCoreVersion()) + "</li>\n" + 
+   "<li>Free RAM: " + String(ESP.getFreeHeap()) + " bytes</li>\n"
+   "<li>MaxFreeBlockSize: " + String(ESP.getMaxFreeBlockSize()) + " bytes</li>\n"
+   "<li><small>MinFreeBlockSize: " + String(minFreeBlockSize) + "bytes Codezeile: " + String(codeline) + "</small></li>\n"
+   "<li>HeapFragmentation: " + String(ESP.getHeapFragmentation()) + " %</li>\n"
+   "<li>CpuFreq: " + String(ESP.getCpuFreqMHz()) + " MHz</li>\n";
+  message += "<li>Reset Grund: " + ESP.getResetReason() + "</li>\n";
+  message += F("</ul>\n"
+    "</li>\n");  
+    
+//##################### sende 2. html Teil
+  webServer.sendContent(message);
+  message = "";
+  delay(0);
+// ######################### AUDIO ##################
 #ifdef AUDIO_SOUND
-  message += F("<br>Sprecher: ");
+  message += F("<li><b>Audio</b>\n"
+     "<ul>\n");   
+  message += F("<li>Sprecher: ");
   if ( settings.mySettings.sprecher ) message += F("Vicki"); else message += F("Hans");
-  message += F("<br>Volume (0-30): ");  message += String(VOLUME_ALT);
+  message += F("</li>\n");
+  message += F("<li>Lautst&auml;rke (0-30): ");  message += String(VOLUME_ALT);
+  message += F("</li>\n");
+  message += F("</ul>\n"
+    "</li>\n");  
 #endif
+
+// ######################### LDR ##################
 #ifdef LDR
-  message += "<br>Helligkeit: " + String(brightness) +
-  " (min: " + String(MIN_BRIGHTNESS) + ", max : " + String(abcBrightness) + ")<br> ABC: "; 
+  message += F("<li><b>LDR</b>\n"
+     "<ul>\n");
+  message += "<li>Helligkeit: " + String(brightness) +
+  "<small> (min: " + String(MIN_BRIGHTNESS) + ", max : " + String(abcBrightness) + ")</small></li>\n<li>ABC: "; 
   settings.mySettings.useAbc ? message += "enabled" : message += "disabled";
-  message += "<br>LDR: " + String(ldrValue) + " (min: " + String(minLdrValue) + ", max: " + String(maxLdrValue) + ")";
+  message += "</li>\n<li>LDR-Wert: " + String(ldrValue) + "<small> (min: " + String(minLdrValue) + ", max: " + String(maxLdrValue) + ")</small></li>\n";
+  message += F("</ul>\n"
+    "</li>\n");
 #endif
-  message += "<br>NTP-Server: " + String(settings.mySettings.ntphost) +
-  "<br>ModeCount pro Tag: " + String(Modecount) +
-  "<br>Event-Timer: " + String(showEventTimer) +
-  "<br>autoModeChange-Timer: " + String(autoModeChangeTimer) +
-  "<br>Letzte Transition: ";
+
+// ######################### BME280 ##################
+#ifdef SENSOR_BME280
+  message += F("<li><b>BME280</b>\n"
+     "<ul>\n");
+  message += "<li>Error (BME): " + String(errorCounterBME) + "</li>\n";
+  message += "<li>Temperatur: " + String(bme.readTemperature()) + "</li>\n";
+  message += "<li>Luftfeuchte: " + String(bme.readHumidity()) + "</li>\n";
+  message += "<li>Luftdruck: " + String(bme.readPressure() / 100.0F) + "</li>\n";
+  message += "<li>Luftdruckdiff: " + String(info_luftdruckdiff) + "</li>\n";
+  message += "<li>Druckschwellen: <small>(A: " + String(LUFTDRUCK_DIFF_LEICHTFALLEND) + "/" + String(LUFTDRUCK_DIFF_LEICHTSTEIGEND) + " B: " + String(LUFTDRUCK_DIFF_FALLEND) + "/" + String(LUFTDRUCK_DIFF_STEIGEND) + ")</small></li>\n";
+  message += F("</ul>\n"
+    "</li>\n");
+#endif
+
+// ######################### OPENWEATHER ##################
+#ifdef APIKEY
+ message += F("<li><b>OpenWeather</b>\n"
+     "<ul>\n");
+  message += "<li>OpenWeather Error: " + String(errorCounterOutdoorWeather) + " <small>(Code: " + String(retcodeOutdoorWeather,BIN) + ")</small></li>\n";
+  message += "<li>Errortext: " + outdoorWeather.owfehler + "</li>\n";
+  message += "<li>Letzter Update: " + String(hour(timeZone.toLocal(LastOutdoorWeatherTime))) + ":";
+  if (minute(timeZone.toLocal(LastOutdoorWeatherTime)) < 10) message += "0";
+  message += String(minute(timeZone.toLocal(LastOutdoorWeatherTime)));
+  message += ":";
+  if (second(timeZone.toLocal(LastOutdoorWeatherTime)) < 10) message += "0";
+  message += String(second(timeZone.toLocal(LastOutdoorWeatherTime)));
+  message += F("</li>\n");
+  message += "<li>WetterInfo 1: <small>ID: " + String(outdoorWeather.weatherid1) + " ICON: " + outdoorWeather.weathericon1 + " CLOUDS: " + outdoorWeather.clouds + "</small></li>\n";
+  message += "<li>WetterSound 1: <small>" + String(getWeatherSound(outdoorWeather.weatherid1)) + "</small></li>\n";
+  message += "<li>WetterInfo 2: <small>ID: " + String(outdoorWeather.weatherid2) + " ICON: " + outdoorWeather.weathericon2 + "</small></li>\n";
+  message += F("<li>Sonnenauf/untergang: ");
+  if ( !ani_sunrise_done ) message += F("<b>");
+  message += String(hour(outdoorWeather.sunrise)) + ":";
+  if (minute(outdoorWeather.sunrise) < 10) message += "0"; 
+  message += String(minute(outdoorWeather.sunrise)) + ":";
+  if (second(outdoorWeather.sunrise) < 10) message += "0"; 
+  message += String(second(outdoorWeather.sunrise));
+  if ( !ani_sunrise_done ) message += F("</b>");
+  
+  message += F("/");
+  if ( !ani_sunset_done ) message += F("<b>");
+  message += String(hour(outdoorWeather.sunset)) + ":";
+  if (minute(outdoorWeather.sunset) < 10) message += "0"; 
+  message += String(minute(outdoorWeather.sunset)) + ":";
+  if (second(outdoorWeather.sunset) < 10) message += "0";
+  message += String(second(outdoorWeather.sunset));
+  if ( !ani_sunset_done ) message += F("</b>");
+  message += F("</li>\n");
+  message += F("</ul>\n"
+    "</li>\n");
+#endif 
+
+// ######################### SUNRISELIB ##################
+#ifdef SunRiseLib
+ message += F("<li><b>SunRiseLib</b>\n"
+     "<ul>\n");
+  message += F("<li>Sonnenauf/untergang: ");
+  if ( !ani_sunrise_done ) message += F("<b>");
+  message += String(hour(sunRiseTime)) + ":";
+  if (minute(sunRiseTime) < 10) message += "0"; 
+  message += String(minute(sunRiseTime)) + ":";
+  if (second(sunRiseTime) < 10) message += "0"; 
+  message += String(second(sunRiseTime));
+  if ( !ani_sunrise_done ) message += F("</b>");
+  
+  message += F("/");
+  if ( !ani_sunset_done ) message += F("<b>");
+  message += String(hour(sunSetTime)) + ":";
+  if (minute(sunSetTime) < 10) message += "0"; 
+  message += String(minute(sunSetTime)) + ":";
+  if (second(sunSetTime) < 10) message += "0";
+  message += String(second(sunSetTime));
+  if ( !ani_sunset_done ) message += F("</b>");
+  message += F("</li>\n");
+  message += F("</ul>\n"
+    "</li>\n");
+#endif      
+
+// ######################### Events/Modes/Transitions ##################
+ message += F("<li><b>Events/Mode/Transitions</b>\n"
+     "<ul>\n");
+  message += "<li>ModeCount pro Tag: " + String(Modecount) + "</li>\n"
+  "<li>Event-Timer: " + String(showEventTimer) + "</li>\n"
+  "<li>autoModeChange-Timer: " + String(autoModeChangeTimer) + "</li>\n"
+  "<li>Letzte Trans: (" + String(akt_transition) + ")<small>";
   if      (akt_transition == TRANSITION_NORMAL)        message += F("normal");
   else if (akt_transition == TRANSITION_MOVEUP)        message += F("hoch");
   else if (akt_transition == TRANSITION_MOVEDOWN)      message += F("runter");
@@ -4838,59 +5007,28 @@ void debugClock()
   else if (akt_transition == TRANSITION_MITTE_LINKSHERUM) message += F("mitte linksherum");
   else if (akt_transition == TRANSITION_QUADRATE)      message += F("quadrate");  
   else
-    message += F("unbekannt");
-  message += " (" + String(akt_transition) + ")"
-  "<br>WLAN Reconnect pro Tag: " + String(WLAN_reconnect) +
-  "<br>Error (NTP): " + String(errorCounterNTP) +
-  "<br>ESP-Time Drift in sek: " + String(esptimedrift) + " <small>(max: " + String(maxesptimedrift) + ")</small>";
-#ifdef APIKEY
-  message += "<br>Error (OpenWeather): " + String(errorCounterOutdoorWeather) + " <small>(Code: " + String(retcodeOutdoorWeather,BIN) + ")</small>";
+  message += F("unbekannt");
+  message += " </small></li>\n";
+  message += F("</ul>\n"
+    "</li>\n");
+ 
+// ######################### Spiele ##################
+  message += F("<li><b>Spiele</b>\n"
+     "<ul>\n");
+  message += "<li>Snake Count/Highscore: " + String(gamecount[SNAKE]) + "/" + String(highscore[SNAKE]) + "</li>\n";
+  message += "<li>Tetris Count/Highscore: " + String(gamecount[TETRIS]) + "/" + String(highscore[TETRIS]) + "</li>\n";
+  message += "<li>Bricks Count/Highscore: " + String(gamecount[BRICKS]) + "/" + String(highscore[BRICKS]) + "</li>\n";
+  message += "<li>4gewinnt Count/Highscore: " + String(gamecount[VIERGEWINNT]) + "/" + String(highscore[VIERGEWINNT]) + "</li>\n";
+  message += "<li>Tiermemory Count: " + String(gamecount[TIERMEMORY])  + "</li>\n";
+  message += "<li>Musikmemory Count: " + String(gamecount[MUSIKMEMORY]) + "</li>\n";
+  message += "<li>ABBAmemory Count: " + String(gamecount[ABBAMEMORY]) + "</li>\n";
+  
+  message += F("</ul>\n"
+    "</li>\n");  
 
-  message += "<br>Letzter OpenWeather Update: " + String(hour(timeZone.toLocal(LastOutdoorWeatherTime))) + ":";
-  if (minute(timeZone.toLocal(LastOutdoorWeatherTime)) < 10) message += "0";
-  message += String(minute(timeZone.toLocal(LastOutdoorWeatherTime)));
-  message += ":";
-  if (second(timeZone.toLocal(LastOutdoorWeatherTime)) < 10) message += "0";
-  message += String(second(timeZone.toLocal(LastOutdoorWeatherTime)));
-  
-  message += "<br>WetterInfo 1: <small>ID: " + String(outdoorWeather.weatherid1) + " ICON: " + outdoorWeather.weathericon1 + " CLOUDS: " + outdoorWeather.clouds + "</small>";
-  message += "<br>WetterSound 1: <small>" + String(getWeatherSound(outdoorWeather.weatherid1)) + "</small>";
-  message += "<br>WetterInfo 2: <small>ID: " + String(outdoorWeather.weatherid2) + " ICON: " + outdoorWeather.weathericon2 + "</small>";
-#endif
-
-#if defined(SunRiseLib) || defined(APIKEY)
-  message += F("<br>Sonnenauf/untergang: ");
-  if ( !ani_sunrise_done ) message += F("<b>");
-  message += String(sunriseHour) + ":";
-  if (sunriseMinute < 10) message += "0"; 
-  message += String(sunriseMinute) + ":";
-  if (sunriseSecond < 10) message += "0"; 
-  message += String(sunriseSecond);
-  if ( !ani_sunrise_done ) message += F("</b>");
-  
-  message += F("/");
-  if ( !ani_sunset_done ) message += F("<b>");
-  message += String(sunsetHour) + ":";
-  if (sunsetMinute < 10) message += "0"; 
-  message += String(sunsetMinute) + ":";
-  if (sunsetSecond < 10) message += "0";
-  message += String(sunsetSecond);
-  if ( !ani_sunset_done ) message += F("</b>");
-  
-#endif  
-  
-#ifdef SENSOR_BME280
-  message += "<br>Error (BME): " + String(errorCounterBME);
-  message += "<br>Luftdruckdiff: " + String(info_luftdruckdiff);
-  message += "<br>Luftdruckschwellen: (A: " + String(LUFTDRUCK_DIFF_LEICHTFALLEND) + "/" + String(LUFTDRUCK_DIFF_LEICHTSTEIGEND) + " B: " + String(LUFTDRUCK_DIFF_FALLEND) + "/" + String(LUFTDRUCK_DIFF_STEIGEND) + ")";
-#endif
-  message += "<br>Snake Count/Highscore: " + String(gamecount[SNAKE]) + "/" + String(highscore[SNAKE]);
-  message += "<br>Tetris Count/Highscore: " + String(gamecount[TETRIS]) + "/" + String(highscore[TETRIS]);
-  message += "<br>Bricks Count/Highscore: " + String(gamecount[BRICKS]) + "/" + String(highscore[BRICKS]);
-  message += "<br>4gewinnt Count/Highscore: " + String(gamecount[VIERGEWINNT]) + "/" + String(highscore[VIERGEWINNT]);
-  
-  message += "<br>Reset Grund: " + ESP.getResetReason();
-  message += F("<br>Flags: ");
+// ######################### Flags ##################
+  message += F("<li><b>Flags</b>\n"
+     "<ul>\n<li>");
 #ifdef RTC_BACKUP
   message += F("RTC ");
 #else
@@ -4914,8 +5052,9 @@ void debugClock()
 #ifdef AUDIO_SOUND
   message += F("AUDIO_SOUND ");
 #else
-  message += F("<s>AUDIO_SOUND</s> ");
+  message += F("<s>AUDIO_SOUND</s>");
 #endif
+message += F("</li>\n<li>");
 #ifdef IR_RECEIVER
   message += F("IR_RECEIVER ");
 #else
@@ -4931,8 +5070,18 @@ void debugClock()
 #else
   message += F("<s>BUTTONS</s> ");
 #endif
+  message += F("</li>\n"); 
+  message += F("</ul>\n"
+    "</li>\n"); 
+    
+  message += F("</ul>\n"); 
+  
   message += F("</body></html>");
-  webServer.send(200, "text/html", message);
+  //##################### sende letzen html Teil
+  webServer.sendContent(message);
+  webServer.sendContent("");
+  message = "";
+  delay(0);
 }
 
 
@@ -5808,21 +5957,33 @@ delay(0);
   message += F("\" name=\"sysname\" minlength=\"3\" maxlength=\"29\">"
     "</td></tr>\n");
   // ------------------------------------------------------------------------
-#ifdef APIKEY
+#if defined(SunRiseLib) || defined(APIKEY)
   message += F("<tr><td>"
-    "OpenWeather<br>ApiKey:<br>Location:<br>H&oumlhe Standort:"
-    "</td><td><br>");
+    "OpenWeather<br>ApiKey:<br>Location:<br>H&oumlhe Standort:");
+#ifdef SunRiseLib
+  message += F("<br>Latitude:<br>Longitude:");
+#endif
+  message += F("</td><td><br>");
   message += F("<input type=\"text\" value=\""); 
   message += String(settings.mySettings.openweatherapikey); 
-  message += F("\" name=\"owkey\" minlength=\"25\" maxlength=\"34\" size=\"32\">"
+  message += F("\" name=\"owkey\" minlength=\"9\" maxlength=\"34\" size=\"32\">"
              "<br><input type=\"text\" value=\""); 
   message += String(settings.mySettings.openweatherlocation); 
   message += F("\" name=\"owloc\" minlength=\"3\" maxlength=\"39\">"
             "<br><input type=\"number\" value=\""); 
   message += String(settings.mySettings.standort_hoehe); 
   message += F("\" name=\"hoehe\" min=\"0\" max=\"10000\">"  
-    " m"
-    "</td></tr>\n");
+            " m");
+#ifdef SunRiseLib  
+    message += F("<br><input type=\"number\" value=\""); 
+    message += String(settings.mySettings.latitude); 
+    message += F("\" name=\"latitude\" min=\"-90\" max=\"90\" step=0.01 >"
+             "<br><input type=\"number\" value=\""); 
+    message += String(settings.mySettings.longitude); 
+    message += F("\" name=\"longitude\" min=\"-180\" max=\"180\" step=0.01 >");
+#endif
+  message += F("</td></tr>\n");
+  
 #endif
   // ------------------------------------------------------------------------
   // Highscore Reset
@@ -5916,6 +6077,7 @@ delay(0);
     Serial.printf("minFreeBlockSize: %i Codezeile: %u\n", minFreeBlockSize,codeline); 
 #endif   
   }
+  message = "";
 }
 
 void handleCommitSettings()
@@ -6122,6 +6284,17 @@ if ( webServer.arg("vh24") == "0" ) settings.mySettings.vickihans24h = false; el
   {
     settings.mySettings.standort_hoehe = webServer.arg("hoehe").toInt();
   }
+  // Standort
+  if ( webServer.arg("latitude").length() )
+  {
+    settings.mySettings.latitude = webServer.arg("latitude").toDouble();
+  }
+  
+  if ( webServer.arg("longitude").length() )
+  {
+    settings.mySettings.longitude = webServer.arg("longitude").toDouble();
+  }
+    
   // ------------------------------------------------------------------------
 	if (webServer.arg("st").length())
 	{
