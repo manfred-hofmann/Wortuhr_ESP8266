@@ -70,7 +70,7 @@ z.B.: http://wortuhr-ip/setEvent?text=I+love+you&color=1&audio=701&preani=HERZ&p
 
 
 ## Spiele:  
-* 6 Wortuhrspiele integriert: 
+* 7 Wortuhrspiele integriert: 
 Snake   
 ![Snake](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/snake.gif "Snake")  
 Tetris  
@@ -79,7 +79,7 @@ Bricks
 ![Bricks](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/bricks.gif "Bricks")  
 4 gewinnt  
 ![4gewinnt](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/4gewinnt.gif "4Gewinnt")  
-Tier Memory / Musik Memory  
+Tier Memory / Musik Memory /ABBA Memory  
 Ein Spiel für die ganze Familie!  
 Es können bis zu 4 Spieler spielen  
 ![Memory_01](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/memory_01.jpg "Memory_01")  
@@ -201,7 +201,7 @@ Und die neueste Version dazu:
 https://github.com/esp8266/arduino-esp8266fs-plugin/releases/download/0.5.0/ESP8266FS-0.5.0.zip  
 * ESP8266 starten und mit dem Handy das WLAN der Wortuhr (Wortuhr) suchen und anmelden.  
 * Dann sollte automatisch der Browser starten. Hier die WLAN Zugangsdaten eingeben.  
-(Falls der Browser nicht startet, die Default IP des AP ist 172.20.2.1)  
+(Falls der Browser nicht startet, die Default IP des AP ist 192.168.4.1)  
 * Danach den ESP8266 neustarten und über die Webadresse des ESP in den Menüpunkt Settings die Wortuhr anpassen.  
 Hier sind folgende Punkte wichtig:
 - Systemname    
