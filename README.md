@@ -180,7 +180,7 @@ Möchte man auf die "Alarm LED" verzichten, so muss in der configuration.h die A
 	* BME280 - Adafruit BME280 Version 2.1.4  
 	* Adafruit Unified Sensor Version 1.1.4  
 	* Adafruit Neopixel: Version 1.8.0  
-	* SunRise: Version 2.0.1  
+	* SunRise: Version 2.0.2  
 	* Evt. EspSoftwareSerial Version 6.12.6
 	* Openweather API-Key (https://openweathermap.org/) für die Wetterinformationen.  
 * Die mp3 Files (Sound) in den Ordner "mp3" auf die SD-Karte kopieren welche in den mp3-Player kommt. Es reicht eine 4GB Karte.
