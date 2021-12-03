@@ -136,7 +136,7 @@ bool loadAnimation(String aniname )
         myanimation.laufmode = (int)myObject["Laufmode"];;
         for ( uint8_t palidx = 0;palidx <= 9;palidx++)
         {
-          wert = myObject["Palette"][palidx];
+          wert = (const char*)myObject["Palette"][palidx];
           anipalette[palidx]=string_to_num(wert);
         }
         // animation leer initialisieren
@@ -193,7 +193,7 @@ bool loadFrames(uint8_t frame, String jsonBuffer)
     zeile_json = "Zeile_" + String(zeile);
     for ( uint8_t x = 0;x < myObject[zeile_json].length();x++)
     {
-      farbwert = myObject[zeile_json][x];
+      farbwert = (const char*)myObject[zeile_json][x];
 //      Serial.printf ("pixel x/y %i/%i = %s ",x,zeile,farbwert.c_str());
       myanimation.frame[frame].color[x][zeile] = string_to_color(farbwert);
     }

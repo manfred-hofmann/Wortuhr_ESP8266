@@ -16,16 +16,17 @@ public:
     OpenWeather();
     ~OpenWeather();
 
-    String description;
-    String weathericon1;
-    String weathericon2;
-    uint16_t weatherid1;
-    uint16_t weatherid2;
-    double temperature;
-    double windspeed;
-    uint8_t humidity;
-    uint8_t clouds;
-    uint16_t pressure;
+    String owfehler = "";
+    String description = "";
+    String weathericon1 = "";
+    String weathericon2 = "";
+    uint16_t weatherid1 = 0;
+    uint16_t weatherid2 = 0;
+    double temperature = 0;
+    double windspeed = 0;
+    uint8_t humidity = 0;
+    uint8_t clouds = 0;
+    uint16_t pressure = 0;
     time_t sunrise;
     time_t sunset;
 

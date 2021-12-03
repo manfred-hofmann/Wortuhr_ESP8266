@@ -59,17 +59,23 @@ void Settings::resetToDefault()
     mySettings.highscore[2] = 163;
     mySettings.highscore[3] = 176;
     mySettings.highscore[4] = 0;
+    mySettings.highscore[5] = 0;
+    mySettings.highscore[6] = 0;
+    mySettings.highscore[7] = 0;
+    mySettings.highscore[8] = 0;
     mySettings.standort_hoehe = HOEHE_UEBER_0;
     mySettings.auto_mode_change = AUTO_MODECHANGE_TIME / 60;
     mySettings.ani_sunrise = true;
     mySettings.ani_sunset = true;
+    mySettings.latitude = LATITUDE;
+    mySettings.longitude = LONGITUDE;
     saveToEEPROM();
 }
 
 // Load settings from EEPROM
 void Settings::loadFromEEPROM()
 {
-    EEPROM.begin(512);
+    EEPROM.begin(sizeof(mySettings)+8);
     EEPROM.get(0, mySettings);
     if ((mySettings.magicNumber != SETTINGS_MAGIC_NUMBER) || (mySettings.version != SETTINGS_VERSION))
         resetToDefault();
@@ -82,7 +88,7 @@ void Settings::saveToEEPROM()
 #ifdef DEBUG
     Serial.println("Settings saved to EEPROM.");
 #endif
-    EEPROM.begin(512);
+    EEPROM.begin(sizeof(mySettings)+8);
     EEPROM.put(0, mySettings);
     //EEPROM.commit();
     EEPROM.end();

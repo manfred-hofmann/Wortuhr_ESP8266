@@ -43,16 +43,16 @@
 //https://openweathermap.org/
 // Test: http://api.openweathermap.org/data/2.5/weather?q=Baden-Baden,de&lang=de&units=metric&appid=<APIKEY>
 #define APIKEY                                          // Zum abschalten von Openweather auskommentieren.
-#define DEFAULTAPIKEY "APIKEY von openweathermap.org"   // Hier kann dein default APIKEY von openweathermap rein. Die eigentliche APIKey wird in Settings eingestellt.
+#define DEFAULTAPIKEY "OpenWeather APIKEY"              // Hier kann dein default APIKEY von openweathermap rein. Die eigentliche APIKey wird in Settings eingestellt.
 #define LOCATION "Baden-Baden,de"                       // Hier kann dein default openweathermap Location rein. Die eigentliche LOCATION wird in Settings eingestellt.
 //#define LOCATION "Zurich, CH"
 //#define LOCATION "Hong Kong, HK"
 #define OPENWEATHER_PERIODE 1800                        // wie oft in Sekunden openweather.org aufgerufen wird
 #define OPENWEATHER_MAX_ERROR 20                        // bei Fehler: wie oft es pro Tag versucht wird bis es aufgegeben wird
 
-//#define SunRiseLib                                    // falls kein API Key vorhanden ist kann Sonnenaufgang/Sonnenuntergang über die Lib SunRise.h berechnet werden.
-#define LONGITUDE 9.83                                  // Die RunRise Lib ist in der Bibliotheksverwaltung zu finden.
-#define LATITUDE 50.66                                  // Dafür wird der Standort benötigt. Kann z.B. über google maps erfolgen.
+#define SunRiseLib                                      // falls kein API Key vorhanden ist kann Sonnenaufgang/Sonnenuntergang über die Lib SunRise.h berechnet werden.
+#define LONGITUDE 8.244                                 // Die RunRise Lib ist in der Bibliotheksverwaltung zu finden.
+#define LATITUDE 48.766                                 // Dafür wird der Standort benötigt. Kann z.B. über google maps erfolgen. Die eigentliche Standort wird in Settings eingestellt.
 
 // SunRise/SunSet Animationen
 #define ANI_SUNRISE "SUNRISE"                           // Name der Sonnenaufgangsanimation
@@ -241,6 +241,7 @@
 
 
 //#define IR_RECEIVER
+#ifdef IR_RECEIVER
 //#define IR_CODE_ONOFF 16769565 // HX1838 Remote CH+
 //#define IR_CODE_TIME  16753245 // HX1838 Remote CH-
 //#define IR_CODE_MODE  16736925 // HX1838 Remote CH
@@ -252,15 +253,17 @@
 #define IR_LETTER_X 8
 #define IR_LETTER_Y 10
 
-#define NUMPIXELS 115                       // mit Alarm LED
-//#define NUMPIXELS 114                       // ohne Alarm LED
+#endif  // Ende IR_RECEIVER
+
+//#define NUMPIXELS 115                       // mit Alarm LED
+#define NUMPIXELS 114                       // ohne Alarm LED
 
 // Das LED Layout (Siehe in LedDriver.cpp):
 //#define LED_LAYOUT_HORIZONTAL_1
-#define LED_LAYOUT_HORIZONTAL_2         // B
+//#define LED_LAYOUT_HORIZONTAL_2         // B
 //#define LED_LAYOUT_VERTICAL_1
 //#define LED_LAYOUT_VERTICAL_2
-//#define LED_LAYOUT_VERTICAL_3           // A
+#define LED_LAYOUT_VERTICAL_3           // A
 
 //******************************************************************************
 // Einstellungen LED Type

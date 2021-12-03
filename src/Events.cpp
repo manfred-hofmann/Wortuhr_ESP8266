@@ -54,13 +54,13 @@ bool loadEvents()
         events[z].year=(int)myObject["events"][z-1]["jahr"];
         events[z].month=(int)myObject["events"][z-1]["monat"];
         events[z].day=(int)myObject["events"][z-1]["tag"];
-        events[z].text = myObject["events"][z-1]["text"];
+        events[z].text = (const char*)myObject["events"][z-1]["text"];
         events[z].text.trim();
         events[z].color=(int)myObject["events"][z-1]["farbe"];
         events[z].audio_file=(int)myObject["events"][z-1]["audionr"];
-        events[z].preani=myObject["events"][z-1]["preani"];
+        events[z].preani=(const char*)myObject["events"][z-1]["preani"];
         events[z].preani.trim();
-        events[z].postani=myObject["events"][z-1]["postani"];
+        events[z].postani=(const char*)myObject["events"][z-1]["postani"];
         events[z].postani.trim();
         events[z].intervall=(int)myObject["events"][z-1]["intervall"];
       }

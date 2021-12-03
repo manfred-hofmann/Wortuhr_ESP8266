@@ -1,0 +1,123 @@
+<!doctype html>
+<html><head>
+<title>GameControl</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192"  href="android-icon-192x192.png">
+<script src=jquery-3.1.1.min.js></script>
+<link rel="stylesheet" href="GameControl.css" >
+<style>body{background-color: #646464;}</style>
+</head>
+<body>
+<h2> Game </h2>
+<hr>
+
+<br>
+<div class="buttonscontainer">
+<table border="0" cellspacing="0" cellpadding="0" width="99%">
+	<tr>
+		<td align="left" width="33%">
+			<button class="gbuttons" type="button" id="bl" name="action" value="3"><div class="triangle-left"></div></button>
+		</td>
+		<td align="middle" width="33%">
+			
+			<button class="gbuttons" type="button" id="bu" name="action" value="1"><div class="triangle-up"></div></button>	
+			<button class="grbutton" type="button" id="bm" name="action" value="1">&#8635;</button>
+			
+			<button class="gbuttons" type="button" id="bd" name="action" value="2"><div class="triangle-down"></div></button> 
+		</td>
+		<td align="right" width="33%">
+			<button class="gbuttons" type= "button" id="br" name="action" value="4"><div class="triangle-right"></div></button>
+		</td>
+	</tr>
+</table>
+<hr>
+<br>
+
+</div>
+
+<script>
+// Initialisierung 
+  var urlBase = "/game";
+  var gameisrunning = 0;
+  var highscore = 0;
+  var gamesound = 0;
+  var gamelevel = 2;
+  var aktscore = 0;
+  var aktplayer = 0;
+  var aktgame = 0;
+
+  
+//  console.log(wertepaar[0] +  " : " + wertepaar[1]);
+
+  
+  $("#bu").click(function() {
+    postValue("gb","up");
+  });
+  $("#bm").click(function() {
+    postValue("gb","middle");
+  });
+  $("#bd").click(function() {
+    postValue("gb","down");
+  });
+  $("#bl").click(function() {
+    postValue("gb","left");
+  });
+  $("#br").click(function() {
+    postValue("gb","right");
+  }); 
+  
+  $(document).keydown(function(e) {
+//    console.log(e.keyCode);
+	if ( e.keyCode == 37) postValue("gb","left");
+	if ( e.keyCode == 38) postValue("gb","up");
+	if ( e.keyCode == 39) postValue("gb","right");
+	if ( e.keyCode == 40) postValue("gb","down");
+	if ( e.keyCode == 13) postValue("gb","middle");
+});
+
+   function postValue(name, value) {
+	   var body = { player: "player", value: aktplayer, name: name, value: value };
+	   $.post(urlBase + "?" + "player=" + aktplayer + "&" + name + "=" + value,body,function(res){
+		 var werte = res.split("#");
+		 console.log(res);
+		 console.log("AktPlayer:" + aktplayer);
+		 gameisrunning = werte[0];
+		 aktgame = werte[1];
+		 if ( aktplayer == 0 ) aktplayer = werte[2];
+		 highscore = werte[3];
+		 aktscore = werte[4];
+		 var debugval = werte[5];
+		 console.log("Werte: " + werte[0] +  " : " + werte[1] +  " : " + werte[2] + " : " + werte[3] +  " : " + werte[4] );
+		 console.log("AktPlayer:" + aktplayer);
+		 if ( aktgame == 5 )
+		 {
+		   $("h2:first").text("Tier MEMORY"); 
+		 }
+		 if ( aktgame == 6 )
+		 {
+		   $("h2:first").text("Musik MEMORY"); 
+		 }
+		 if ( aktgame == 7 )
+		 {
+		   $("h2:first").text("ABBA MEMORY"); 
+		 }
+		 if ( aktplayer == 0 )
+		   document.body.style.backgroundColor = "#646464";
+		 if ( aktplayer == 2 )
+		   document.body.style.backgroundColor = "#64B064";
+		 if ( aktplayer == 3 )
+		   document.body.style.backgroundColor = "#B0B064";
+	     if ( aktplayer == 4 )
+		   document.body.style.backgroundColor = "#6464B0";
+	   });
+   }
+  
+	document.addEventListener('DOMContentLoaded', function() {  
+	  postValue("newplayer","init");
+	}); 
+  
+</script>
+
+
+</body></html>
