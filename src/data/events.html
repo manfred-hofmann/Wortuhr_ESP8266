@@ -152,17 +152,15 @@ $.getJSON( "/animationsliste.json", function( aniliste ) {
   $.getJSON( "/events.json", function( myObj ) {
   maxevents = myObj.maxevents;
   var evnr = 0;
-//  console.log(myObj);
   for (evnr in myObj.events) {
-    console.log(evnr);
-	console.log(myObj.events[evnr].text);
+//    console.log(evnr + ":" + myObj.events[evnr].text);
 	anzevents++;
 	if ( anzevents >= maxevents ) $("#eventadd").hide();
 	addevent(evnr);
   }
   
   eventnummer = parseInt(evnr) + 1;
-  console.log("eventnummer:" + eventnummer);
+//  console.log("eventnummer:" + eventnummer);
   
 function addevent(eventnr)
 {
