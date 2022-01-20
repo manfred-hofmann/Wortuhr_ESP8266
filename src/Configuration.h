@@ -15,6 +15,7 @@
 #define OTA_PASS "1234"                        // Passwort für den OTA (Over the Air) Update
 #define NTP_SERVER "fritz.box"                 // Das ist der default Name des Zeitservers. Der eigentliche Zeitserver wird in Settings eingestellt.
 //#define SHOW_IP                              // Zeigt die IP-Adresse beim Start
+//#define SHOW_HOST                            // Zeigt zusätzöich zur IP-Adresse beim Start auch den Hostnamen
 #define WIFI_BEEPS                             // ob die WLAN Verbunden Meldung kommt
 //#define ESP_LED                              // OnBoard LED blinkt im Sekundentakt
 
