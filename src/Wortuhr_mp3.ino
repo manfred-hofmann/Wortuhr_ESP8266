@@ -587,9 +587,20 @@ void setup()
 
 	}
 
+#ifdef SHOW_HOST	//necessary if SHOW_HOST is wanted but SHOW_IP is not set (nested if)
+#ifndef SHOW_IP
+#define SHOW_IP	
 #ifdef SHOW_IP
 	WiFi.isConnected() ? feedText = "  IP: " : feedText = "  AP-IP: ";
 	feedText += String(myIP[0]) + '.' + String(myIP[1]) + '.' + String(myIP[2]) + '.' + String(myIP[3]) + "   ";
+	#ifdef SHOW_HOST	//function to print the WIFIHOSTNAME after IP is shown at startup
+	  Serial.println("Print Host:");
+	  Serial.println(WIFIHOSTNAME);
+	  feedText += "HOST: ";
+	  feedText += WIFIHOSTNAME;
+	  feedText += ".local";
+	  feedText += "    ";
+	#endif
 	feedPosition = 0;
 	feedColor = WHITE;
 	mode = MODE_FEED;
