@@ -51,7 +51,7 @@ uint8_t anzPlayer = 0;
 String PlayerIP[4]={"","","",""};
 
 int debugval;
-int gamesound = 1;
+int gamesound = 2;
 
 const int8_t pruefrichtung[4][4][2] =
 {

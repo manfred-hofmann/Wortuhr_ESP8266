@@ -9,14 +9,14 @@
 // Software settings
 //******************************************************************************
 
-#define WIFIHOSTNAME "WORTUHR"                 // Das ist der default Hostname/Systemname. Der eigentliche Systemname wird in Settings eingestellt.
+#define WIFIHOSTNAME "WORTUHRX"                 // Das ist der default Hostname/Systemname. Der eigentliche Systemname wird in Settings eingestellt.
 #define WIFI_SETUP_TIMEOUT 300                 // So lange ist der AP (AccessPoint) zum eingeben der WiFi Parameter an
 #define WIFI_AP_PASS "12345678"                // Wifi Pass für den AP
 #define OTA_PASS "1234"                        // Passwort für den OTA (Over the Air) Update
 #define NTP_SERVER "fritz.box"                 // Das ist der default Name des Zeitservers. Der eigentliche Zeitserver wird in Settings eingestellt.
 //#define SHOW_IP                              // Zeigt die IP-Adresse beim Start
 #define WIFI_BEEPS                             // ob die WLAN Verbunden Meldung kommt
-//#define ESP_LED                              // OnBoard LED blinkt im Sekundentakt
+#define ESP_LED                                // OnBoard LED blinkt im Sekundentakt
 
 //#define NONE_TECHNICAL_ZERO                  // ob die Null bei Feed mit oder ohne Schrägstrich angezeigt wird.
 #define AUTO_MODECHANGE_TIME 420               // Default AutoMode Change Periode. Die eigentliche Periode wird in Settings eingestellt.
@@ -24,11 +24,11 @@
 #define FEED_SPEED 120                         // wie schnell die Buchstaben über die Uhr huschen
 #define TRANSITION_SPEED 90                    // wie schnell die Transitions laufen
 
-#define MAXEVENTS 25                           // wie viele Events maximal angelegt werden können                           
+#define MAXEVENTS  40                          // wie viele Events maximal angelegt werden können                           
 #define EVENT_TIME 1800                        // Das ist die default Event Intervall. Der eigentliche Intervall wird am Event definiert
 
 #define ALARM_LED_COLOR RED                    // Farbe der Alarm LED
-#define ABUSE_CORNER_LED_FOR_ALARM             // Rechte obere Minuten LED wird zur Alarm LED
+//#define ABUSE_CORNER_LED_FOR_ALARM             // Rechte obere Minuten LED wird zur Alarm LED
 
 //#define POWERON_SELFTEST                     // LEDs werden beim anschalten mit versch. Farben getestet. Der Test kann auch im Mode Modus bei nochmalige betätigen des ModeButtons während der Sekunden Ausgabe gestartet werden. 
 // welche Modes gibt es:
@@ -131,7 +131,7 @@
 // Ist ein BME280 an Board
 #define SENSOR_BME280
 #define SEALEVELPRESSURE_HPA (1013.25)
-#define BME_TEMPERATURE_OFFSET -1.2         // Temperaturkorrektur
+#define BME_TEMPERATURE_OFFSET -0.7         // Temperaturkorrektur
 #define BME_HUMIDITY_OFFSET +0.1            // Luftfeuchtekorrektur
 
 
@@ -167,6 +167,9 @@
 #define AUDIO_SOUND
 
 #ifdef AUDIO_SOUND
+
+#define STARTUPSOUNDLEVEL 25          // Startlautstärke
+
 #define BUZZTIME_ALARM_1 10           // wie lange der Alarm1 an ist
 #define BUZZTIME_ALARM_2 10           // wie lange der Alarm2 an ist
 #define BUZZTIME_TIMER 5              // wie lange der Timeralarm an ist
@@ -255,15 +258,16 @@
 
 #endif  // Ende IR_RECEIVER
 
-//#define NUMPIXELS 115                       // mit Alarm LED
-#define NUMPIXELS 114                       // ohne Alarm LED
+#define NUMPIXELS 115                       // mit Alarm LED
+//#define NUMPIXELS 114                       // ohne Alarm LED
 
 // Das LED Layout (Siehe in LedDriver.cpp):
 //#define LED_LAYOUT_HORIZONTAL_1
-//#define LED_LAYOUT_HORIZONTAL_2         // B
+#define LED_LAYOUT_HORIZONTAL_2         // B
+//#define LED_LAYOUT_HORIZONTAL_3          // C (260x260)
 //#define LED_LAYOUT_VERTICAL_1
 //#define LED_LAYOUT_VERTICAL_2
-#define LED_LAYOUT_VERTICAL_3           // A
+//#define LED_LAYOUT_VERTICAL_3           // A (390x390)
 
 //******************************************************************************
 // Einstellungen LED Type

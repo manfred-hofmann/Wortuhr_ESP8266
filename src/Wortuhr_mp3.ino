@@ -21,10 +21,18 @@
 // ******************************************************************************
 // ******************************************************************************
 
-// Einstellungen für das Board: (LOLIN(WEMOS) D1 R2 & mini) (wichtig: Board Version 2.6.3 bis 2.7.4)
+// Einstellungen für das Board: (LOLIN(WEMOS) D1 R2 & mini)
 // CPU Frequenz auf 160 MHz
 // Flash Size 4MB ( FS:2MB OTA~1019KB)
 // SLL Support Basic
+
+// oder für ESP8266 EX: Board LOLIN(WEMOS) D1 pro
+// CPU Frequenz auf 160 MHz
+// Flash Size: 16MB ( FS:14MB OTA~1019KB)
+// Flash Mode: "DOUT(compatible)"
+// SLL Support Basic
+
+// wichtig: Board Version 2.6.3 bis 2.7.4
 
 // Im Normalbetrieb immer alle DEBUG Schalter aus. (configuration.h ab Zeile 305!)
 
@@ -440,12 +448,22 @@ void setup()
   if ( settings.mySettings.corner_colorChange == COLORCHANGE_MAIN) settings.mySettings.corner_color = settings.mySettings.color;
 
 #ifdef AUDIO_SOUND
-  Serial.println(F("Setting up Audio Sound."));
+  Serial.print(F("Setting up Audio Sound."));
   pinMode(PIN_AUDIO_BUSY, INPUT);
   SoftSer.begin(9600);  // Einstellen der Baudrate auf 9600
 //  SoftSer.begin(9600,SWSERIAL_8N1,PIN_AUDIO_TX, PIN_AUDIO_RX,false, 128);
   delay(500);
   Mp3Player.begin(SoftSer); // Starten der seriellen Kommunikation zwischen dem D1 Mini und dem MP3 Modul.
+  Serial.print(F("."));
+  delay(500);
+  Serial.print(F("."));
+  delay(500);
+  Serial.print(F("."));
+  delay(500);
+  Serial.print(F("."));
+  delay(500);
+  Serial.println(F(". fertig!"));
+
   if ( settings.mySettings.sprecher )
   {
     ANSAGEBASE = AUDIO_BASENR_VICKI; //vicki
@@ -455,16 +473,16 @@ void setup()
     ANSAGEBASE = AUDIO_BASENR_HANS; //hans
   }
   Serial.printf("Ansagebase = %i \r\n", ANSAGEBASE);
-  Serial.println(F("Setting up Audio Sound. - fertig!"));
-  Mp3Player.volume(0);
-  Mp3Player.EQ(DFPLAYER_EQ_NORMAL);
+  Mp3Player.volume(1);
+//  Mp3Player.EQ(DFPLAYER_EQ_NORMAL);
 //   Mp3Player.EQ(DFPLAYER_EQ_POP);
-//  Mp3Player.EQ(DFPLAYER_EQ_ROCK);
+  delay(100);
+  Mp3Player.EQ(DFPLAYER_EQ_ROCK);
 //  Mp3Player.EQ(DFPLAYER_EQ_JAZZ);
 //  Mp3Player.EQ(DFPLAYER_EQ_CLASSIC);
 //  Mp3Player.EQ(DFPLAYER_EQ_BASS);
-  delay(500);
-  Play_MP3(703,false,50); //Spiele mp3 Startup, Lautstärke 50   
+  delay(100);
+  Play_MP3(703,false,STARTUPSOUNDLEVEL); //Spiele mp3 Startup  
 #endif
   delay (500);
   renderer.clearScreenBuffer(matrix);
@@ -509,7 +527,7 @@ void setup()
 		digitalWrite(PIN_BUZZER, LOW);
 #endif
 #if defined(AUDIO_SOUND) && defined(WIFI_BEEPS)
-  Play_MP3(ANSAGEBASE + 51,false,50); //Wlan nicht OK
+  Play_MP3(ANSAGEBASE + 51,false,STARTUPSOUNDLEVEL); //Wlan nicht OK
 #endif
     WiFi.mode(WIFI_AP);
 		delay(3000);
@@ -519,6 +537,8 @@ void setup()
 	{
 		WiFi.mode(WIFI_STA);
 		Serial.println(F("WLAN connected. Switching to STA mode."));
+    Serial.print(F("Aktuelle IP ist : "));
+    Serial.println(WiFi.localIP());
 		writeScreenBuffer(matrix, GREEN, brightness);
 #if defined(BUZZER) && defined(WIFI_BEEPS)
 		for (uint8_t i = 0; i <= 2; i++)
@@ -534,7 +554,7 @@ void setup()
 #endif
 #if defined(AUDIO_SOUND) && defined(WIFI_BEEPS)
   Serial.println(F("sprich: WLAN-verbunden."));
-  Play_MP3(ANSAGEBASE + 50,true,50); 
+  Play_MP3(ANSAGEBASE + 50,true,STARTUPSOUNDLEVEL); 
 #endif
 		delay(500);
 // Highscores aus EPROM holen
@@ -4870,7 +4890,9 @@ void debugClock()
    "<li>MaxFreeBlockSize: " + String(ESP.getMaxFreeBlockSize()) + " bytes</li>\n"
    "<li><small>MinFreeBlockSize: " + String(minFreeBlockSize) + "bytes Codezeile: " + String(codeline) + "</small></li>\n"
    "<li>HeapFragmentation: " + String(ESP.getHeapFragmentation()) + " %</li>\n"
-   "<li>CpuFreq: " + String(ESP.getCpuFreqMHz()) + " MHz</li>\n";
+   "<li>CpuFreq: " + String(ESP.getCpuFreqMHz()) + " MHz</li>\n"
+   "<li>FlashSize (real/ide): " + String(ESP.getFlashChipRealSize()/1024/1024) + "/" + String(ESP.getFlashChipSize()/1024/1024) + " MB</li>\n";
+   
   message += "<li>Reset Grund: " + ESP.getResetReason() + "</li>\n";
   message += F("</ul>\n"
     "</li>\n");  

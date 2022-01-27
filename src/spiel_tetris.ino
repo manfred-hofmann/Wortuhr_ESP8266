@@ -84,7 +84,7 @@ void runTetris(void){
     if ( checkFieldCollisionSound(&activeBrick) && activeBrick.enabled ) 
     {
 #ifdef AUDIO_SOUND
-      if (gamesound) Play_MP3(802,false,33*gamesound);   //impact
+      if (gamesound) Play_MP3(802,false,28*gamesound);   //impact
 #endif
     delay(50);
     webServer.handleClient();
@@ -115,10 +115,11 @@ void playerControlActiveBrick(){
 #endif 
       shiftActiveBrick(DIR_DOWN);
       break;
+    case BTN_MIDDLE:   
     case BTN_UP:
 #ifdef DEBUG_GAME
     Serial.println(F("drehen(1)"));
-#endif   
+#endif  
       rotateActiveBrick();
       break;
     case BTN_EXIT:
@@ -435,29 +436,56 @@ void checkFullLines(){
       rowSum = rowSum + (field.pix[x][y]);
     }
     if (rowSum>=FIELD_WIDTH){
+       // Ganze Zeile gefunden 
       pixel_aktiv = pixel_aktiv - FIELD_WIDTH;
 #ifdef AUDIO_SOUND
-      if (gamesound) Play_MP3(803,false,33*gamesound);         //slide
+      AudioBufferClear();
+      if (gamesound) 
+      {
+        while ( Soundaktiv() ) // warte bis Sound zu Ende ist
+        {    
+          delay(5);
+        }
+        Play_MP3(803,false,33*gamesound);       //slide
+        while ( !Soundaktiv() ) // warte bis Sound läuft
+        {    
+          delay(5);
+        }
+      }
 #endif
-      delay(250);
-      // Ganze Zeile gefunden, start Löschanimation
+     
+      delay(200);
+      //starte Löschanimation
       for (x=0;x<FIELD_WIDTH; x++){
         field.pix[x][y] = 0;
         printField();
-        delay(60);
+        delay(100);
       }
 #ifdef AUDIO_SOUND
-      if (gamesound && pixel_aktiv > 0 ) Play_MP3(802,false,33*gamesound);         //impact
+      if (gamesound && pixel_aktiv > 0 ) 
+      {
+        while ( Soundaktiv() ) // warte bis Sound zu Ende ist
+        {    
+          delay(5);
+        }
+        AudioBufferIn(802);             //impact
+        PlayAudioBuffer(29*gamesound);
+        while ( !Soundaktiv() ) // warte bis Sound läuft
+        {    
+          delay(5);
+        }
+      }
 #endif
-      delay(500);
-      webServer.handleClient();
       // Bewege alle Zeilen oberhalb eins runter
+      delay(450);
       moveFieldDownOne(y);
       y++; minY++;
       printField();
 #ifdef AUDIO_SOUND
-      while (!digitalRead(PIN_AUDIO_BUSY)) {
-        delay(20);
+      while ( Soundaktiv() )
+      {    
+        delay(10);
+        webServer.handleClient();
       }
 #endif
       

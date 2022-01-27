@@ -14,7 +14,7 @@
 #define HOSTNAME "WORTUHR"
 
 #define MAXFRAMES 25
-#define MAXANIMATION 70
+#define MAXANIMATION 80
 #define ANIMATIONSLISTE "/animationsliste.json"
 
 typedef struct
