@@ -474,13 +474,8 @@ void setup()
   }
   Serial.printf("Ansagebase = %i \r\n", ANSAGEBASE);
   Mp3Player.volume(1);
-//  Mp3Player.EQ(DFPLAYER_EQ_NORMAL);
-//   Mp3Player.EQ(DFPLAYER_EQ_POP);
   delay(100);
-  Mp3Player.EQ(DFPLAYER_EQ_ROCK);
-//  Mp3Player.EQ(DFPLAYER_EQ_JAZZ);
-//  Mp3Player.EQ(DFPLAYER_EQ_CLASSIC);
-//  Mp3Player.EQ(DFPLAYER_EQ_BASS);
+  Mp3Player.EQ(AUDIO_EQUALIZER);
   delay(100);
   Play_MP3(703,false,STARTUPSOUNDLEVEL); //Spiele mp3 Startup  
 #endif

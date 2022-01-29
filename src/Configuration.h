@@ -168,11 +168,12 @@
 
 #ifdef AUDIO_SOUND
 
-#define STARTUPSOUNDLEVEL 25          // Startlautstärke
+#define STARTUPSOUNDLEVEL 50                // Startlautstärke 1-100
+#define AUDIO_EQUALIZER DFPLAYER_EQ_NORMAL    // Einstellungen Equalizer: DFPLAYER_EQ_NORMAL,DFPLAYER_EQ_POP,DFPLAYER_EQ_ROCK,DFPLAYER_EQ_JAZZ,DFPLAYER_EQ_CLASSIC,DFPLAYER_EQ_BASS
 
-#define BUZZTIME_ALARM_1 10           // wie lange der Alarm1 an ist
-#define BUZZTIME_ALARM_2 10           // wie lange der Alarm2 an ist
-#define BUZZTIME_TIMER 5              // wie lange der Timeralarm an ist
+#define BUZZTIME_ALARM_1 10                 // wie lange der Alarm1 an ist
+#define BUZZTIME_ALARM_2 10                 // wie lange der Alarm2 an ist
+#define BUZZTIME_TIMER 5                    // wie lange der Timeralarm an ist
 
 // Basiswerte der Soundfiles
 #define AUDIO_BASENR0 0     // 0 s1
@@ -263,8 +264,8 @@
 
 // Das LED Layout (Siehe in LedDriver.cpp):
 //#define LED_LAYOUT_HORIZONTAL_1
-#define LED_LAYOUT_HORIZONTAL_2         // B
-//#define LED_LAYOUT_HORIZONTAL_3          // C (260x260)
+//#define LED_LAYOUT_HORIZONTAL_2         // B
+#define LED_LAYOUT_HORIZONTAL_3          // C (260x260)
 //#define LED_LAYOUT_VERTICAL_1
 //#define LED_LAYOUT_VERTICAL_2
 //#define LED_LAYOUT_VERTICAL_3           // A (390x390)
