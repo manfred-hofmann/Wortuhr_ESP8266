@@ -9,7 +9,7 @@
 // Software settings
 //******************************************************************************
 
-#define WIFIHOSTNAME "WORTUHRX"                 // Das ist der default Hostname/Systemname. Der eigentliche Systemname wird in Settings eingestellt.
+#define WIFIHOSTNAME "WORTUHR"                 // Das ist der default Hostname/Systemname. Der eigentliche Systemname wird in Settings eingestellt.
 #define WIFI_SETUP_TIMEOUT 300                 // So lange ist der AP (AccessPoint) zum eingeben der WiFi Parameter an
 #define WIFI_AP_PASS "12345678"                // Wifi Pass für den AP
 #define OTA_PASS "1234"                        // Passwort für den OTA (Over the Air) Update
@@ -168,7 +168,7 @@
 
 #ifdef AUDIO_SOUND
 
-#define STARTUPSOUNDLEVEL 50                // Startlautstärke 1-100
+#define STARTUPSOUNDLEVEL 30                // Startlautstärke 1-100
 #define AUDIO_EQUALIZER DFPLAYER_EQ_NORMAL    // Einstellungen Equalizer: DFPLAYER_EQ_NORMAL,DFPLAYER_EQ_POP,DFPLAYER_EQ_ROCK,DFPLAYER_EQ_JAZZ,DFPLAYER_EQ_CLASSIC,DFPLAYER_EQ_BASS
 
 #define BUZZTIME_ALARM_1 10                 // wie lange der Alarm1 an ist
