@@ -6195,8 +6195,8 @@ void handleCommitSettings()
   if ( webServer.arg("vh24") == "1" ) settings.mySettings.vickihans24h = true;
 
 #endif
-	// ------------------------------------------------------------------------
-#if defined(RTC_BACKUP) || defined(SENSOR_BME280)
+// ------------------------------------------------------------------------
+
 // AutoModeChange / AutoModeChange Timer
 	if ( webServer.arg("mc") == "0" ) settings.mySettings.modeChange = false;
   if ( webServer.arg("mc") == "1" ) 
@@ -6205,7 +6205,6 @@ void handleCommitSettings()
     settings.mySettings.auto_mode_change = webServer.arg("amct").toInt();
     if ( autoModeChangeTimer > settings.mySettings.auto_mode_change * 60 ) autoModeChangeTimer = settings.mySettings.auto_mode_change * 60 ;
   }
-#endif
 // ------------------------------------------------------------------------
 #if defined(SunRiseLib) || defined(APIKEY)
 // Sunrise/ Sunset
