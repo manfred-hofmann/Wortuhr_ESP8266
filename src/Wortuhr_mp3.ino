@@ -65,7 +65,7 @@
 //Then search for SunRise using the search bar.
 //Click on the text area SunRise by Cyrus Rahman and then select the specific Version 2.0.2 and install it.
 
-#define FIRMWARE_VERSION 20220401 //April April
+#define FIRMWARE_VERSION 20220603 
 
 #include <Arduino.h>
 #include <Arduino_JSON.h>
@@ -226,6 +226,7 @@ uint8_t autoMode = 0;
 boolean autoModeChangeFlag = false;
 bool MODE_BUTTON_BOOL = false;
 bool SHOW_TIME_BUTTON_BOOL = false;
+unsigned long show_off_on_time = 0;
 int ModeSequenz = 0;
 int modeExtraTime = 0;
 int Modecount = 0;
@@ -373,7 +374,7 @@ void setup()
 	Serial.println("Firmware: " + String(FIRMWARE_VERSION));
 #ifdef DEBUG
   Serial.printf("Size of Settings: %i byte\n",sizeof(settings));
-  Serial.printf("ESP BoardVersion: %s\n",ESP.getCoreVersion());
+  Serial.printf("ESP BoardVersion: %s\n",ESP.getCoreVersion().c_str());
 #endif
 
 #ifdef POWERON_SELFTEST
@@ -1518,26 +1519,41 @@ void loop()
 	// ************************************************************************
 	// Run always
 	// ************************************************************************
+
+// schaltet für ca. 3 sek die LEDs an
+  if (SHOW_TIME_BUTTON_BOOL && millis() > show_off_on_time + 3000 && mode != MODE_BLANK) {
+#ifdef DEBUG
+    Serial.println(F("Wieder aus nach 3 sek."));
+#endif
+    setMode(MODE_BLANK);
+    SHOW_TIME_BUTTON_BOOL = false;
+  }
+
+  
   if (MODE_BUTTON_BOOL) {
     MODE_BUTTON_BOOL = false;
-    if ( mode != MODE_TIME && mode < MODE_SECONDS ) 
-    {
-      buttonTimePressed();
+    if ( SHOW_TIME_BUTTON_BOOL ) {
+      SHOW_TIME_BUTTON_BOOL = false;
     }
     else
     {
-      buttonModePressed();
+      if ( !SHOW_TIME_BUTTON_BOOL && mode == MODE_BLANK ) 
+      {
+        show_off_on_time = millis();
+        SHOW_TIME_BUTTON_BOOL = true;
+      }
+      if ( mode != MODE_TIME && mode < MODE_SECONDS ) 
+      {
+        buttonTimePressed();
+      }
+      else
+      {
+        buttonModePressed();
+      }
     }
   }
 
 #ifdef SHOW_TIME_BUTTON
-// schaltet für ca. 2 sek die LEDs an
-  if (SHOW_TIME_BUTTON_BOOL && mode != MODE_BLANK) {
-    delay (2000);
-    setMode(MODE_BLANK);
-    SHOW_TIME_BUTTON_BOOL = false;
-  }
-  
   if (SHOW_TIME_BUTTON_BOOL && mode == MODE_BLANK) {
     setMode(MODE_TIME);
   }
@@ -1666,10 +1682,10 @@ void loop()
 // *********************************************************************
 // *********************************************************************
 	// Render a new screenbuffer if needed
+
 	if (screenBufferNeedsUpdate)
 	{
 		screenBufferNeedsUpdate = false;
-
 		// Save old screenbuffer
 		for (uint8_t i = 0; i <= 9; i++) matrixOld[i] = matrix[i];
     if ( mode != MODE_TIME ) ModeSequenz++;
@@ -2271,13 +2287,14 @@ void loop()
       {
         writeScreenBuffer(matrix, settings.mySettings.color, brightness);
       }
-#ifdef SHOW_TIME_BUTTON
+//#ifdef SHOW_TIME_BUTTON
       else if (SHOW_TIME_BUTTON_BOOL )
-      {
+      {         
         renderer.clearScreenBuffer(matrixOld);
+//        writeScreenBuffer(matrix, settings.mySettings.color, brightness);
         writeScreenBufferFade(matrixOld, matrix, settings.mySettings.color, brightness);
       }
-#endif
+//#endif
       else if ( playanimation )
       {
         if ( loadAnimation(animation) ) 
@@ -2555,6 +2572,7 @@ void loop()
 
   if ((millis() > (modeExtraTime + modeTimeout + SHOW_MODE_TIMEOUT)) && modeTimeout ) 
 	{
+  
     ModeSequenz = 0;
     if ( mode < MODE_SECONDS && !autoModeChangeFlag ) {
       setMode(mode++);
@@ -2571,6 +2589,9 @@ void loop()
   	  setMode(MODE_TIME);
       autoModeChangeFlag = false;
     }
+      #ifdef DEBUG
+        Serial.printf("2576: Mode: %i\n",mode);
+     #endif
 	}
 
 #ifdef DEBUG_FPS
@@ -3589,6 +3610,9 @@ void buttonTimePressed()
   }
   if ( mode == MODE_WHITE ) renderer.clearScreenBuffer(matrix);  
 	setMode(MODE_TIME);
+ #ifdef DEBUG
+   Serial.printf("modeTimeout: %i\r\n", modeTimeout);
+#endif
 }
 
 /******************************************************************************
@@ -3602,7 +3626,7 @@ void buttonModePressed()
 #endif
 
 #ifdef AUDIO_SOUND
-  Play_MP3(700,true,0); // OK Sound blub
+    Play_MP3(700,false,0); // OK Sound blub
 #endif
 	// Switch off alarm
 #ifdef BUZZER
@@ -3639,7 +3663,14 @@ void buttonModePressed()
   if ( mode == MODE_WHITE ) { 
     renderer.clearScreenBuffer(matrix);
   }
-	setMode(mode++);
+  if ( mode > MODE_COUNT || SHOW_TIME_BUTTON_BOOL ) { 
+    renderer.clearScreenBuffer(matrix);
+    setMode(MODE_TIME);
+  }
+  else
+  {
+	  setMode(mode++);
+  }
   Modecount++;
 }
 
@@ -3980,7 +4011,8 @@ ICACHE_RAM_ATTR void buttonShowTimeInterrupt()
 	if (millis() > lastButtonPress + 250)
 	{
 		lastButtonPress = millis();
-		SHOW_TIME_BUTTON_BOOL = true;
+		show_off_on_time = millis();
+    SHOW_TIME_BUTTON_BOOL = true;
 	}
 }
 #endif
@@ -6196,7 +6228,6 @@ void handleCommitSettings()
 
 #endif
 // ------------------------------------------------------------------------
-
 // AutoModeChange / AutoModeChange Timer
 	if ( webServer.arg("mc") == "0" ) settings.mySettings.modeChange = false;
   if ( webServer.arg("mc") == "1" ) 
