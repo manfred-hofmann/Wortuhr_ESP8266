@@ -4387,7 +4387,8 @@ void handleRoot()
 	message += F("<html><head>");
 	message +=	"<title>" + String(settings.mySettings.systemname) + "</title>";
 	message += F("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
-		"<meta http-equiv=\"refresh\" content=\"60\" charset=\"UTF-8\">"
+		"<meta http-equiv=\"Cache-Control\" content=\"no-cache, no-store, must-revalidate\"\n>"
+    "<meta http-equiv=\"refresh\" content=\"60\" charset=\"UTF-8\">\n"
     "<link rel=\"icon\" type=\"image/png\" sizes=\"192x192\"  href=\"/android-icon-192x192.png\">"
     "<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon-32x32.png\">"
     "<link rel=\"icon\" type=\"image/png\" sizes=\"96x96\" href=\"/favicon-96x96.png\">"
@@ -4491,6 +4492,7 @@ message += F("<hr>\n");
 #endif
 
 // ################### sende html Teil 1
+webServer.sendHeader("Cache-Control", "no-cache");
 webServer.send(200, "text/html", message);
 message = "";
 delay(0);
@@ -4793,10 +4795,16 @@ message += F("</span>");
  message += F("\n<script>\n"
     "$(\"#button_zeit\").click(function() {"
       "$.post(\"/handleButtonTime\");"
-    "});"
+    "});\n"
     "$(\"#button_mode\").click(function() {"
       "$.post(\"/handleButtonMode\");"
-    "});"
+    "});\n"
+    "document.addEventListener(\"visibilitychange\", function() {"
+    "if (!document.hidden){"
+    " location.reload();"
+    "}"
+    "});\n"
+
     "</script>\n");
 
 // Ende Webserver
