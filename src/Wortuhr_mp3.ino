@@ -2,7 +2,7 @@
 // WORTUHR_MP3
 // An advanced firmware for a DIY "word-clock"
 //
-// @mc ESP8266 Version 2.6.3
+// @mc ESP8266 Version 2.6.3 oder 2.7.4
 // @created 12.03.2017
 //
 // This source file is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@
 //Then search for SunRise using the search bar.
 //Click on the text area SunRise by Cyrus Rahman and then select the specific Version 2.0.2 and install it.
 
-#define FIRMWARE_VERSION 20220603 
+#define FIRMWARE_VERSION 20220909 
 
 #include <Arduino.h>
 #include <Arduino_JSON.h>
@@ -306,6 +306,7 @@ bool ldr_update = false;
 
 //Animationen
 s_myanimation myanimation;
+s_frame copyframe;
 uint32_t anipalette[] = { 0xFF0000,0xFFAA00,0xFFFF00,0x00FF00,0x00FFFF,0x0000FF,0xAA00FF,0xFF00FF,0x000000,0xFFFFFF };
 String myanimationslist[MAXANIMATION+1];
 uint8_t akt_aniframe = 0;
@@ -354,6 +355,9 @@ String WEB_Uhrtext = "Es ist ...";
 
 uint16_t minFreeBlockSize = 10000;
 uint16_t codeline = 0;
+
+boolean mp3reset = false;
+uint8_t mp3resetcount = 0;
 
 int WLAN_reconnect = 0;
 
@@ -881,6 +885,7 @@ void loop()
 #ifdef APIKEY
     errorCounterOutdoorWeather = 0;
 #endif
+    mp3resetcount = 0;
     WLAN_reconnect = 0;
     maxesptimedrift = 0;
     minFreeBlockSize = ESP.getMaxFreeBlockSize();
@@ -1117,6 +1122,27 @@ void loop()
         colorsaver = settings.mySettings.color;
         settings.mySettings.colorChange = COLORCHANGE_NO;
       }
+#ifdef CHECK_MP3
+      if ( mode == MODE_TIME )
+      {
+#ifdef DEBUG_AUDIO
+        Serial.println(F("Check MP3 Player:"));
+#endif
+        mp3reset = false;
+        Play_MP3(99,true,1); //Stop, kein Ton. BusyPin muss kurz an gehen.
+        if ( mp3reset ) 
+        { 
+          do_mp3reset();
+          mp3resetcount++;
+        }
+        else
+        {
+#ifdef DEBUG_AUDIO
+        Serial.println(F("MP3 Player ist OK"));
+#endif 
+        }       
+      }
+#endif
 		}
 
 #ifdef APIKEY
@@ -2382,6 +2408,8 @@ void loop()
             regenbogen(matrixOld, matrix, settings.mySettings.color, brightness);
           else if (akt_transition == TRANSITION_QUADRATE)
             quadrate(matrixOld, matrix, settings.mySettings.color, brightness);
+          else if (akt_transition == TRANSITION_KREISE)
+            kreise(matrixOld, matrix, settings.mySettings.color, brightness);
           else 
           {
             writeScreenBuffer(matrix, settings.mySettings.color, brightness);
@@ -2927,7 +2955,7 @@ void matrix_regen(uint16_t screenBufferOld[], uint16_t screenBufferNew[], uint8_
        {
          if ( mline_max[aktline] < 11 )  // solange grün hinzu bis unten erreicht ist
          {
-           if ( random(0,7) == 0 ) 
+           if ( random(0,6) == 0 && (mline[aktline]&1) == 0 )    
            {
              mline[aktline] = mline[aktline]<<1;
              mline[aktline] = mline[aktline]|1;
@@ -2965,6 +2993,7 @@ void matrix_regen(uint16_t screenBufferOld[], uint16_t screenBufferNew[], uint8_
            if ( wline[x] & (1<<y) )
            {
              brightnessBuffer[y][x] = brightness_16 / 9;
+//             brightnessBuffer[y][x] = brightness_16 / 8 - ( brightness_16 / ( 10 * (mline_max[x]-1 - y))) ;
              if ( brightnessBuffer[y][x] < 3) brightnessBuffer[y][x] = 2;
            } 
            if ( mline[x] & (1<<y) )
@@ -3180,6 +3209,190 @@ void regenbogen(uint16_t screenBufferOld[], uint16_t screenBufferNew[], uint8_t 
   colorold = color;
 }
 
+//#########################
+// Kreise
+//
+// kreistoBuffer
+// legt einen Kreis und die innere Kreisfläche jeweils in eine matrix
+// x0: x-Koordinate 0-10 (0=links 10=rechts)
+// y0: y-Koordinate 0-9 (0=oben 9=unten)
+// r: Radius
+// Rückgabe: true wenn Kreis innerhalb der Matrix ist. false wenn nicht.
+bool kreistoBuffer(uint16_t kreislinie[], uint16_t kreisflaeche[], int8_t x0, int8_t y0, int8_t r)
+{
+  int8_t maxy = 10;
+  int8_t maxx = 11;
+  int8_t f = 1 - r;
+  int8_t ddF_x = 1;
+  int8_t ddF_y = -2 * r;
+  int8_t x = 0;
+  int8_t y = r;
+  uint16_t matrix[10] = {};
+  uint16_t matrixf[10] = {};
+  uint16_t mask = 0b1111111111100000;
+  uint16_t tst = 0;
+  
+  bool retval = false;
+  
+  for (uint8_t ze = 0; ze <= 9; ze++)
+  {
+   matrix[ze] = 0;
+   matrixf[ze] = mask;
+  }
+   
+  if ( y0>=0 && y0<maxy && x0+r >= 0 && x0+r < maxx) matrix[y0]   = (matrix[y0]|1<<(15-x0-r))& mask;
+  if ( y0>=0 && y0<maxy && x0-r >= 0 && x0-r < maxx) matrix[y0]   = (matrix[y0]|1<<(15-x0+r))& mask;
+  if ( y0+r>=0 && y0+r<maxy && x0 >= 0 && x0 < maxx) matrix[y0+r] = (matrix[y0+r]|1<<(15-x0))& mask;
+  if ( y0-r>=0 && y0-r<maxy && x0 >= 0 && x0 < maxx) matrix[y0-r] = (matrix[y0-r]|1<<(15-x0))& mask;
+  
+  if ( y0>=0 && y0<maxy ) 
+  {
+      matrixf[y0] = mask>>(x0+r);
+      matrixf[y0] = matrixf[y0]|mask<<(maxx-1-x0+r);
+  }
+  
+  while (x < y) {
+    if (f >= 0) {
+      y--;
+      ddF_y += 2;
+      f += ddF_y;
+    }
+    x++;
+    ddF_x += 2;
+    f += ddF_x;
+    
+    if ( y0+y>=0 && y0+y<maxy && x0+x >= 0 && x0+x < maxx) matrix[y0+y] = (matrix[y0+y]|1<<(15-x0-x))&mask;
+    if ( y0+y>=0 && y0+y<maxy && x0-x >= 0 && x0-x < maxx) matrix[y0+y] = (matrix[y0+y]|1<<(15-x0+x))&mask;
+    if ( y0-y>=0 && y0-y<maxy && x0+x >= 0 && x0+x < maxx) matrix[y0-y] = (matrix[y0-y]|1<<(15-x0-x))&mask;
+    if ( y0-y>=0 && y0-y<maxy && x0-x >= 0 && x0-x < maxx) matrix[y0-y] = (matrix[y0-y]|1<<(15-x0+x))&mask;  
+    if ( y0+x>=0 && y0+x<maxy && x0+y >= 0 && x0+y < maxx) matrix[y0+x] = (matrix[y0+x]|1<<(15-x0-y))&mask;
+    if ( y0+x>=0 && y0+x<maxy && x0-y >= 0 && x0-y < maxx) matrix[y0+x] = (matrix[y0+x]|1<<(15-x0+y))&mask;
+    if ( y0-x>=0 && y0-x<maxy && x0+y >= 0 && x0+y < maxx) matrix[y0-x] = (matrix[y0-x]|1<<(15-x0-y))&mask;
+    if ( y0-x>=0 && y0-x<maxy && x0-y >= 0 && x0-y < maxx) matrix[y0-x] = (matrix[y0-x]|1<<(15-x0+y))&mask;    
+
+    if ( y0+x>=0 && y0+x<maxy ) 
+    {
+        matrixf[y0+x] = mask>>(x0+y);
+        matrixf[y0+x] = matrixf[y0+x]|mask<<(maxx-1-x0+y);
+    }
+    if ( y0-x>=0 && y0-x<maxy ) 
+    {
+        matrixf[y0-x] = mask>>(x0+y);
+        matrixf[y0-x] = matrixf[y0-x]|mask<<(maxx-1-x0+y);
+    }
+    
+    if ( y0+y>=0 && y0+y<maxy ) 
+    {
+        matrixf[y0+y] = mask>>(x0+x);
+        matrixf[y0+y] = matrixf[y0+y]|mask<<(maxx-1-x0+x);
+    }
+    if ( y0-y>=0 && y0-y<maxy ) 
+    {
+        matrixf[y0-y] = mask>>(x0+x);
+        matrixf[y0-y] = matrixf[y0-y]|mask<<(maxx-1-x0+x);
+    }    
+  }
+ 
+  for (uint8_t ze = 0; ze <= 9; ze++)
+  {
+   kreislinie[ze] = matrix[ze];
+   if ( kreislinie[ze] > 0 ) retval = true;
+   kreisflaeche[ze] = (~(matrixf[ze] | matrix[ze])) & mask;
+  } 
+  return retval;
+}
+void kreise (uint16_t screenBufferOld[], uint16_t screenBufferNew[], uint8_t color, uint8_t brightness)
+{
+
+  uint16_t xbuff;
+  uint16_t m_old[10] = {};
+  uint16_t m_new[10] = {};
+    
+  uint16_t kreis1[10] = {};
+  uint16_t kreis1fl[10] = {};
+  bool work1 = true;
+  uint8_t mp1x = random(2,6);
+  uint8_t mp1y = random(2,6);
+  uint8_t r1 = 0;
+  
+  uint16_t kreis2[10] = {};
+  uint16_t kreis2fl[10] = {};
+  bool work2 = false;
+  uint8_t mp2x = random(5,10);
+  uint8_t mp2y = random(5,9);
+  uint8_t r2 = 0;
+  
+  uint16_t kreis3[10] = {};
+  uint16_t kreis3fl[10] = {};
+  bool work3 = false;
+  uint8_t mp3x = random(3,8);
+  uint8_t mp3y = random(2,7);
+  uint8_t r3 = 0;
+
+  uint8_t uhrcolor = colorold;
+    
+// Init
+  for (uint8_t ze = 0; ze <= 9; ze++)
+  {
+    m_old[ze] = screenBufferOld[ze];
+    m_new[ze] = screenBufferNew[ze];
+  }
+  handle_Webserver(__LINE__);
+  while (work1||work2||work3)
+  {
+    ledDriver.clear();
+    if ( work1) work1 = kreistoBuffer(kreis1,kreis1fl,mp1x,mp1y,r1);
+    if ( work2) work2 = kreistoBuffer(kreis2,kreis2fl,mp2x,mp2y,r2);
+    if ( work3) work3 = kreistoBuffer(kreis3,kreis3fl,mp1x,mp3y,r3);
+
+
+    for (uint8_t y = 0; y <= 9; y++) 
+    {
+      if (work3) 
+      {
+          xbuff = (m_new[y] & kreis3fl[y]);
+          uhrcolor = color;
+      }
+      else
+      {
+          xbuff = (m_old[y] & ~kreis1fl[y]);
+      }
+      if (!(work1||work2||work3) ) xbuff=m_new[y];
+      
+      for (uint8_t x = 0; x <= 10; x++)
+      {      
+        if (bitRead( xbuff, 15 - x )) ledDriver.setPixel(x, y, uhrcolor, brightness);
+        if (work1 && bitRead( kreis1[y], 15 - x )) ledDriver.setPixel(x, y, WHITE, brightness);
+        if (work2 && bitRead( kreis2[y], 15 - x )) ledDriver.setPixel(x, y, WHITE, brightness);
+        if (work3 && bitRead( kreis3[y], 15 - x )) ledDriver.setPixel(x, y, WHITE, brightness);
+      }
+    }
+   
+    if ( work1) r1++;
+    if ( work2) r2++;
+    if ( work3) r3++;
+    if ( r2 == 0 && r1 > abs(mp1x-mp2x)+1 && r1 > abs(mp1y-mp2y)+1) 
+    {
+      work2=true;
+      handle_Webserver(__LINE__);
+    }
+    if ( r3 == 0 && r2 > abs(mp2x-mp3x)+1 && r2 > abs(mp2y-mp3y)+1)
+    {
+      work3=true;
+      handle_Webserver(__LINE__);
+    }
+ 
+    ledDriver.show(); 
+    delay(TRANSITION_SPEED+10);
+  }
+  handle_Webserver(__LINE__);
+  writeScreenBuffer(screenBufferNew, color, brightness);
+  colorold = color;
+}
+
+
+//#########################
+// Quadrate
 void quadrate (uint16_t screenBufferOld[], uint16_t screenBufferNew[], uint8_t color, uint8_t brightness)
 {
   uint8_t lpx = random(3,9);
@@ -4352,6 +4565,7 @@ void setupWebServer()
   webServer.on("/BackgroundColor", BackgroundColor);
 	webServer.on("/reboot", handleReboot);
   webServer.on("/wifireset", handleWiFiReset);
+  webServer.on("/mp3reset", handleMP3Reset);
 	webServer.on("/setEvent", handleSetEvent);
 	webServer.on("/showText", handleShowText);
 	webServer.on("/control", handleControl);
@@ -4867,6 +5081,9 @@ void debugClock()
   message += F("<li>WLan-SID: ");
   message += WiFi.SSID();
   message += F("</li>\n");
+  message += F("<li>WLan-BSSID: <small>");
+  message += WiFi.BSSIDstr();
+  message += F("</small></li>\n");
   message += F("<li>Signalst&auml;rke: ");
   message += WiFi.RSSI();
   message += F(" dBm (");
@@ -4945,6 +5162,10 @@ void debugClock()
   message += F("</li>\n");
   message += F("<li>Lautst&auml;rke (0-30): ");  message += String(VOLUME_ALT);
   message += F("</li>\n");
+#ifdef CHECK_MP3
+  message += F("<li>MP3-Resets: ");  message += String(mp3resetcount);
+  message += F("</li>\n");
+#endif
   message += F("</ul>\n"
     "</li>\n");  
 #endif
@@ -5062,7 +5283,8 @@ void debugClock()
   else if (akt_transition == TRANSITION_ZEILENWEISE)   message += F("zeilenweise");
   else if (akt_transition == TRANSITION_REGENBOGEN)    message += F("regenbogen");
   else if (akt_transition == TRANSITION_MITTE_LINKSHERUM) message += F("mitte linksherum");
-  else if (akt_transition == TRANSITION_QUADRATE)      message += F("quadrate");  
+  else if (akt_transition == TRANSITION_QUADRATE)      message += F("quadrate"); 
+  else if (akt_transition == TRANSITION_KREISE)        message += F("kreise");  
   else
   message += F("unbekannt");
   message += " </small></li>\n";
@@ -5532,8 +5754,8 @@ delay(0);
 #if defined(SunRiseLib) || defined(APIKEY)
   message += F("<tr><td>"
     "Ank&uuml;ndigung - <br>"
-    "Sonneaufgang:<br>"
-    "Sonneuntergang:"
+    "Sonnenaufgang:<br>"
+    "Sonnenuntergang:"
     "</td><td>"
     "<br><input type=\"radio\" name=\"sunr\" value=\"1\"");
   if (settings.mySettings.ani_sunrise) message += F(" checked");
@@ -5939,6 +6161,10 @@ delay(0);
   if (settings.mySettings.transition == 16) message += F(" selected");
   message += F(">"
     "Quadrate</option>"  
+  "<option value=\"17\""); 
+  if (settings.mySettings.transition == 17) message += F(" selected");
+  message += F(">"
+    "Kreise</option>"  
    "</optgroup>" 
    "<optgroup label=\"Alle:\">"
     "<option value=\"20\""); 
@@ -6343,6 +6569,7 @@ void handleCommitSettings()
     case 14: settings.mySettings.transition = TRANSITION_REGENBOGEN;   break;
     case 15: settings.mySettings.transition = TRANSITION_MITTE_LINKSHERUM;   break;
     case 16: settings.mySettings.transition = TRANSITION_QUADRATE;   break;
+    case 17: settings.mySettings.transition = TRANSITION_KREISE;   break;
     
     case 20: settings.mySettings.transition = TRANSITION_ALLE_NACHEINANDER;   break;
     case 21: settings.mySettings.transition = TRANSITION_RANDOM;   break;
@@ -6455,6 +6682,21 @@ void handleWiFiReset()
   WiFi.disconnect(true);
   delay (1000);
   ESP.restart();
+}
+
+// MP3-Player Reset
+void handleMP3Reset()
+{
+  #ifdef AUDIO_SOUND
+    webServer.send(200, "text/plain", "MP3 Player Reset in progress...");
+    Mp3Player.reset();
+    delay (3000);
+    Mp3Player.EQ(AUDIO_EQUALIZER);
+    delay(100);
+    Play_MP3(700,true,0);  // OK Sound blub
+  #else
+    webServer.send(501, "text/plain", "MP3 Player is unavailable");
+  #endif 
 }
 
 void BackgroundColor()
@@ -6839,6 +7081,17 @@ void startmakeAnimation()
   frame_fak = 1;
   mode = MODE_MAKEANIMATION;
   screenBufferNeedsUpdate = true;
+// fülle die Zwischenablage mit dem ersten Frame
+  for ( uint8_t z = 0;z <= 9;z++)
+  {
+    for ( uint8_t x = 0;x <= 10;x++)
+    {
+      copyframe.color[x][z].red = myanimation.frame[0].color[x][z].red;
+      copyframe.color[x][z].green = myanimation.frame[0].color[x][z].green;
+      copyframe.color[x][z].blue = myanimation.frame[0].color[x][z].blue;
+      copyframe.delay = myanimation.frame[0].delay;
+    }
+  }  
   webServer.send(200, "text/html", "<!doctype html><html><head><script>window.onload=function(){window.location.replace('/animation.html?animation=" + String(animation) +"');}</script></head></html>");
 }
 
@@ -6851,6 +7104,7 @@ void handlemakeAnimation()
   String wert;
   uint8_t palidx;
   uint8_t x,y;
+
   mode = MODE_MAKEANIMATION;
   if ( webServer.arg("_action") == "save" )
   {
@@ -6919,15 +7173,29 @@ void handlemakeAnimation()
          Serial.printf ("pixel x/y %i / %i = %s\n",x,y,wert.c_str());
          myanimation.frame[akt_aniframe].color[x][y] = string_to_color(wert);
        }
-       if ( webargname == "copyframe" && akt_aniframe > 0 )
+       if ( webargname == "copyframe" )
        {
          for ( uint8_t z = 0;z <= 9;z++)
          {
             for ( uint8_t x = 0;x <= 10;x++)
             {
-              myanimation.frame[akt_aniframe].color[x][z].red = myanimation.frame[akt_aniframe-1].color[x][z].red;
-              myanimation.frame[akt_aniframe].color[x][z].green = myanimation.frame[akt_aniframe-1].color[x][z].green;
-              myanimation.frame[akt_aniframe].color[x][z].blue = myanimation.frame[akt_aniframe-1].color[x][z].blue;
+              copyframe.color[x][z].red = myanimation.frame[akt_aniframe].color[x][z].red;
+              copyframe.color[x][z].green = myanimation.frame[akt_aniframe].color[x][z].green;
+              copyframe.color[x][z].blue = myanimation.frame[akt_aniframe].color[x][z].blue;
+              copyframe.delay = myanimation.frame[akt_aniframe].delay;
+            }
+          }
+        }
+       if ( webargname == "pasteframe" )
+       {
+         for ( uint8_t z = 0;z <= 9;z++)
+         {
+            for ( uint8_t x = 0;x <= 10;x++)
+            {
+              myanimation.frame[akt_aniframe].color[x][z].red = copyframe.color[x][z].red;
+              myanimation.frame[akt_aniframe].color[x][z].green = copyframe.color[x][z].green;
+              myanimation.frame[akt_aniframe].color[x][z].blue = copyframe.color[x][z].blue;
+              myanimation.frame[akt_aniframe].delay = copyframe.delay;
             }
           }
         }

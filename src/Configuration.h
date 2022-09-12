@@ -16,7 +16,7 @@
 #define NTP_SERVER "fritz.box"                 // Das ist der default Name des Zeitservers. Der eigentliche Zeitserver wird in Settings eingestellt.
 //#define SHOW_IP                              // Zeigt die IP-Adresse beim Start
 #define WIFI_BEEPS                             // ob die WLAN Verbunden Meldung kommt
-#define ESP_LED                                // OnBoard LED blinkt im Sekundentakt
+//#define ESP_LED                                // OnBoard LED blinkt im Sekundentakt
 
 //#define NONE_TECHNICAL_ZERO                  // ob die Null bei Feed mit oder ohne Schrägstrich angezeigt wird.
 #define AUTO_MODECHANGE_TIME 420               // Default AutoMode Change Periode. Die eigentliche Periode wird in Settings eingestellt.
@@ -131,8 +131,8 @@
 // Ist ein BME280 an Board
 #define SENSOR_BME280
 #define SEALEVELPRESSURE_HPA (1013.25)
-#define BME_TEMPERATURE_OFFSET -0.7         // Temperaturkorrektur
-#define BME_HUMIDITY_OFFSET +0.1            // Luftfeuchtekorrektur
+#define BME_TEMPERATURE_OFFSET -0.9         // Temperaturkorrektur
+#define BME_HUMIDITY_OFFSET +1.3            // Luftfeuchtekorrektur
 
 
 #define HOEHE_UEBER_0 130                   // Hier die default Höhe über NN des Wohnortes eintragen.Der eigentliche Wert wird in Settings eingestellt.
@@ -168,7 +168,9 @@
 
 #ifdef AUDIO_SOUND
 
-#define STARTUPSOUNDLEVEL 30                // Startlautstärke 1-100
+//#define CHECK_MP3                             // prüft jede Stunde zur Random Minute den MP3 Player
+
+#define STARTUPSOUNDLEVEL 50                  // Startlautstärke 1-100
 #define AUDIO_EQUALIZER DFPLAYER_EQ_NORMAL    // Einstellungen Equalizer: DFPLAYER_EQ_NORMAL,DFPLAYER_EQ_POP,DFPLAYER_EQ_ROCK,DFPLAYER_EQ_JAZZ,DFPLAYER_EQ_CLASSIC,DFPLAYER_EQ_BASS
 
 #define BUZZTIME_ALARM_1 10                 // wie lange der Alarm1 an ist

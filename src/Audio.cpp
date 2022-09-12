@@ -242,8 +242,11 @@ if ( settings.mySettings.weekendlater )
      tout++;
     }
 #ifdef DEBUG_AUDIO
-      Serial.printf("Sound wurde nach %i ms gestartet\n",tout*10);
+    Serial.printf("Sound wurde nach %i ms gestartet\n",tout*10);
+    if ( tout > 280 )  Serial.println(F( "Evtl. keinen Busy Pin angeschlossen!"));
 #endif 
+    if ( tout > 280 ) mp3reset = true;
+
     tout = 0;
     while (!digitalRead(PIN_AUDIO_BUSY) && tout < 300 ) // Schleife bis busy aus ist ( Sound ist zu ende)
     {
@@ -260,6 +263,7 @@ if ( settings.mySettings.weekendlater )
       Serial.printf("PlayMP3 Stop nach %i ms\n",tout*10);
       if ( tout > 280 )  Serial.println(F( "Evtl. keinen Busy Pin angeschlossen!"));
     #endif
+    if ( tout > 280 ) mp3reset = true;
   }
 }
 
@@ -394,6 +398,16 @@ void busypincheck()
   } 
 }
 
+void do_mp3reset()
+{
+#ifdef DEBUG_AUDIO
+  Serial.println(F("MP3 Player Reset"));
+#endif 
+  mp3reset = false;
+  Mp3Player.reset();
+  delay (3000);
+  Mp3Player.EQ(AUDIO_EQUALIZER);
+}
 
 
 #endif

@@ -18,6 +18,7 @@ extern DFRobotDFPlayerMini Mp3Player;
 extern Ticker BusyPinCheck;
 extern bool MODE_BUTTON_BOOL;
 extern uint8_t VOLUME_ALT;
+extern bool mp3reset;
 
 void Temperaturansage(int ANSAGEBASE, bool in_out, float fTemperature, uint8_t setvolume);
 void Humidityansage(int ANSAGEBASE, bool in_out, float fHumidity, uint8_t setvolume);
@@ -32,6 +33,7 @@ uint8_t PlayAudioBuffer(uint16_t setvolume);
 void AudioBufferClear();
 bool Soundaktiv();
 void busypincheck();
+void do_mp3reset();
 
 #define WETTERSOUNDBASE 410
 
