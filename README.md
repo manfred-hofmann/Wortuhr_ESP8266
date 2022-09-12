@@ -24,7 +24,7 @@ z.B.: http://wortuhr-ip/setEvent?text=I+love+you&color=1&audio=701&preani=HERZ&p
 
 
 ## Transitions:  
-* 16 Transitions (Spirale, Matrix, Zur Mitte, u.s.w.) und diese einzeln oder per Zufall angewählt.   
+* 17 Transitions (Spirale, Matrix, Zur Mitte, u.s.w.) und diese einzeln oder per Zufall angewählt.   
 * Alle Transitions sind jetzt 2 farbig.  
   D.h. z.B. Übergang 'nach links': die Buchstaben der 'alten' Zeit verschwinden mit der 'alten' Farbe nach links,  
   während rechts die Buchstaben der 'neuen' Zeit mit der 'neuen' Farbe reinkommen.  
