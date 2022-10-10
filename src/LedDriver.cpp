@@ -162,10 +162,11 @@ void LedDriver::setPixelRGB(uint8_t num, uint8_t red, uint8_t green, uint8_t blu
   if ( NEOPIXEL_TYPE == NEO_WRGB + NEO_KHZ800 || NEOPIXEL_TYPE == NEO_GRBW + NEO_KHZ800 )
   {
 
-#ifdef NEOPIXEL_FARBTEMPERATUR:
-/* Mit Einstellen der Farbtemperatur: */
-  // Reference, currently set to 4500k white light:
-  // https://andi-siess.de/rgb-to-color-temperature/
+#ifdef NEOPIXEL_FARBTEMPERATUR
+// Mit Einstellen der Farbtemperatur:
+// Reference, currently set to 4500k white light:
+// https://andi-siess.de/rgb-to-color-temperature
+
     const uint8_t kWhiteRedChannel = temp_red;
     const uint8_t kWhiteGreenChannel = temp_green;
     const uint8_t kWhiteBlueChannel = temp_blue;
@@ -184,7 +185,7 @@ void LedDriver::setPixelRGB(uint8_t num, uint8_t red, uint8_t green, uint8_t blu
     blue  = (uint8_t)(blue - minWhiteValue * kWhiteBlueChannel / 255);
     strip->setPixelColor(ledMap[num], red, green, blue, white / whiteboost);
 #else
-/* Ohne Einstellen der Farbtemperatur: */
+// Ohne Einstellen der Farbtemperatur:
     uint8_t white = 0xFF;
     if ( red < white ) white = red;
     if ( green < white ) white = green;

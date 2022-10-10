@@ -6468,7 +6468,7 @@ void handleCommitSettings()
   { 
     settings.mySettings.modeChange = true;
     settings.mySettings.auto_mode_change = webServer.arg("amct").toInt();
-    if ( autoModeChangeTimer > settings.mySettings.auto_mode_change * 60 ) autoModeChangeTimer = settings.mySettings.auto_mode_change * 60 ;
+    if ( autoModeChangeTimer != settings.mySettings.auto_mode_change * 60 ) autoModeChangeTimer = settings.mySettings.auto_mode_change * 60 ;
   }
 // ------------------------------------------------------------------------
 #if defined(SunRiseLib) || defined(APIKEY)
