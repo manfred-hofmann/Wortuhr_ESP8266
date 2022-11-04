@@ -3,9 +3,9 @@
 <title>Animantion</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="UTF-8">
-<link rel="icon" type="image/png" sizes="192x192"  href="android-icon-192x192.png">
-<script src=jquery-3.1.1.min.js></script>
-<link rel="stylesheet" href="animation.css" >
+<link rel="icon" type="image/png" sizes="192x192"  href="/web/android-icon-192x192.png">
+<script src="/web/jquery-3.1.1.min.js"></script>
+<link rel="stylesheet" href="/web/animation.css" >
 </head>
 <body>
 
@@ -102,7 +102,7 @@
 
 
 <script> 
-// v20220909
+
 var urlBase = "/handlemakeanimation";
 var aktivcolor = "#000000";
 var aktivpalid;
@@ -114,7 +114,18 @@ var maxframe = 24;
 dblclickbool = false
 
 var myAniObj = {};
-var mycopyFrame = {};
+var mycopyFrame = {"Delay" : 100,
+  "Zeile_0" : [],
+  "Zeile_1" : [],
+  "Zeile_2" : [],
+  "Zeile_3" : [],
+  "Zeile_4" : [],
+  "Zeile_5" : [],
+  "Zeile_6" : [],
+  "Zeile_7" : [],
+  "Zeile_8" : [],
+  "Zeile_9" : []
+ };
   
 // Aufbau Matrix
  for ( y = 0;y < 10;y++)
@@ -319,7 +330,15 @@ postValue("laufmode",this.value);
      }
    }
    getframe(frame);
-   mycopyFrame = { ...myAniObj["Frame_0"]};
+   for ( zeile = 0; zeile < 10; zeile++) {
+    var zeilearr = myAniObj["Frame_" + frame]["Zeile_" + zeile];
+	for ( x in zeilearr ) {
+	  mycopyFrame["Zeile_" + zeile][x] = myAniObj["Frame_" + frame]["Zeile_" + zeile][x];
+	}
+   }
+   mycopyFrame.Delay = myAniObj["Frame_" + frame].Delay;
+   
+//   mycopyFrame = { ...myAniObj["Frame_0"]};
 });
 
 
