@@ -1,6 +1,6 @@
 # Wortuhr_ESP8266  
-Wortuhr mit ESP8266 WeMos D1 mini (Pro) und NeoPixel WS2812B LEDs mit  
-mp3 Sounds, Animationen, Transitions, Events und Spiele, Webzugriff, multlingual  
+Wortuhr mit ESP8266 WeMos D1 mini (Pro) und NeoPixel WS2812B LEDs   
+mit mp3 Sounds, Animationen, Transitions, Events und Spiele, Webzugriff, multlingual  
 -----------------------------------------------------------------
 ## Bedienungsanleitung:  
 https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/Bedienungsanleitung_Wortuhr_mp3_20221222.pdf  
