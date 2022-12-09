@@ -232,11 +232,12 @@ SLL Support Basic
 * ESP8266 starten und mit dem Handy das WLAN der Wortuhr (Wortuhr) suchen und anmelden.  
 * Dann sollte automatisch der Browser starten. Hier die WLAN Zugangsdaten eingeben.  
 (Falls der Browser nicht startet, die Default IP des AP ist 192.168.4.1)  
-* Danach den ESP8266 neustarten und über die Webadresse 
+* Danach den ESP8266 neustarten   
 
 ### LittleFS:  
-Mit  
-http://\<UHR-IP\>/fs   
+Mit dem Browser über der Adresse der Wortuhr den Dateimanager aufrufen  
+  
+**http://\<UHR-IP\>/fs**  
  
 den Fileexplorer aufrufen um das LittleFS zu füllen.  
 
