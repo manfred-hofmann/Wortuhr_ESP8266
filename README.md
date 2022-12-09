@@ -126,7 +126,7 @@ Viel Spaß mit den Spielen!
 
 
 ## System:  
-* Neustart mit <UHR-IP>/reboot  
+* Neustart mit http://\<UHR-IP\>/reboot  
 * W-Lan Daten löschen mit <UHR-IP>/wifireset  
 * Wortuhr-API mit <UHR-IP>/apidata  
 * compilierbar auch ohne mp3 Player (#define AUDIO_SOUND in der Configuration kommentieren)    
