@@ -280,6 +280,7 @@ https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/Bedienungsanleitung
 
 ### Manual (English):  
 https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/Manual_Wordclock_mp3_20221222.pdf   
+  
 -----
 * Hier mein Aufbau:
 <img src="https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/WU_links.jpg" width="233" height="472" />  
