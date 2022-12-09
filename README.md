@@ -235,12 +235,10 @@ SLL Support Basic
 * Danach den ESP8266 neustarten   
 
 ### LittleFS:  
-Mit dem Browser über der Adresse der Wortuhr den Dateimanager aufrufen  
+Mit dem Browser über der Adresse der Wortuhr den Dateimanager über /fs starten:    
   
 **http://\<UHR-IP\>/fs**  
- 
-den Fileexplorer aufrufen um das LittleFS zu füllen.  
-
+   
 1. LittleFS ist am Anfang leer:   
 ![LittleFS_01](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/Wortuhr_Dateimanager_leer.jpg "LittleFS_01")  
 2. Vor dem Upload root:   
