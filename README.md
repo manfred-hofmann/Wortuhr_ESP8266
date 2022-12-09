@@ -143,10 +143,12 @@ Es können verschiedene LED Layouts verwendet werden.
 In der configuration.h sind 4 voreingestellte Layouts zu finden:  
 
 // Das LED Layout (Siehe in LedDriver.cpp):  
+```
 #define LED_LAYOUT_HORIZONTAL_2  
 //#define LED_LAYOUT_VERTICAL_1  
 //#define LED_LAYOUT_VERTICAL_2  
 //#define LED_LAYOUT_VERTICAL_3  
+```
 
 Die Layouts sind in LedDriver.cpp  definiert.
 Hier können nach belieben auch eigene angelegt werden.
@@ -176,8 +178,10 @@ Hier ein Beispiel Layout:
 ![LED-Layout](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/LED-Beispiel-Layout.jpg "LED-Layout")   
 
 Möchte man auf die "Alarm LED" verzichten, so muss in der configuration.h die Anzahl der LEDs angepasst werden:  
+```
 #define NUMPIXELS 114 -> ohne eigen Alarm LED  
-#define NUMPIXELS 115 -> mit Alarm LED  
+define NUMPIXELS 115 -> mit Alarm LED  
+```
 
 ## ESP:  
 z.B.: https://de.aliexpress.com/item/1005004547410607.html?spm=a2g0o.order_list.0.0.21ef5c5ftzOASF&gatewayAdapt=glo2deu  
@@ -189,7 +193,7 @@ CPU Frequenz auf 160 MHz
 Flash Size 4MB ( FS:2MB OTA~1019KB)  
 SLL Support Basic  
 
-# besser:   
+### besser:   
 D1 MINI WEMOS Pro 16M  
 Arduino IDE Einstellungen:  
 Board: "LOLIN(WEMOS) D1 pro"  
@@ -212,23 +216,25 @@ SLL Support Basic
 	* TimeLib 1.6.0  by Michael Margolis
 	* Ticker 4.4.0 by Stefan Staub  
 	
-# optional:  
+### optional:  
     * IRremoteESP8266 2.7.4 by David Conran,..  
     * DS3232RTC by Jack Christensen Version 2.0.1   
 	
-# OpenWeather:  	
+### OpenWeather:  	
 	* Openweather API-Key (https://openweathermap.org/) für die Wetterinformationen.  
 
-# SoundFiles:  
+### SoundFiles:  
 * Die mp3 Files (Sound) in den Ordner "mp3" auf die SD-Karte kopieren welche in den mp3-Player kommt. Es reicht eine 4GB Karte.
   
-# Software laden:  
+### Software laden:  
 * Software mit Arduino IDE (min. Version 1.8.12) auf den ESP8266 laden.   
 
 * ESP8266 starten und mit dem Handy das WLAN der Wortuhr (Wortuhr) suchen und anmelden.  
 * Dann sollte automatisch der Browser starten. Hier die WLAN Zugangsdaten eingeben.  
 (Falls der Browser nicht startet, die Default IP des AP ist 192.168.4.1)  
 * Danach den ESP8266 neustarten und über die Webadresse 
+
+### LittleFS:  
 
 http://\<UHR-IP\>/fs   
  
@@ -270,10 +276,10 @@ Hier sind folgende Punkte wichtig:
 * restliche Einstellungen sind auf der Settings Seite zu finden  
 
 Eine ausführliche Bedienungsanleitung ist hier zu finden:  
-## Bedienungsanleitung:  
+### Bedienungsanleitung:  
 https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/Bedienungsanleitung_Wortuhr_mp3_20221222.pdf  
 
-## Manual (English):  
+### Manual (English):  
 https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/Manual_Wordclock_mp3_20221222.pdf   
 -----
 * Hier mein Aufbau:
