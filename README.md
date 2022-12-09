@@ -1,6 +1,6 @@
 # Wortuhr_ESP8266  
-Wortuhr mit ESP8266 WeMos D1 mini und NeoPixel WS2812B LEDs mit  
-mp3 Sounds, Animationen, Transitions, Events und Spiele, Webzugriff, Multlingual  
+Wortuhr mit ESP8266 WeMos D1 mini (Pro) und NeoPixel WS2812B LEDs mit  
+mp3 Sounds, Animationen, Transitions, Events und Spiele, Webzugriff, multlingual  
 -----------------------------------------------------------------
 ## Bedienungsanleitung:  
 https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/Bedienungsanleitung_Wortuhr_mp3_20221222.pdf  
@@ -14,8 +14,7 @@ https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/Manual_Wordclock_mp
 * Mondphase wird in Abwechslung der Temp. und Datumsanzeige angezeigt.  
 * Die Minuten LED können nun eine eigene Farbe haben.  
 * Silvester CountDown.  
-* Zwei Eingabe Taster sind möglich: On/Off und Mode. 
-  Diese sind per Touch oder als physikalischer Taster in configuration.h einstellbar.  
+* Drei Eingabe Taster sind möglich: On/Off, Time und Mode.   
 * Sonnenauf-/untergangsanimation   
 * Ausführen von Adhoc Events mit http-Request:   
 z.B.: http://wortuhr-ip/setEvent?text=I+love+you&color=1&audio=701&preani=HERZ&postani=HERZ  
