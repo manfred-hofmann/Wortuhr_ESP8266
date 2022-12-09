@@ -231,7 +231,7 @@ http://<wortuhr-ip>/fs
 den Fileexplorer aufrufen um das LittleFS zu füllen.  
 
 1. LittleFS ist am Anfang leer:   
-<div style="width:50%">![LittleFS_01](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/Wortuhr_Dateimanager_leer.jpg "LittleFS_01") </div>
+<img src="https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/Wortuhr_Dateimanager_leer.jpg" width=50"/>
 2. Vor dem Upload root:   
 Alle Dateien vom data Verzeichnis auswählen und uploaden:  
 ![LittleFS_02](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/Wortuhr_Dateimanager_vor_upload_root.jpg "LittleFS_02"){ width=50% }  
