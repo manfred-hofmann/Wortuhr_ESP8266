@@ -127,8 +127,8 @@ Viel Spaß mit den Spielen!
 
 ## System:  
 * Neustart mit http://\<UHR-IP\>/reboot  
-* W-Lan Daten löschen mit <UHR-IP>/wifireset  
-* Wortuhr-API mit <UHR-IP>/apidata  
+* W-Lan Daten löschen mit http://\<UHR-IP\>/wifireset  
+* Wortuhr-API mit http://\<UHR-IP\>/apidata  
 * compilierbar auch ohne mp3 Player (#define AUDIO_SOUND in der Configuration kommentieren)    
 * WLAN Empfangsstärke wird auf der Infoseite angezeigt  
 * Anzeige der IP-Adresse im erweiterten Testmenü (nach den Sekunden nochmal die Taste Mode drücken. 
@@ -226,7 +226,7 @@ optional:
 (Falls der Browser nicht startet, die Default IP des AP ist 192.168.4.1)  
 * Danach den ESP8266 neustarten und über die Webadresse 
 
-http://<wortuhr-ip>/fs   
+http://\<UHR-IP\>/fs   
  
 den Fileexplorer aufrufen um das LittleFS zu füllen.  
 
