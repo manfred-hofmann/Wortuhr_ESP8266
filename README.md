@@ -189,7 +189,7 @@ CPU Frequenz auf 160 MHz
 Flash Size 4MB ( FS:2MB OTA~1019KB)  
 SLL Support Basic  
 
-- besser  
+# besser:   
 D1 MINI WEMOS Pro 16M  
 Arduino IDE Einstellungen:  
 Board: "LOLIN(WEMOS) D1 pro"  
@@ -212,14 +212,18 @@ SLL Support Basic
 	* TimeLib 1.6.0  by Michael Margolis
 	* Ticker 4.4.0 by Stefan Staub  
 	
-optional:  
+# optional:  
     * IRremoteESP8266 2.7.4 by David Conran,..  
     * DS3232RTC by Jack Christensen Version 2.0.1   
 	
+# OpenWeather:  	
 	* Openweather API-Key (https://openweathermap.org/) für die Wetterinformationen.  
-* Die mp3 Files (Sound) in den Ordner "mp3" auf die SD-Karte kopieren welche in den mp3-Player kommt. Es reicht eine 4GB Karte.
-* Software mit Arduino IDE (min. Version 1.8.12) auf den ESP8266 laden.   
 
+# SoundFiles:  
+* Die mp3 Files (Sound) in den Ordner "mp3" auf die SD-Karte kopieren welche in den mp3-Player kommt. Es reicht eine 4GB Karte.
+  
+# Software laden:  
+* Software mit Arduino IDE (min. Version 1.8.12) auf den ESP8266 laden.   
 
 * ESP8266 starten und mit dem Handy das WLAN der Wortuhr (Wortuhr) suchen und anmelden.  
 * Dann sollte automatisch der Browser starten. Hier die WLAN Zugangsdaten eingeben.  
