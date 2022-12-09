@@ -225,6 +225,13 @@ SLL Support Basic
 
 ### SoundFiles:  
 * Die mp3 Files (Sound) in den Ordner "mp3" auf die SD-Karte kopieren welche in den mp3-Player kommt. Es reicht eine 4GB Karte.
+   
+### Software anpassen:  
+In configuration.h sind einige vordefinierte Einstellungen vorzunehmen:  
+- Sprache/Layout  
+- ESP-Pinbelegung  
+- Mit/Ohne Audio
+- u.s.w.
   
 ### Software laden:  
 * Software mit Arduino IDE (min. Version 1.8.12) auf den ESP8266 laden.   
