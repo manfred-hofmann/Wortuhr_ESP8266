@@ -142,7 +142,7 @@ https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/Platine_Plan_Wortuh
 Es können verschiedene LED Layouts verwendet werden.  
 In der configuration.h sind 4 voreingestellte Layouts zu finden:  
 
-// Das LED Layout (Siehe in LedDriver.cpp):  
+Das LED Layout (Siehe in LedDriver.cpp):   
 ```
 #define LED_LAYOUT_HORIZONTAL_2  
 //#define LED_LAYOUT_VERTICAL_1  
@@ -217,11 +217,11 @@ SLL Support Basic
 	* Ticker 4.4.0 by Stefan Staub  
 	
 ### optional:  
-    * IRremoteESP8266 2.7.4 by David Conran,..  
-    * DS3232RTC by Jack Christensen Version 2.0.1   
+* IRremoteESP8266 2.7.4 by David Conran,..  
+* DS3232RTC by Jack Christensen Version 2.0.1   
 	
 ### OpenWeather:  	
-	* Openweather API-Key (https://openweathermap.org/) für die Wetterinformationen.  
+* Openweather API-Key (https://openweathermap.org/) für die Wetterinformationen.  
 
 ### SoundFiles:  
 * Die mp3 Files (Sound) in den Ordner "mp3" auf die SD-Karte kopieren welche in den mp3-Player kommt. Es reicht eine 4GB Karte.
@@ -235,7 +235,7 @@ SLL Support Basic
 * Danach den ESP8266 neustarten und über die Webadresse 
 
 ### LittleFS:  
-
+Mit  
 http://\<UHR-IP\>/fs   
  
 den Fileexplorer aufrufen um das LittleFS zu füllen.  
