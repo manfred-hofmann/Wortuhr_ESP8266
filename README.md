@@ -235,7 +235,7 @@ In configuration.h sind einige vordefinierte Einstellungen vorzunehmen:
 ### Software laden:  
 * Software mit Arduino IDE (min. Version 1.8.12) auf den ESP8266 laden.   
 
-* ESP8266 starten und mit dem Handy das WLAN der Wortuhr (Wortuhr) suchen und anmelden.  
+* ESP8266 starten und mit dem Handy das WLAN der Wortuhr (Wortuhr) suchen und anmelden. (Passwort=12345678)    
 * Dann sollte automatisch der Browser starten. Hier die WLAN Zugangsdaten eingeben.  
 (Falls der Browser nicht startet, die Default IP des AP ist 192.168.4.1)  
 * Danach den ESP8266 neustarten   
