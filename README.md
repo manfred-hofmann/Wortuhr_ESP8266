@@ -44,7 +44,7 @@ z.B.: http://wortuhr-ip/setEvent?text=I+love+you&color=1&audio=701&preani=HERZ&p
 
 
 ## Webfrontend:   
-* Alle CSS Files sind im LittlefS des ESP abgelegt.  
+* Alle CSS Files sind im LittleFS des ESP abgelegt.  
 * Eigenes Wortuhr Favicon eingefügt.  
 * Werte auf Info Seite zur Einsicht aller wichtigen Parameter   
 * Sonnenaufgangs- und Sonnenuntergangszeiten  
@@ -62,7 +62,7 @@ z.B.: http://wortuhr-ip/setEvent?text=I+love+you&color=1&audio=701&preani=HERZ&p
 * Animationen mit Namen ZHHMM werden zur jeweiligen Stunde und Minute angezeigt (z.B. Z1200 startet eine Animation um 12 Uhr)  
 * Animation mit Name ALARM wird während des Alarms angezeigt.  
 ![Alarm](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/ALARM.gif "Alarm")   
-* Alle Animationen werden im SPIFFS unter dem Name ani_ANINAME.json gespeichert und können über den Dateimanager gesichert/kopiert werden.  
+* Alle Animationen werden im LittleFS unter dem Name ani_ANINAME.json gespeichert und können über den Dateimanager gesichert/kopiert werden.  
 
 
 ## Events:   
@@ -70,7 +70,7 @@ z.B.: http://wortuhr-ip/setEvent?text=I+love+you&color=1&audio=701&preani=HERZ&p
 * Events werden über die Weboberfläche gepflegt.  
 ![Events](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/Events.jpg "Events") 
 * Es können eigene Animationen für Deine Events erstellt werden.  
-* Alle Events werden im SPIFFS unter dem Namen events.json abgelegt und können über den Dateimanager gesichert/kopiert werden.  
+* Alle Events werden im LittleFS unter dem Namen events.json abgelegt und können über den Dateimanager gesichert/kopiert werden.  
 
 
 ## Spiele:  
@@ -263,7 +263,7 @@ Alle Dateien vom data/web Verzeichnis auswählen:
 ![LittleFS_07](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/Wortuhr_Dateimanager_nach_upload_web.jpg "LittleFS_07")  
 7. Upload andere Sprachen (optional):  
 Falls eine andere Sprache als deutsch gewählt wurde, einfach den Inhalt des jeweiligen web Verzeichnisses (web_ch, web_en, web_es, web_fr, web_nl)  
-in den web Ordner übertragen. Dazu den web Ordner nochmal auswählen:  
+in den LittlefS web Ordner zusätzlich übertragen. Dazu den web Ordner nochmal auswählen:  
 ![LittleFS_08](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/Wortuhr_Dateimanager_vor_upload_web1.jpg "LittleFS_08")  
 Und alle Dateien des jeweiligen web_xx Ordner auswählen und uploaden.  
 
