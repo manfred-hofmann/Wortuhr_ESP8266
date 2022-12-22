@@ -18,6 +18,8 @@ https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/Manual_Wordclock_mp
 * Sonnenauf-/untergangsanimation   
 * Ausführen von Adhoc Events mit http-Request:   
 z.B.: http://wortuhr-ip/setEvent?text=I+love+you&color=1&audio=701&preani=HERZ&postani=HERZ  
+* API Abruf vieler Parameter mit http-Request:  
+http://wortuhr-ip/apidata  
 
 
 ## Temperatur und Luftdruck:  
@@ -53,22 +55,22 @@ z.B.: http://wortuhr-ip/setEvent?text=I+love+you&color=1&audio=701&preani=HERZ&p
 
 ## Animationen:  
 * Es können eigene Animationen für Deine Events erstellt werden.  
-![Herz](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/HERZ.gif "Herz")  
+![Herz](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/HERZ.gif "Herz")  
 * Über den eingebauten Animationseditor können Animationen erstellt werden  
-![Animationsmenue](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/Animationsmenue.jpg "Animationsmenue")  
-![Animationsmenue2](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/Animationsmenue2.jpg "Animationsmenue2")  
+![Animationsmenue](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Animationsmenue.jpg "Animationsmenue")  
+![Animationsmenue2](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Animationsmenue2.jpg "Animationsmenue2")  
 * Animationen mit bis zu 25 Frames möglich  
 * Dadurch der gif2animation Konverter von kollabierer (https://www.kollabierer.de/farbe) direkt nutzbar.   
 * Animationen mit Namen ZHHMM werden zur jeweiligen Stunde und Minute angezeigt (z.B. Z1200 startet eine Animation um 12 Uhr)  
 * Animation mit Name ALARM wird während des Alarms angezeigt.  
-![Alarm](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/ALARM.gif "Alarm")   
+![Alarm](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/ALARM.gif "Alarm")   
 * Alle Animationen werden im LittleFS unter dem Name ani_ANINAME.json gespeichert und können über den Dateimanager gesichert/kopiert werden.  
 
 
 ## Events:   
 * Verschiedene Melodien werden passend zu den Events abgespielt.  
 * Events werden über die Weboberfläche gepflegt.  
-![Events](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/Events.jpg "Events") 
+![Events](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Events.jpg "Events") 
 * Es können eigene Animationen für Deine Events erstellt werden.  
 * Alle Events werden im LittleFS unter dem Namen events.json abgelegt und können über den Dateimanager gesichert/kopiert werden.  
 
@@ -76,29 +78,29 @@ z.B.: http://wortuhr-ip/setEvent?text=I+love+you&color=1&audio=701&preani=HERZ&p
 ## Spiele:  
 * 7 Wortuhrspiele integriert: 
 Snake   
-![Snake](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/snake.gif "Snake")  
+![Snake](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/snake.gif "Snake")  
 Tetris  
-![Tetris](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/tetris.gif "Tetris")  
+![Tetris](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/tetris.gif "Tetris")  
 Bricks  
-![Bricks](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/bricks.gif "Bricks")  
+![Bricks](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/bricks.gif "Bricks")  
 4 gewinnt  
-![4gewinnt](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/4gewinnt.gif "4Gewinnt")  
+![4gewinnt](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/4gewinnt.gif "4Gewinnt")  
 Tier Memory / Musik Memory /ABBA Memory  
 Ein Spiel für die ganze Familie!  
 Es können bis zu 4 Spieler spielen  
-![Memory_01](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/memory_01.jpg "Memory_01")  
+![Memory_01](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/memory_01.jpg "Memory_01")  
 Spieler müssen sich mit der URL  
  http://wortuhr-ip/spieler  
 am Spiel anmelden.  
 Jeder Spieler bekommt eine andere Farbe zugewiesen.   
 Spieler2:  
-![Memory_02](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/memory_02.jpg "Memory_02")  
+![Memory_02](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/memory_02.jpg "Memory_02")  
 Spieler3:  
-![Memory_02](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/memory_03.jpg "Memory_03")  
+![Memory_02](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/memory_03.jpg "Memory_03")  
 Spieler4:  
-![Memory_04](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/memory_04.jpg "Memory_04")  
+![Memory_04](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/memory_04.jpg "Memory_04")  
 Ziel ist es ein passendes Sound/Musik Paar zu finden:  
-![Memory_05t](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/memory_05t.jpg "Memory_05t")  
+![Memory_05t](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/memory_05t.jpg "Memory_05t")  
 Nach einem Spiel müssen die einzelnen Mitspieler jeweils nur die WebSeite refreshen um sich wieder anzumelden.  
 Welche Spieler angemeldet sind erkennt man in der Hauptspielseite an den farbigen Spielerpunkten (siehe oben).  
   
@@ -111,7 +113,7 @@ Viel Spaß mit den Spielen!
 * Eingabe des Zeitservers über die Settings.  
 * Systemname in Settings.    
 * Hier ist der Dateimanager für LittleFS.  
-![LittleFS](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/LittleFS_Explorer.png "LittleFS")
+![LittleFS](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/LittleFS_Explorer.png "LittleFS")
 * Angabe der Location und Höhe über 0 in Settings (wird für die WetterAPI und Berechnung des Luftdrucks auf Meereshöhe benötigt).  
 * Hier API-Key von OpenWeather eintragen!  
 * Eingabe des Automodeintervall in Settings  ( Intervall wie oft verschiedene Modes Wetter, Temperatur, Mondphase... angezeigt werden)  
@@ -174,7 +176,7 @@ Die Zahlen entsprechen der LED-Nummer in der LED-Kette:
 ```
 
 Hier ein Beispiel Layout:  
-![LED-Layout](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/LED-Beispiel-Layout.jpg "LED-Layout")   
+![LED-Layout](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/LED-Beispiel-Layout.jpg "LED-Layout")   
 
 Möchte man auf die "Alarm LED" verzichten, so muss in der configuration.h die Anzahl der LEDs angepasst werden:  
 ```
@@ -212,7 +214,7 @@ SLL Support Basic
 	* SunRise: Version 2.0.2 by Cyrus Rahman   
 	* MP3-Player - DFRobotDFPlayer Version 1.0.5  
 	* ArduinoOTA 1.0.3  
-	* TimeLib 1.6.0  by Michael Margolis
+	* TimeLib 1.6.0  by Michael Margolis  
 	* Ticker 4.4.0 by Stefan Staub  
 	
 ### optional:  
@@ -235,10 +237,11 @@ In configuration.h sind einige vordefinierte Einstellungen vorzunehmen:
 ### Software laden:  
 * Software mit Arduino IDE (min. Version 1.8.12) auf den ESP8266 laden.   
 
-* ESP8266 starten und mit dem Handy das WLAN der Wortuhr (Wortuhr) suchen und anmelden. (Passwort=12345678)    
+* ESP8266 starten das WiFi Zeichen auf der Uhr wird weiß. Mit dem Handy das WLAN der Wortuhr (Wortuhr) suchen und anmelden. (Passwort=12345678)    
 * Dann sollte automatisch der Browser starten. Hier die WLAN Zugangsdaten eingeben.  
 (Falls der Browser nicht startet, die Default IP des AP ist 192.168.4.1)  
-* Danach den ESP8266 neustarten   
+* Danach sollte das WiFi Zeichen auf der Uhr grün werden.  
+* Wenn die Verbindung mit dem W-Lan funktioniert hat wird auf der Uhr die IP-Adresse so lange angezeigt bis sich ein Browser mit dieser Adresse verbunden hat.     
 
 ### LittleFS:  
 Mit dem Browser über der Adresse der Wortuhr den Dateimanager über /fs starten:    
@@ -246,29 +249,29 @@ Mit dem Browser über der Adresse der Wortuhr den Dateimanager über /fs starten
 **http://\<UHR-IP\>/fs**  
    
 1. LittleFS ist am Anfang leer:   
-![LittleFS_01](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/Wortuhr_Dateimanager_leer.jpg "LittleFS_01")  
+![LittleFS_01](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Wortuhr_Dateimanager_leer.jpg "LittleFS_01")  
 2. Vor dem Upload root:   
 Alle Dateien vom data Verzeichnis auswählen und uploaden:  
-![LittleFS_02](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/Wortuhr_Dateimanager_vor_upload_root.jpg "LittleFS_02")  
+![LittleFS_02](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Wortuhr_Dateimanager_vor_upload_root.jpg "LittleFS_02")  
 3. Upload der Files im Serial Monitor:  
-![LittleFS_03](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/Wortuhr_Dateimanager_upload_files.jpg "LittleFS_03")  
+![LittleFS_03](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Wortuhr_Dateimanager_upload_files.jpg "LittleFS_03")  
 4. nach Upload root:  
-![LittleFS_04](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/Wortuhr_Dateimanager_nach_upload_root.jpg "LittleFS_04")  
+![LittleFS_04](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Wortuhr_Dateimanager_nach_upload_root.jpg "LittleFS_04")  
 5. Dann noch das Web Verzeichnis  
 web Verzeichnis anwählen:  
-![LittleFS_05](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/Wortuhr_Dateimanager_vor_upload_web1.jpg "LittleFS_05")  
+![LittleFS_05](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Wortuhr_Dateimanager_vor_upload_web1.jpg "LittleFS_05")  
 Alle Dateien vom data/web Verzeichnis auswählen:  
-![LittleFS_06](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/Wortuhr_Dateimanager_vor_upload_web2.jpg "LittleFS_06")  
+![LittleFS_06](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Wortuhr_Dateimanager_vor_upload_web2.jpg "LittleFS_06")  
 6. Nach Upload Web-Verzeichnis:  
-![LittleFS_07](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/Wortuhr_Dateimanager_nach_upload_web.jpg "LittleFS_07")  
+![LittleFS_07](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Wortuhr_Dateimanager_nach_upload_web.jpg "LittleFS_07")  
 7. Upload andere Sprachen (optional):  
 Falls eine andere Sprache als deutsch gewählt wurde, einfach den Inhalt des jeweiligen web Verzeichnisses (web_ch, web_en, web_es, web_fr, web_nl)  
 in den LittlefS web Ordner zusätzlich übertragen. Dazu den web Ordner nochmal auswählen:  
-![LittleFS_08](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/Wortuhr_Dateimanager_vor_upload_web1.jpg "LittleFS_08")  
+![LittleFS_08](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Wortuhr_Dateimanager_vor_upload_web1.jpg "LittleFS_08")  
 Und alle Dateien des jeweiligen web_xx Ordner auswählen und uploaden.  
 
 Hier nochmal wie beschrieben:  
-![LittleFS_Film](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/Load_LittleFS_2.gif "LittleFS_Film") 
+![LittleFS_Film](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Load_LittleFS_2.gif "LittleFS_Film") 
 
 * Danach den ESP8266 neustarten und über die Webadresse des ESP in den Menüpunkt Settings die Wortuhr anpassen.  
 Hier sind folgende Punkte wichtig:
@@ -289,8 +292,8 @@ https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/Manual_Wordclock_mp
   
 -----
 * Hier mein Aufbau:
-<img src="https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/WU_links.jpg" width="233" height="472" />  
-<img src="https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/bv.20221222/pic/WU_unten.jpg" width="751" height="370" />  
+<img src="https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/WU_links.jpg" width="233" height="472" />  
+<img src="https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/WU_unten.jpg" width="751" height="370" />  
   
 -----  
   

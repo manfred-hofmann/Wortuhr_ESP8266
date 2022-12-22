@@ -1,4 +1,4 @@
-/* v20220909 */
+
 :root {
 	--white: #ffffff;
 	--light: #f0eff3;
@@ -242,4 +242,14 @@ mark{
     text-align : center;
 }
 
+.sanduhrcontainer {
+	position: absolute;
+	  top: 250px;
+	  left: 140px;
+}
+
+.sanduhr {
+	  position: absolute;
+      margin: 0px auto;	  
+    }
 

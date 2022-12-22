@@ -3,9 +3,9 @@
 <title>GameControl</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="UTF-8">
-<link rel="icon" type="image/png" sizes="192x192"  href="android-icon-192x192.png">
-<script src=jquery-3.1.1.min.js></script>
-<link rel="stylesheet" href="GameControl.css" >
+<link rel="icon" type="image/png" sizes="192x192"  href="/web/android-icon-192x192.png">
+<script src="/web/jquery-3.1.1.min.js"></script>
+<link rel="stylesheet" href="/web/GameControl.css" >
 </head>
 <body>
 <h2> Game </h2>
@@ -40,17 +40,17 @@
 <hr>
 <div class="sizecontainer">
 <br>
-Spielgr&ouml;&szlig;e:
-<input type="radio" id="gamesize1" name="size" value="1"> klein 
-<input type="radio" id="gamesize2" name="size" value="2"> mittel
-<input type="radio" id="gamesize3" name="size" value="3"> gro&szlig;
+Game size:
+<input type="radio" id="gamesize1" name="size" value="1"> small 
+<input type="radio" id="gamesize2" name="size" value="2"> medium
+<input type="radio" id="gamesize3" name="size" value="3"> big
 </div>
 <br>
 <div class="scorecontainer">
 <h3> Highscore:   Score: </h3>
 </div>
 <dfn class ="tooltip">
-<span id="Spieler" style="color:black">Spieler: </span>
+<span id="Spieler" style="color:black">Player: </span>
 <div class="p1">
  <span style="color:red">&bull;</span>
 </div>
@@ -69,22 +69,22 @@ Spielgr&ouml;&szlig;e:
  <span style="color:yellow">&bull;</span>
  <span style="color:blue">&bull;</span>
 </div>
-<span role="tooltip">bis zu 3 weitere<br>Spieler k&ouml;nnen sich mit <br>
+<span role="tooltip">up to 3<br>Players can register with <br>
 <p id="spielerurl"></p>
-anmelden.</span>
+.</span>
 </dfn>
 <div class="levelcontainer">
-Spielstst&auml;rke:
-<input type="radio" id="gamelevel1" name="level" value="1"> schwach 
-<input type="radio" id="gamelevel2" name="level" value="2"> mittel
-<input type="radio" id="gamelevel3" name="level" value="3"> stark
+skill level:
+<input type="radio" id="gamelevel1" name="level" value="1"> easy 
+<input type="radio" id="gamelevel2" name="level" value="2"> middle
+<input type="radio" id="gamelevel3" name="level" value="3"> strong
 </div>
 </div>
 <br>
 <hr>
 <form name="gamemenue" action="/" method="POST">
 <div class="buttonscontainer">
-<button class="buttons" type="submit" id="back" formaction="/back">&#128281; zur&uumlck</button>
+<button class="buttons" type="submit" id="back" formaction="/back">&#128281; back</button>
 <button class="buttons" type="button" id="start" name="start" value="start">&#127939;start</button>
 <button class="buttons" type="button" id="stop"  name="stop" value="stop">&#x23F9;stop</button>
 </div>
@@ -199,7 +199,7 @@ Spielstst&auml;rke:
   }
   if ( game == "VIERGEWINNT" )
   {
-    $("h2:first").text("4GEWINNT");
+    $("h2:first").text("CONNECT FOUR");
 	$("#bu").hide();
     $("#bm").hide();	
 	$("h3:first").hide();
@@ -407,7 +407,7 @@ Spielstst&auml;rke:
 	  postValue("poll","poll");
 	}
 	var hname = location.hostname;
-	document.getElementById("spielerurl").innerHTML= hname + "/spieler";
+	document.getElementById("spielerurl").innerHTML= hname + "/player";
 	
   }); 
 </script>

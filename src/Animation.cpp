@@ -1,4 +1,5 @@
 #include "Animation.h"
+#include "Languages.h"
 
 extern s_myanimation myanimation;
 extern String myanimationslist[MAXANIMATION+1];
@@ -13,20 +14,23 @@ void getAnimationList()
   String Aname;
   uint8_t lidx = 0;
   for ( uint8_t z = 0;z <= MAXANIMATION;z++) myanimationslist[z] = "";
-  Dir dir = SPIFFS.openDir("/");
+  Dir dir = LittleFS.openDir("/");
   while (dir.next()) {    
-    aidx = dir.fileName().indexOf("/ani_");
-    if ( aidx >= 0 ) 
+    if (!dir.isDirectory())
     {
-      sidx = dir.fileName().lastIndexOf(".json");
-      if ( sidx >= 0)
+      aidx = dir.fileName().indexOf("ani_");
+      if ( aidx >= 0 ) 
       {
-        Aname = dir.fileName().substring(aidx+5,sidx);
-        if ( Aname != "NEU" ) 
+        sidx = dir.fileName().lastIndexOf(".json");
+        if ( sidx >= 0)
         {
-//        Serial.println ( myanimationslist[lidx] );
-          myanimationslist[lidx] = Aname;
-          lidx++;
+          Aname = dir.fileName().substring(aidx+4,sidx);
+          if ( Aname != "NEU" ) 
+          {
+            myanimationslist[lidx] = Aname;
+//            Serial.println ( myanimationslist[lidx] );
+            lidx++;
+          }
         }
       }
     }
@@ -50,7 +54,7 @@ void saveAnimationsListe()
   int bytesWritten = 0;
   bool fk = false;
   
-  File file = SPIFFS.open(ANIMATIONSLISTE, "w");
+  File file = LittleFS.open(ANIMATIONSLISTE, "w");
   if (!file) {
     Serial.println(F("Save Animation: Failed to create file"));
   }
@@ -79,10 +83,6 @@ void saveAnimationsListe()
   file.close();
 }
 
-
-
-
-
 // Lade die Animation
 bool loadAnimation(String aniname )
 {
@@ -91,14 +91,15 @@ bool loadAnimation(String aniname )
   Serial.println (aniname);
 #endif
   String filename = "/ani_" + aniname + ".json";
-  String zeile;
+  String filezeile;
   String typ;
   String wert;
   uint32_t farbwert;
-  uint8_t frame = -1;
+  uint8_t frame = 0;
+  uint8_t zeile = 0;
   String jsonBuffer;
-  
-  File file = SPIFFS.open(filename,"r");
+
+  File file = LittleFS.open(filename,"r");
   if(!file)
   {
    Serial.print(F("There was an error opening the file "));
@@ -106,89 +107,117 @@ bool loadAnimation(String aniname )
    Serial.println(F(" for reading"));
    return false;
   }
+  // animation leer initialisieren
+  for ( uint8_t f = 0;f < MAXFRAMES;f++)
+  {
+     myanimation.frame[f].delay = 0;
+     for ( uint8_t zeile = 0;zeile <= 9;zeile++)
+     {
+        for ( uint8_t x = 0;x <= 10;x++)
+        {
+           myanimation.frame[f].color[x][zeile] = num_to_color(0);
+        }
+     }          
+  }
   while (file.available()) 
   {
-    zeile = file.readStringUntil('\n');
-    typ = zeile.substring(0,zeile.indexOf(":"));
-    wert = zeile.substring(zeile.indexOf(":")+1);
-    typ.trim();
+    filezeile = file.readStringUntil('\n');
+    typ = filezeile.substring(0,filezeile.indexOf(":"));
+    wert = filezeile.substring(filezeile.indexOf(":")+1);
+    
     typ.replace("\"","");
+    typ.trim();
+    
+    wert.replace(",","");
+    wert.replace("\"","");
+    wert.trim();
+    
 //    Serial.printf("typ: %s = %s\n" , typ.c_str(), wert.c_str());
-  
-    if ( typ.substring(0,5) == "Frame" ) 
-    { 
-      frame = typ.substring(typ.indexOf("_")+1).toInt();
-
-      if ( frame == 0 ) 
-      {
-        jsonBuffer.replace("],","]");
-        jsonBuffer = jsonBuffer + "}";
-//        Serial.print( "jsonBuffer: " );
-//        Serial.println (jsonBuffer);
-// Animationskopf
-        JSONVar myObject = JSON.parse(jsonBuffer);
-        if (JSON.typeof(myObject) == "undefined") { Serial.println(F("Load Aniamtion: Parsing the Animationsfile failed")); return false;}
-//        aniname = myObject["Name"];
-        wert = aniname;
-        wert.toCharArray(myanimation.name,wert.length()+1);
-        
-        myanimation.loops = (int)myObject["Loops"];
-        myanimation.laufmode = (int)myObject["Laufmode"];;
-        for ( uint8_t palidx = 0;palidx <= 9;palidx++)
-        {
-          wert = (const char*)myObject["Palette"][palidx];
-          anipalette[palidx]=string_to_num(wert);
-        }
-        // animation leer initialisieren
-        for ( uint8_t f = 0;f < MAXFRAMES;f++)
-        {
-           myanimation.frame[f].delay = 0;
-           for ( uint8_t zeile = 0;zeile <= 9;zeile++)
-           {
-              for ( uint8_t x = 0;x <= 10;x++)
-              {
-                 myanimation.frame[f].color[x][zeile] = num_to_color(0);
-              }
-           }          
-        }
-      }
-// AnimationFrames
-      if ( frame > 0 ) 
-      {
-        jsonBuffer = "{ " + jsonBuffer;
-        jsonBuffer.replace("},","}");
-        if ( ! loadFrames(frame-1,jsonBuffer)) return false;
-      }
-      jsonBuffer = "";
-    }
-    else
+    
+    if ( typ == "Name" ) aniname.toCharArray(myanimation.name,aniname.length()+1);
+    if ( typ == "Loops" ) myanimation.loops = wert.toInt();
+    if ( typ == "Laufmode" ) myanimation.laufmode = wert.toInt();
+    if ( typ == "Palette") 
     {
-      jsonBuffer = jsonBuffer + zeile;
+      jsonBuffer = filezeile;
+      jsonBuffer.replace("],","]");
+      jsonBuffer = '{' + jsonBuffer + "}";
+//      Serial.print( "jsonBuffer0: " );
+//      Serial.println (jsonBuffer);
+      if ( !loadjsonarry(-1,0,jsonBuffer) ) return false;  //Load Palette
+      jsonBuffer="";
     }
+    if ( typ.substring(0,5) == "Frame" ) frame = typ.substring(typ.indexOf("_")+1).toInt();
+    if ( typ == "Delay") myanimation.frame[frame].delay = wert.toInt();
+    if ( typ.substring(0,5) == "Zeile" ) 
+    {
+      zeile = typ.substring(typ.indexOf("_")+1).toInt();
+      jsonBuffer = filezeile;
+      jsonBuffer.replace("],","]");
+      jsonBuffer = '{' + jsonBuffer + "}";
+      
+      if ( !loadjsonarry(frame,zeile,jsonBuffer) ) return false; //Load Zeilen pro Frame
+      jsonBuffer="";
+    }
+//    Serial.printf("AnimationFrames ESP.getMaxFreeBlockSize: %i Codezeile: %u\n", ESP.getMaxFreeBlockSize(),  __LINE__);
+
   }
-// AnimationFrames (letzter Frame)
-  jsonBuffer = "{ " + jsonBuffer;
-  jsonBuffer.replace("}}","}");
-//  Serial.print( "frame: " );
-//  Serial.println (frame );
-//  Serial.print( "jsonBuffer: " );
-//  Serial.println (jsonBuffer); 
-  if ( ! loadFrames(frame,jsonBuffer)) return false;
   file.close();
+#ifdef DEBUG_ANIMATION
+  Serial.print( "myanimation.name: " );
+  Serial.println (myanimation.name);
+  Serial.print( "myanimation.loops: " );
+  Serial.println (myanimation.loops); 
+  Serial.print( "myanimation.laufmode: " );
+  Serial.println (myanimation.laufmode);    
+  Serial.print( "anipalette: " );
+  for ( uint8_t palidx = 0;palidx <= 9;palidx++)
+  {
+    Serial.print(num_to_string(anipalette[palidx]));
+    Serial.print(" ");
+  }
+  Serial.println("");
+  for ( uint8_t f = 0;f < MAXFRAMES;f++)
+  {
+    Serial.print ("myanimation.frame: ");
+    Serial.println (f);
+    Serial.print ("myanimation.frame.delay: ");
+    Serial.println (myanimation.frame[f].delay);
+    for ( uint8_t zeile = 0;zeile <= 9;zeile++)
+    {
+      Serial.print ("myanimation.frame.zeile: ");
+      Serial.print (zeile);
+      Serial.print (": ");
+      for ( uint8_t x = 0;x <= 10;x++)
+      {
+        Serial.print (color_to_string(myanimation.frame[f].color[x][zeile]));
+        Serial.print (" ");
+      }
+      Serial.println(" ");
+    }          
+  }
+  Serial.printf("AnimationFrames ESP.getMaxFreeBlockSize: %i Codezeile: %u\n", ESP.getMaxFreeBlockSize(),  __LINE__);
+#endif
   return true;
 }
 
-bool loadFrames(uint8_t frame, String jsonBuffer)
+bool loadjsonarry( int8_t frame, uint8_t zeile, String &jsonBuffer)
 {
-  uint16_t delayval;
-  String zeile_json;
   String farbwert;
-  
+  String zeile_json;
   JSONVar myObject = JSON.parse(jsonBuffer);
-  if (JSON.typeof(myObject) == "undefined") { Serial.println(F("Load Frames: Parsing the Animationsfile failed")); return false;}
-  delayval = (int)myObject["Delay"];
-  myanimation.frame[frame].delay = delayval;
-  for ( uint8_t zeile = 0;zeile <= 9;zeile++)
+
+  if (JSON.typeof(myObject) == "undefined") { Serial.println(F("Load JSON_ARRAY: Parsing the Animationsfile failed")); return false;}
+  delay(0);
+  if ( frame == -1 && zeile == 0 ) 
+  {
+    for ( uint8_t palidx = 0;palidx <= 9;palidx++)
+    {
+       farbwert = (const char*)myObject["Palette"][palidx];
+       anipalette[palidx]=string_to_num(farbwert);
+    }
+  }
+  else
   {
     zeile_json = "Zeile_" + String(zeile);
     for ( uint8_t x = 0;x < myObject[zeile_json].length();x++)
@@ -198,8 +227,7 @@ bool loadFrames(uint8_t frame, String jsonBuffer)
       myanimation.frame[frame].color[x][zeile] = string_to_color(farbwert);
     }
   }
-
-  return true; 
+  return true;
 }
 
 
@@ -217,11 +245,11 @@ bool saveAnimation(String aniname ) {
   bool fk = false;
   bool retval = true;
 
-  SPIFFS.remove(filename);
+  LittleFS.remove(filename);
 
   // Open file for writing
 
-  File file = SPIFFS.open(filename, "a");
+  File file = LittleFS.open(filename, "a");
   if (!file) {
     Serial.println(F("Save Animation: Failed to create file"));
     return false;
@@ -311,7 +339,7 @@ bool saveAnimation(String aniname ) {
 void makeAnimationmenue()
 {
   webServer.setContentLength(CONTENT_LENGTH_UNKNOWN);
-  String checked = "checked";
+  String checked = F("checked");
   uint8_t anzani = 0;
   
   String message = F("<!doctype html>"
@@ -319,19 +347,21 @@ void makeAnimationmenue()
   "<head>"
   "<title>");
   message += String(HOSTNAME);
-  message += F(" Animationen</title>"
-  "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
-  "<meta charset=\"UTF-8\">"
-  "<link rel=\"icon\" type=\"image/png\" sizes=\"192x192\"  href=\"/android-icon-192x192.png\">"
-  "<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\"  href=\"/favicon-32x32.png\">"
-  "<script src=\"jquery-3.1.1.min.js\"></script>"
-  "<link rel=\"stylesheet\" href=\"/animenue.css\" >"
-  "</head><body>"
-  "<h2>Animationsmen&uuml</h2>"
-  "<form name=\"animenue\" action=\"/\" method=\"POST\">"
-  "<div class=\"background-color\"></div>"
-  "<div class=\"section over-hide z-bigger\">"
-    "<div class=\"row justify-content-center pb-5\">"
+  message += F(" " LANG_ANIMATIONS "</title>\n"
+  "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
+  "<meta charset=\"UTF-8\">\n"
+  "<link rel=\"icon\" type=\"image/png\" sizes=\"192x192\"  href=\"/web/android-icon-192x192.png\">"
+  "<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\"  href=\"/web/favicon-32x32.png\">\n"
+  "<script src=\"/web/jquery-3.1.1.min.js\"></script>\n"
+  "<link rel=\"stylesheet\" href=\"/web/animenue.css\" >\n"
+  "</head><body>\n"
+  "<h2>\n"
+  LANG_ANIMATIONMENU
+  "</h2>"
+  "<form name=\"animenue\" action=\"/\" method=\"POST\">\n"
+  "<div class=\"background-color\"></div>\n"
+  "<div class=\"section over-hide z-bigger\">\n"
+    "<div class=\"row justify-content-center pb-5\">\n"
       "<div class=\"checkboxcontainer\">\n");
 // ################################################# sende html Teil 1
     webServer.send(200, "text/html", message);
@@ -342,43 +372,60 @@ void makeAnimationmenue()
   {
     if ( myanimationslist[aninr].length() == 0 || myanimationslist[aninr] == "neu" ) continue;
     anzani++;
-    message += "<input class=\"checkbox-tools\" type=\"radio\" name=\"myselect\" id=\"" + String(myanimationslist[aninr]) + "\" " + checked +" value=\"" + String(myanimationslist[aninr]) + "\">\n"
-    "<label class=\"for-checkbox-tools\" for=\"" + String(myanimationslist[aninr]) + "\">\n";
-    message += "<i class='uil'>" + String(anzani) + "</i>" + String(myanimationslist[aninr]) + "</label>\n";
+    message += F("<input class=\"checkbox-tools\" type=\"radio\" name=\"myselect\" id=\"");
+    message += String(myanimationslist[aninr]);
+    message += F("\" ");
+    message += checked;
+    message += F(" value=\"");
+    message += String(myanimationslist[aninr]);
+    message += F("\">\n");
+    message += F("<label class=\"for-checkbox-tools\" for=\""); 
+    message += String(myanimationslist[aninr]);
+    message += F("\">\n");
+    message += F("<i class='uil'>");
+    message += String(anzani); 
+    message += F("</i>");
+    message += String(myanimationslist[aninr]); 
+    message += F("</label>\n");
     checked = "";
-// ########################################################################### sende Liste html
-webServer.sendContent(message);
-message = "";
-delay(0);
-// ########################################################################### 
+//########################################################################### sende Liste html
+    if ( aninr %5 == 0 )
+    {
+      webServer.sendContent(message);
+      message = "";
+      delay(0);
+    }
+//########################################################################### 
   }
   if ( anzani < MAXANIMATION ) 
   {
-    message += "<input class=\"checkbox-tools\" type=\"radio\" name=\"myselect\" id=\"NEU\" " + checked +" value=\"neu\">\n"
-    "<label class=\"for-checkbox-tools\" for=\"NEU\">neu</label>\n";
+    message += F("<input class=\"checkbox-tools\" type=\"radio\" name=\"myselect\" id=\"NEU\" ");
+    message += checked;
+    message += F(" value=\"neu\">\n");
+    message += F("<label class=\"for-checkbox-tools\" for=\"NEU\">neu</label>\n");
   }
   message += F("</div>"
-        "</div>"
-    "<br>"
-    "<hr>"
-    "<div class=\"buttonscontainer\">"
-    "<button class=\"buttons\" type=\"submit\" formaction=\"/back\">&#128281; zur&uumlck</button>"
-    "<button class=\"buttons\" type=\"submit\" formaction=\"/makeanimation\">&#127912; &auml;ndern</button>"
+    "</div>\n"
+    "<br>\n"
+    "<hr>\n"
+    "<div class=\"buttonscontainer\">\n"
+    "<button class=\"buttons\" title=\"" LANG_BACK "\" type=\"submit\" formaction=\"/back\">&#128281; " LANG_BACK "</button>\n"
+    "<button class=\"buttons\" title=\"" LANG_CHANGEBUTTON "\" type=\"submit\" formaction=\"/makeanimation\">&#127912; " LANG_CHANGEBUTTON "</button>\n"
     "</div>"
     "</div>"
-    "</form>"
+    "</form>\n"
     
-    "<script>"
-    "var urlBase = \"/\";"
-    "$(\".checkbox-tools\").click(function() {"
+    "<script>\n"
+    "var urlBase = \"/\";\n"
+    "$(\".checkbox-tools\").click(function() {\n"
     "newvalue = $(\"input[class='checkbox-tools']:checked\").val();"
     "$.post(urlBase + \"myaniselect\" + \"?value=\" + newvalue );" 
-    "});"
-    "document.addEventListener('DOMContentLoaded', function() { "
+    "});\n"
+    "document.addEventListener('DOMContentLoaded', function() {\n"
      "$.post(urlBase + \"myaniselect\" + \"?value=BACK\" );"
-   "});"
-    "</script>"
-    "</body></html>");
+    "});\n"
+    "</script>\n"
+    "</body></html>\n");
 //##################### sende letzen html Teil
   webServer.sendContent(message);
   webServer.sendContent("");

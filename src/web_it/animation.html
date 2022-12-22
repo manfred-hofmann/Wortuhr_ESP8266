@@ -1,27 +1,30 @@
 <!doctype html>
 <html><head>
-<title>Animantion</title>
+<title>Animazione</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="UTF-8">
-<link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
-<script src="/jquery-3.1.1.min.js"></script>
-<link rel="stylesheet" href="/animation.css" >
+<link rel="icon" type="image/png" sizes="192x192"  href="/web/android-icon-192x192.png">
+<script src="/web/jquery-3.1.1.min.js"></script>
+<link rel="stylesheet" href="/web/animation.css" >
 </head>
 <body>
 
 <div class="settingtextcontainer">
 <input type ="text" id="aniname" name="aniname" size="29" minlength="3" maxlength="20" class="settingtext" value="">
-<br> Loops:
+<br> Loop:
      <input class="loops" type ="number" id="loops" name="loops" min="1" max="20" value=5>
-	 Laufmode:
+	 Modalità:
 	 <select class="laufmode" name="laufmode" id="laufmode">
-	   <option value="0"> von Anfang </option>
-	   <option value="1"> vor/zur&uumlck </option>
-	   <option value="2"> Zufall </option>
+	   <option value="0">dall'inizio</option>
+	   <option value="1">Avanti e indietro</option>
+	   <option value="2">coincidentalmente</option>
 	 </select>
 </div>
+<div class="sanduhrcontainer" id="sanduhrcontainer" style="display: none">
+<img class="sanduhr" id="sanduhr" style="width: 100px" src="/sanduhr" alt="Sanduhr">
+</div>
 <hr>
-<div class="paintcontainer"><p class="painttext" id="painttext" >Farben Auswahl</p> 
+<div class="paintcontainer"><p class="painttext" id="painttext" >selezione dei colori</p> 
 
 <input class="colorselect" id="colorselect0" name="colorselect0" value="#000000" readonly>
 <input class="colorselect" id="colorselect1" name="colorselect1" value="#000000" readonly>
@@ -59,7 +62,7 @@
 <br>
 </div>
 
-<div class="delayslidercontainer">Delay(ms):<output id="delayoutput" for="delayslider"></output>
+<div class="delayslidercontainer">Ritardo(ms):<output id="delayoutput" for="delayslider"></output>
 <input id="delayslider" name="delay" type="range"  min="0" max="500" value="500" step="10.0" value="100" class="delayslider">
 </div>
 
@@ -67,7 +70,7 @@
 <table border="0" cellspacing="0" cellpadding="0" width="99%">
 		<tr>
 		    <td align="left" width="33%">
-				<button class="buttons" type="button" id="bv" name="action" value="3">zu Frame 1</button> 
+				<button class="buttons" type="button" id="bv" name="action" value="3">pre immagine 1</button> 
 			</td>
 			<td align="middle" width="33%">
 			<dfn class ="tooltip">
@@ -86,7 +89,7 @@
 			</dfn>
 			</td>
 			<td align="right" width="33%">
-				<button class="buttons" type="button" id="bn" name="action" value="6">zu Frame 2</button>
+				<button class="buttons" type="button" id="bn" name="action" value="6">suc immagine 2</button>
 			</td>
 		</tr>
 		</table>
@@ -95,8 +98,8 @@
 <hr>
 
 <div class="buttonscontainer">
-<button class="buttons" type="button" onclick="history.back()" >&#128281; zur&uumlck</button>
-<button class="buttons" type="button" id="_action" name="_action" value="save">&#128190; speichern</button>
+<button class="buttons" type="button" onclick="history.back()" >&#128281; indietro</button>
+<button class="buttons" type="button" id="_action" name="_action" value="save">&#128190; salvare</button>
 </div>
 
 
@@ -222,9 +225,9 @@ $("#bv").click(function() {
   getframe(frame);
   anzframe = frame + 1;
   nextframe = anzframe + 1;
-  $("#painttext").text("Farben Auswahl (Frame "+ anzframe +")");
-  $("#bn").text("zu Frame " + nextframe);
-  $("#bv").text("zu Frame " + frame);
+  $("#painttext").text("selezione dei colori (immagine "+ anzframe +")");
+  $("#bn").text("suc immagine " + nextframe);
+  $("#bv").text("pre immagine " + frame);
   postValue("frame",frame);
 });
 
@@ -236,9 +239,9 @@ $("#bn").click(function() {
   getframe(frame);
   anzframe = frame + 1;
   nextframe = anzframe + 1;
-  $("#painttext").text("Farben Auswahl (Frame "+ anzframe +")");
-  $("#bv").text("zu Frame " + frame);
-  $("#bn").text("zu Frame " + nextframe);
+  $("#painttext").text("selezione dei colori (immagine "+ anzframe +")");
+  $("#bv").text("pre immagine " + frame);
+  $("#bn").text("suc immagine " + nextframe);
   postValue("frame",frame);
 });
 
@@ -314,7 +317,7 @@ postValue("laufmode",this.value);
     $("#loops").val(myAniObj.Loops);
 	$("#laufmode").val(myAniObj.Laufmode);
     anzframe = frame + 1;
-    $("#painttext").text("Farben Auswahl (Frame "+ anzframe +")");
+    $("#painttext").text("selezione dei colori (immagine "+ anzframe +")");
 // füllen der Palette  
     for (i in myAniObj.Palette) {
 
@@ -367,16 +370,18 @@ postValue("laufmode",this.value);
   }
   
   $("#_action").click(function() {
+    document.getElementById("sanduhrcontainer").style.display = "block";
     newvalue = this.value;
     var body = { name: "_action", value: newvalue };
 	$.post(urlBase + "?_action" + "=" + newvalue,body,function(res){
+	    document.getElementById("sanduhrcontainer").style.display = "none";
 		if ( res == "E" ) 
 		{ 
-		  alert("Achtung Fehler beim speichern!") 
+		  alert("Errore durante il salvataggio!") 
 		}
 		else
 		{
-		  alert("Animation " + res + " gespeichert");
+		  alert("Animazione " + res + " salvata");
 		}
 	});
 //    postValue("_action",this.value);

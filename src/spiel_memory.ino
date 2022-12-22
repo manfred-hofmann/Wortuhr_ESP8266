@@ -302,6 +302,9 @@ uint16_t audiolautstaerke = 33*gamesound;
 void mstop_check(bool &MemoryRunning)  // prüfen ob die stop-Taste gedrückt wurde
 {
   handle_Webserver(__LINE__);
+#ifdef IR_RECEIVER_GAME
+      readIRButton();
+#endif
   if (curControl == BTN_STOP || curControl == BTN_EXIT)
   {
     gameisrunning = false;
@@ -414,6 +417,9 @@ bool moveMCursor(uint8_t &posAx, uint8_t &posAy, uint8_t &posBx, uint8_t &posBy,
   }
   
   do{
+#ifdef IR_RECEIVER_GAME
+      readIRButton();
+#endif
     if (curControl == BTN_STOP || curControl == BTN_EXIT){
       gameisrunning = false;
       mcursorende = true;

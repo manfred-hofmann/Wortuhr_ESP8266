@@ -156,6 +156,9 @@ void runSnake(){
     do{
       debugtmp++;
       delay(5);
+#ifdef IR_RECEIVER_GAME
+      readIRButton();
+#endif
       webServer.handleClient();
       if (curControl == BTN_STOP || curControl == BTN_EXIT){
           snakeRunning = false;
@@ -198,6 +201,9 @@ void runSnake(){
 #ifdef DEBUG_GAME
     debugval = debugtmp;
     debugtmp = 0;
+#endif
+#ifdef IR_RECEIVER_GAME
+      readIRButton();
 #endif
   }
 }

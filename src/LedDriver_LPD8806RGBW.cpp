@@ -8,7 +8,7 @@ LedDriver_LPD8806RGBW.cpp
 #ifdef LED_LIBRARY_LPD8806RGBW
 
 #ifdef LED_LAYOUT_HORIZONTAL_1
-    uint8_t ledMap[] = {
+    uint8_t ledMap[] PROGMEM = {
           0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,
          21,  20,  19,  18,  17,  16,  15,  14,  13,  12,  11,
          22,  23,  24,  25,  26,  27,  28,  29,  30,  31,  32,
@@ -24,7 +24,7 @@ LedDriver_LPD8806RGBW.cpp
 #endif
 
 #ifdef LED_LAYOUT_HORIZONTAL_2
-    uint8_t ledMap[] = {
+    uint8_t ledMap[] PROGMEM = {
       109, 108, 107, 106, 105, 104, 103, 102, 101, 100, 99,
       88,  89,  90,  91,  92,  93,  94,  95,  96,  97,  98,
       87,  86,  85,  84,  83,  82,  81,  80,  79,  78,  77,
@@ -39,8 +39,24 @@ LedDriver_LPD8806RGBW.cpp
     };
 #endif
 
+#ifdef LED_LAYOUT_HORIZONTAL_3
+    uint8_t ledMap[] PROGMEM = {
+     112, 111, 110, 109, 108, 107, 106, 105, 104, 103, 102,
+      90,  91,  92,  93,  94,  95,  96,  97,  98,  99, 100,
+      89,  88,  87,  86,  85,  84,  83,  82,  81,  80,  79,
+      68,  69,  70,  71,  72,  73,  74,  75,  76,  77,  78,
+      67,  66,  65,  64,  63,  62,  61,  60,  59,  58,  57,
+      46,  47,  48,  49,  50,  51,  52,  53,  54,  55,  56,
+      45,  44,  43,  42,  41,  40,  39,  38,  37,  36,  35,
+      24,  25,  26,  27,  28,  29,  30,  31,  32,  33,  34,
+      23,  22,  21,  20,  19,  18,  17,  16,  15,  14,  13,
+       1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,
+     113, 101, 12, 0, 114
+    };
+#endif
+
 #ifdef LED_LAYOUT_VERTICAL_1
-    uint8_t ledMap[] = {
+    uint8_t ledMap[] PROGMEM = {
           1,  21,  22,  41,  42,  61,  62,  81,  82, 101, 103,
           2,  20,  23,  40,  43,  60,  63,  80,  83, 100, 104,
           3,  19,  24,  39,  44,  59,  64,  79,  84,  99, 105,
@@ -56,7 +72,7 @@ LedDriver_LPD8806RGBW.cpp
 #endif
 
 #ifdef LED_LAYOUT_VERTICAL_2
-    uint8_t ledMap[] = {
+    uint8_t ledMap[] PROGMEM = {
           9,  10,  29,  30,  49,  50,  69,  70,  89,  90, 109,
           8,  11,  28,  31,  48,  51,  68,  71,  88,  91, 108,
           7,  12,  27,  32,  47,  52,  67,  72,  87,  92, 107,
@@ -72,7 +88,7 @@ LedDriver_LPD8806RGBW.cpp
 #endif
 
 #ifdef LED_LAYOUT_VERTICAL_3
-    uint8_t ledMap[] = {
+    uint8_t ledMap[] PROGMEM = {
           10, 12,  31,  32,  51,  52,  71,  72,  91,  92, 112,
           9,  13,  30,  33,  50,  53,  70,  73,  90,  93, 111,
           8,  14,  29,  34,  49,  54,  69,  74,  89,  94, 110,
@@ -110,9 +126,9 @@ void LedDriver_LPD8806RGBW::show()
     uint8_t blue  = brightness * 0.0039 * (settings.mySettings.bg_color & 0xFF);
     for ( uint8_t num = 0 ; num < 110; num++)
     {
-      if ( strip->getPixelColor(ledMap[num]) == 0)
+      if ( strip->getPixelColor(pgm_read_byte(&ledMap[num])) == 0)
       {
-        strip->setPixelColor(ledMap[num], red/2, green/2, blue/2);
+        strip->setPixelColor(pgm_read_byte(&ledMap[num]), red/2, green/2, blue/2);
       }
     }
   }
@@ -149,6 +165,6 @@ void LedDriver_LPD8806RGBW::setPixelRGB(uint8_t num, uint8_t red, uint8_t green,
  
     uint32_t ledColor = (blue/2 << 16) + (red/2 << 8) + green/2;  // LPD8806 only uses 7 bit for color
 
-    strip->setPixelColor(ledMap[num], ledColor );
+    strip->setPixelColor(pgm_read_byte(&ledMap[num]), ledColor );
 }
 #endif

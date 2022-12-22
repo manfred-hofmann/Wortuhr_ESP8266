@@ -12,7 +12,7 @@
 #include "Languages.h"
 #include "Modes.h"
 
-#define SETTINGS_MAGIC_NUMBER 0x12
+#define SETTINGS_MAGIC_NUMBER 0x14
 #define SETTINGS_VERSION 1
 
 
@@ -63,6 +63,9 @@ public:
         boolean ani_sunset;                           // Sonnenuntergang Ankündigung
         double latitude;                              // Standort Latitude
         double longitude;                             // Standort Longitude
+        boolean singlegong;                           // Beim Gong true: nur ein Schlag false: soviel Schläge wie Stunden (12 Format) 
+        boolean dummybool;                            // Dummybool
+        uint16_t dummyunit16;                         // Dummyunit16
     } mySettings;
 
     void saveToEEPROM();

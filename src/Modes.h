@@ -52,8 +52,8 @@ typedef enum eMode : uint8_t
   MODE_SHOWANIMATION,  // 22
   MODE_MAKEANIMATION,  // 23
   MODE_ALARMANIMATION,  // 24
-  MODE_GAME             //25
- 
+  MODE_GAME,            //25
+  MODE_LAST             //26
 } Mode;
 
 // Overload the ControlType++ operator.

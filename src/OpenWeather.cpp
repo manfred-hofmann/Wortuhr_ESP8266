@@ -3,6 +3,7 @@
 //******************************************************************************
 
 #include "OpenWeather.h"
+#include "Languages.h"
 
 OpenWeather::OpenWeather()
 {
@@ -21,7 +22,7 @@ uint16_t OpenWeather::getOutdoorConditions(String location, String apiKey)
   uint8_t retcode;
   int timezoneshift;
   retcode = 0;
-  owfehler = "Alles OK!!";
+  owfehler = LANG_OW_OK;
   if ( apiKey.length() > 25 ) 
   {
     WiFiClient client;
@@ -31,7 +32,13 @@ uint16_t OpenWeather::getOutdoorConditions(String location, String apiKey)
 #endif    
     if (client.connect("api.openweathermap.org", 80))
     {
-        String url = "/data/2.5/weather?q=" + String(location) + "&lang=de&units=metric&appid=" + String(apiKey);
+        String url = F("/data/2.5/weather?q=");
+        url += String(location);
+        url += F("&lang=");
+        url += F(LANG_OPENWAETHER_LANG);
+        url += F("&units=metric&appid=");
+        url += String(apiKey);
+        
 #ifdef DEBUG_OW
   Serial.printf("Open Weather url: %s\n",url.c_str() );
 #endif       
@@ -55,6 +62,9 @@ uint16_t OpenWeather::getOutdoorConditions(String location, String apiKey)
 #endif
 
         JSONVar weatherArray = JSON.parse(response);
+#ifdef DEBUG_OW
+        Serial.printf("OpenWeather: %i Codezeile: %u\n", ESP.getMaxFreeBlockSize(),  __LINE__);
+#endif
         description = "";
         weathericon2 = "";   
         weathericon1 = "";
@@ -100,7 +110,7 @@ uint16_t OpenWeather::getOutdoorConditions(String location, String apiKey)
         else
         {
           retcode = retcode + 2;
-          owfehler = "Fehler bei Temperatur!!";
+          owfehler = LANG_OW_ERRTEMP;
         }
         if(! isnan((int)weatherArray["main"]["humidity"]))
         {
@@ -113,7 +123,7 @@ uint16_t OpenWeather::getOutdoorConditions(String location, String apiKey)
         else
         {
           retcode = retcode + 4;
-          owfehler = "Fehler bei Luftfeuchte!!";
+          owfehler = LANG_OW_ERRHUM;
         }
         if(! isnan((int)(int)weatherArray["main"]["pressure"]))
         {
@@ -126,7 +136,7 @@ uint16_t OpenWeather::getOutdoorConditions(String location, String apiKey)
         else
         {
           retcode = retcode + 8;
-          owfehler = "Fehler bei Luftdruck!!";
+          owfehler = LANG_OW_ERRPRES;
         }
 //Clouds
         if(! isnan((int)(int)weatherArray["clouds"]["all"]))
@@ -152,7 +162,7 @@ uint16_t OpenWeather::getOutdoorConditions(String location, String apiKey)
         else
         {
           retcode = retcode + 16;
-          owfehler = "Keine Sonnenaufgangsinfo!!";
+          owfehler = LANG_OW_ERRSUNRISE;
         }
 // Sonnenuntergang
         if(! isnan((int)(int)weatherArray["sys"]["sunset"]))
@@ -173,7 +183,7 @@ uint16_t OpenWeather::getOutdoorConditions(String location, String apiKey)
         else
         {
           retcode = retcode + 32;
-          owfehler = "Keine Sonnenuntergangsinfo!!";
+          owfehler = LANG_OW_ERRSUNSET;
         }
         if(! isnan((double)weatherArray["wind"]["speed"]) ) 
         {
@@ -191,13 +201,13 @@ uint16_t OpenWeather::getOutdoorConditions(String location, String apiKey)
       Serial.println("Keine Connect zu Open Weather!!" );
 #endif
       retcode = 64;
-      owfehler = "Keine Connect zu Open Weather!!";
+      owfehler = LANG_OW_ERRCONNECT;
     }
   }
   else
   {
     retcode = 1;
-    owfehler = "API-Key zu kurz!!";
+    owfehler = LANG_OW_ERRAPI;
     description = "";
     weathericon1 = "";
     weathericon2 = "";
