@@ -1,19 +1,25 @@
-# Wortuhr_ESP8266
-Wortuhr mit ESP8266 WeMos D1 mini und NeoPixel WS2812B LEDs mit mp3 Sounds, Animationen, Transitions, Events und Spiele, Webzugriff   
+# Wortuhr_ESP8266  
+Wortuhr mit ESP8266 WeMos D1 mini (Pro) und NeoPixel WS2812B LEDs   
+mit mp3 Sounds, Animationen, Transitions, Events und Spiele, Webzugriff, multlingual  
 -----------------------------------------------------------------
-## Bedienungsanleitung:
-https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/Bedienungsanleitung_Wortuhr_mp3.pdf  
+## Bedienungsanleitung:  
+https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/Bedienungsanleitung_Wortuhr_mp3_20221222.pdf  
+
+## Manual:  
+https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/Manual_Wordclock_mp3_20221222.pdf  
 
 ## Sonstiges:  
+* Mehrsprachig: de, ch, en, fr, es, it, nl  (Sprach-Layout wird in configuration.h ausgewählt)  
 * Automatischer W-Lan Reconnect.  
 * Mondphase wird in Abwechslung der Temp. und Datumsanzeige angezeigt.  
 * Die Minuten LED können nun eine eigene Farbe haben.  
 * Silvester CountDown.  
-* Zwei Eingabe Taster sind möglich: On/Off und Mode. 
-  Diese sind per Touch oder als physikalischer Taster in configuration.h einstellbar.  
+* Drei Eingabe Taster sind möglich: On/Off, Time und Mode.   
 * Sonnenauf-/untergangsanimation   
 * Ausführen von Adhoc Events mit http-Request:   
 z.B.: http://wortuhr-ip/setEvent?text=I+love+you&color=1&audio=701&preani=HERZ&postani=HERZ  
+* API Abruf vieler Parameter mit http-Request:  
+http://wortuhr-ip/apidata  
 
 
 ## Temperatur und Luftdruck:  
@@ -40,7 +46,7 @@ z.B.: http://wortuhr-ip/setEvent?text=I+love+you&color=1&audio=701&preani=HERZ&p
 
 
 ## Webfrontend:   
-* Webserver ohne das externe CSS File. (Denn die URL kann ja mal in Zukunft nicht mehr funktionieren). Alle CSS Files sind im SPIFFS des ESP abgelegt.  
+* Alle CSS Files sind im LittleFS des ESP abgelegt.  
 * Eigenes Wortuhr Favicon eingefügt.  
 * Werte auf Info Seite zur Einsicht aller wichtigen Parameter   
 * Sonnenaufgangs- und Sonnenuntergangszeiten  
@@ -58,7 +64,7 @@ z.B.: http://wortuhr-ip/setEvent?text=I+love+you&color=1&audio=701&preani=HERZ&p
 * Animationen mit Namen ZHHMM werden zur jeweiligen Stunde und Minute angezeigt (z.B. Z1200 startet eine Animation um 12 Uhr)  
 * Animation mit Name ALARM wird während des Alarms angezeigt.  
 ![Alarm](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/ALARM.gif "Alarm")   
-* Alle Animationen werden im SPIFFS unter dem Name ani_ANINAME.json gespeichert und können über den Dateimanager gesichert/kopiert werden.  
+* Alle Animationen werden im LittleFS unter dem Name ani_ANINAME.json gespeichert und können über den Dateimanager gesichert/kopiert werden.  
 
 
 ## Events:   
@@ -66,7 +72,7 @@ z.B.: http://wortuhr-ip/setEvent?text=I+love+you&color=1&audio=701&preani=HERZ&p
 * Events werden über die Weboberfläche gepflegt.  
 ![Events](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Events.jpg "Events") 
 * Es können eigene Animationen für Deine Events erstellt werden.  
-* Alle Events werden im SPIFFS unter dem Namen events.json abgelegt und können über den Dateimanager gesichert/kopiert werden.  
+* Alle Events werden im LittleFS unter dem Namen events.json abgelegt und können über den Dateimanager gesichert/kopiert werden.  
 
 
 ## Spiele:  
@@ -106,8 +112,8 @@ Viel Spaß mit den Spielen!
 ## Settings:  
 * Eingabe des Zeitservers über die Settings.  
 * Systemname in Settings.    
-* Hier ist der Dateimanager für den SPIFFS.  
-![Spiffs2](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/spiffs2.JPG "Spiffs2")
+* Hier ist der Dateimanager für LittleFS.  
+![LittleFS](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/LittleFS_Explorer.png "LittleFS")
 * Angabe der Location und Höhe über 0 in Settings (wird für die WetterAPI und Berechnung des Luftdrucks auf Meereshöhe benötigt).  
 * Hier API-Key von OpenWeather eintragen!  
 * Eingabe des Automodeintervall in Settings  ( Intervall wie oft verschiedene Modes Wetter, Temperatur, Mondphase... angezeigt werden)  
@@ -121,7 +127,9 @@ Viel Spaß mit den Spielen!
 
 
 ## System:  
-* Neustart mit <UHR-IP>/reboot  
+* Neustart mit http://\<UHR-IP\>/reboot  
+* W-Lan Daten löschen mit http://\<UHR-IP\>/wifireset  
+* Wortuhr-API mit http://\<UHR-IP\>/apidata  
 * compilierbar auch ohne mp3 Player (#define AUDIO_SOUND in der Configuration kommentieren)    
 * WLAN Empfangsstärke wird auf der Infoseite angezeigt  
 * Anzeige der IP-Adresse im erweiterten Testmenü (nach den Sekunden nochmal die Taste Mode drücken. 
@@ -135,11 +143,13 @@ https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/Platine_Plan_Wortuh
 Es können verschiedene LED Layouts verwendet werden.  
 In der configuration.h sind 4 voreingestellte Layouts zu finden:  
 
-// Das LED Layout (Siehe in LedDriver.cpp):  
+Das LED Layout (Siehe in LedDriver.cpp):   
+```
 #define LED_LAYOUT_HORIZONTAL_2  
 //#define LED_LAYOUT_VERTICAL_1  
 //#define LED_LAYOUT_VERTICAL_2  
 //#define LED_LAYOUT_VERTICAL_3  
+```
 
 Die Layouts sind in LedDriver.cpp  definiert.
 Hier können nach belieben auch eigene angelegt werden.
@@ -169,39 +179,100 @@ Hier ein Beispiel Layout:
 ![LED-Layout](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/LED-Beispiel-Layout.jpg "LED-Layout")   
 
 Möchte man auf die "Alarm LED" verzichten, so muss in der configuration.h die Anzahl der LEDs angepasst werden:  
+```
 #define NUMPIXELS 114 -> ohne eigen Alarm LED  
-#define NUMPIXELS 115 -> mit Alarm LED  
+define NUMPIXELS 115 -> mit Alarm LED  
+```
 
+## ESP:  
+z.B.: https://de.aliexpress.com/item/1005004547410607.html?spm=a2g0o.order_list.0.0.21ef5c5ftzOASF&gatewayAdapt=glo2deu  
+D1 MINI WEMOS Pro 4M   
 
-## Inbetriebnahme:  
-* folgende Libraries werden benötigt (min. Versionen) (alle zu finden unter Bibliotheken verwalten):  
-    * ESP8266 Board Version 2.6.3 (oder 2.7.4. Es geht auch 3.0.2, wird aber nicht empfohlen)  
-	* MP3-Player - DFRobotDFPlayer Version 1.0.5  
-	* BME280 - Adafruit BME280 Version 2.1.4  
-	* Adafruit Unified Sensor Version 1.1.4  
-	* Adafruit Neopixel: Version 1.8.0  
-	* SunRise: Version 2.0.2  
-	* Evt. EspSoftwareSerial Version 6.12.6
-	* Openweather API-Key (https://openweathermap.org/) für die Wetterinformationen.  
-* Die mp3 Files (Sound) in den Ordner "mp3" auf die SD-Karte kopieren welche in den mp3-Player kommt. Es reicht eine 4GB Karte.
-* Software mit Arduino IDE (min. Version 1.8.12) auf den ESP8266 laden.  
-Einstellungen für das Board: (LOLIN(WEMOS) D1 R2 & mini)  
+Arduino IDE Einstellungen:  
+Board: "LOLIN(WEMOS) D1 R2 & mini"  
 CPU Frequenz auf 160 MHz  
 Flash Size 4MB ( FS:2MB OTA~1019KB)  
 SLL Support Basic  
 
-* SPIFFS  (Sketch Data Upload):  
-Das Favicon, Events, Animationen, html Seiten und css Files liegen im SPIFFS des ESP.
-Dazu muss das data Verzeichniss über "Sketch Data upload" übertragen werden.
-(vorher den Seriellen Monitor zumachen!)
+### besser:   
+D1 MINI WEMOS Pro 16M  
+Arduino IDE Einstellungen:  
+Board: "LOLIN(WEMOS) D1 pro"  
+CPU Frequenz auf 160 MHz  
+Flash Size: 16MB ( FS:14MB OTA~1019KB)  
+SLL Support Basic  
 
-Wenn du den Menüpunkt nicht hast, hier die Anleitung dazu:  
-https://www.az-delivery.de/blogs/azdelivery-blog-fur-arduino-und-raspberry-pi/entwurf-daten-in-den-flash-speicher-des-esp-ablegen  
-Und die neueste Version dazu:  
-https://github.com/esp8266/arduino-esp8266fs-plugin/releases/download/0.5.0/ESP8266FS-0.5.0.zip  
-* ESP8266 starten und mit dem Handy das WLAN der Wortuhr (Wortuhr) suchen und anmelden.  
+## Inbetriebnahme:  
+* ESP8266 Board Version >= 3.0.2    
+
+* folgende Libraries werden benötigt (min. Versionen) (alle zu finden unter Bibliotheken verwalten):  
+    * Arduino_JSON - Version 0.1.0  
+	* BME280 - Adafruit BME280 Version 2.1.4  
+	* MP3-Player - DFRobotDFPlayer Version 1.0.5  
+	* Adafruit Unified Sensor Version 1.1.4  
+	* Adafruit Neopixel: Version 1.10.6  
+	* SunRise: Version 2.0.2 by Cyrus Rahman   
+	* MP3-Player - DFRobotDFPlayer Version 1.0.5  
+	* ArduinoOTA 1.0.3  
+	* TimeLib 1.6.0  by Michael Margolis  
+	* Ticker 4.4.0 by Stefan Staub  
+	
+### optional:  
+* IRremoteESP8266 2.7.4 by David Conran,..  
+* DS3232RTC by Jack Christensen Version 2.0.1   
+	
+### OpenWeather:  	
+* Openweather API-Key (https://openweathermap.org/) für die Wetterinformationen.  
+
+### SoundFiles:  
+* Die mp3 Files (Sound) in den Ordner "mp3" auf die SD-Karte kopieren welche in den mp3-Player kommt. Es reicht eine 4GB Karte.
+   
+### Software anpassen:  
+In configuration.h sind einige vordefinierte Einstellungen vorzunehmen:  
+- Sprache/Layout  
+- ESP-Pinbelegung  
+- Mit/Ohne Audio
+- u.s.w.
+  
+### Software laden:  
+* Software mit Arduino IDE (min. Version 1.8.12) auf den ESP8266 laden.   
+
+* ESP8266 starten das WiFi Zeichen auf der Uhr wird weiß. Mit dem Handy das WLAN der Wortuhr (Wortuhr) suchen und anmelden. (Passwort=12345678)    
 * Dann sollte automatisch der Browser starten. Hier die WLAN Zugangsdaten eingeben.  
 (Falls der Browser nicht startet, die Default IP des AP ist 192.168.4.1)  
+* Danach sollte das WiFi Zeichen auf der Uhr grün werden.  
+* Wenn die Verbindung mit dem W-Lan funktioniert hat wird auf der Uhr die IP-Adresse so lange angezeigt bis sich ein Browser mit dieser Adresse verbunden hat.     
+
+### LittleFS:  
+Mit dem Browser über der Adresse der Wortuhr den Dateimanager über /fs starten:    
+  
+**http://\<UHR-IP\>/fs**  
+   
+1. LittleFS ist am Anfang leer:   
+![LittleFS_01](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Wortuhr_Dateimanager_leer.jpg "LittleFS_01")  
+2. Vor dem Upload root:   
+Alle Dateien vom data Verzeichnis auswählen und uploaden:  
+![LittleFS_02](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Wortuhr_Dateimanager_vor_upload_root.jpg "LittleFS_02")  
+3. Upload der Files im Serial Monitor:  
+![LittleFS_03](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Wortuhr_Dateimanager_upload_files.jpg "LittleFS_03")  
+4. nach Upload root:  
+![LittleFS_04](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Wortuhr_Dateimanager_nach_upload_root.jpg "LittleFS_04")  
+5. Dann noch das Web Verzeichnis  
+web Verzeichnis anwählen:  
+![LittleFS_05](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Wortuhr_Dateimanager_vor_upload_web1.jpg "LittleFS_05")  
+Alle Dateien vom data/web Verzeichnis auswählen:  
+![LittleFS_06](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Wortuhr_Dateimanager_vor_upload_web2.jpg "LittleFS_06")  
+6. Nach Upload Web-Verzeichnis:  
+![LittleFS_07](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Wortuhr_Dateimanager_nach_upload_web.jpg "LittleFS_07")  
+7. Upload andere Sprachen (optional):  
+Falls eine andere Sprache als deutsch gewählt wurde, einfach den Inhalt des jeweiligen web Verzeichnisses (web_ch, web_en, web_es, web_fr, web_nl)  
+in den LittlefS web Ordner zusätzlich übertragen. Dazu den web Ordner nochmal auswählen:  
+![LittleFS_08](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Wortuhr_Dateimanager_vor_upload_web1.jpg "LittleFS_08")  
+Und alle Dateien des jeweiligen web_xx Ordner auswählen und uploaden.  
+
+Hier nochmal wie beschrieben:  
+![LittleFS_Film](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Load_LittleFS_2.gif "LittleFS_Film") 
+
 * Danach den ESP8266 neustarten und über die Webadresse des ESP in den Menüpunkt Settings die Wortuhr anpassen.  
 Hier sind folgende Punkte wichtig:
 - Systemname    
@@ -212,6 +283,13 @@ Hier sind folgende Punkte wichtig:
 * __Evtl. nochmal die configuration.h durchgehen und die Einstellungen den eigenen Gegebenheiten anpassen!__   
 * restliche Einstellungen sind auf der Settings Seite zu finden  
 
+Eine ausführliche Bedienungsanleitung ist hier zu finden:  
+### Bedienungsanleitung:  
+https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/Bedienungsanleitung_Wortuhr_mp3_20221222.pdf  
+
+### Manual (English):  
+https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/Manual_Wordclock_mp3_20221222.pdf   
+  
 -----
 * Hier mein Aufbau:
 <img src="https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/WU_links.jpg" width="233" height="472" />  

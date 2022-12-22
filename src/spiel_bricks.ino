@@ -113,7 +113,11 @@ void runBricks(){
     unsigned long curTime;
     boolean dirChanged = false;
     do{
-      delay(10);
+
+#ifdef IR_RECEIVER_GAME
+      readIRButton();
+#endif
+      delay(5);
       webServer.handleClient();
       if (curControl == BTN_STOP || curControl == BTN_EXIT){
         bricksRunning = false;
@@ -154,6 +158,10 @@ void runBricks(){
 #ifdef DEBUG_GAME
     debugval = steigung * 100;
     if ( debugval == 0 ) debugval = 9999;
+#endif
+
+#ifdef IR_RECEIVER_GAME
+      readIRButton();
 #endif
   }
 }

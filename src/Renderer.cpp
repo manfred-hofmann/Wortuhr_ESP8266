@@ -612,6 +612,38 @@ void Renderer::setTime(uint8_t hours, uint8_t minutes, uint16_t matrix[])
       CH_VOR;
       WEB_Uhrtext += F("viertel vor ");      
       setHours(hours + 1, false, matrix);
+<<<<<<< HEAD
+=======
+#endif
+     break;
+    case 10:
+      // 10 vor
+      CH_ZEHN;
+      CH_VOR;
+      WEB_Uhrtext += F("z&auml;&auml; vor ");
+      setHours(hours + 1, false, matrix);
+      break;
+    case 11:
+      // 5 vor
+      CH_FUENF;
+      CH_VOR;
+      WEB_Uhrtext += F("f&ouml;if vor ");
+      setHours(hours + 1, false, matrix);
+      break;
+    }
+    WEB_Uhrtext += F("<br>");
+    switch (minutes % 5)
+    {
+    case 4:
+      WEB_Uhrtext += F("&bull;");
+    case 3:
+      WEB_Uhrtext += F("&bull;");
+    case 2:
+      WEB_Uhrtext += F("&bull;");
+    case 1:
+      WEB_Uhrtext += F("&bull;");
+    }            
+>>>>>>> 96b59cb4a65705bd521ef611a8bb5862bcff01f0
 #endif
      break;
     case 10:
@@ -642,6 +674,10 @@ void Renderer::setTime(uint8_t hours, uint8_t minutes, uint16_t matrix[])
       WEB_Uhrtext += F("&bull;");
     }            
 #endif
+
+//########################################################################################################################
+// ENGLISCH
+//########################################################################################################################
 
 //########################################################################################################################
 // ENGLISCH
@@ -1538,6 +1574,7 @@ void Renderer::setHours(uint8_t hours, boolean glatt, uint16_t matrix[])
       if (minute() % 5 ) WEB_Uhrtext += F("gsi");
 //      if (glatt) WEB_Uhrtext += F("gsi");
     }
+<<<<<<< HEAD
 #endif
 
 //########################################################################################################################
@@ -1638,6 +1675,108 @@ void Renderer::setHours(uint8_t hours, boolean glatt, uint16_t matrix[])
 #endif
 
 //########################################################################################################################
+=======
+#endif
+
+//########################################################################################################################
+// SCHWEIZ AARGAU
+//########################################################################################################################
+
+  #if defined(FRONTCOVER_CH_AG) || defined(FRONTCOVER_CH_AL)
+ //   if (glatt)
+ //     CH_H_GSI;
+    switch (hours)
+    {
+    case 0:
+    case 12:
+    case 24:
+  #if defined(FRONTCOVER_CH_AG)   
+      CH_H_ZWOELF;
+      WEB_Uhrtext += F("Zw&ouml;ufi ");
+  #else
+      CH_H_ZWOELF;
+      WEB_Uhrtext += F("Zw&ouml;lfi ");
+  #endif      
+      break;
+    case 1:
+    case 13:
+//      if (glatt)
+//      {
+        CH_H_EIN;
+        WEB_Uhrtext += F("Eis ");
+//      }
+//      else
+//      {
+//        CH_H_EINS;
+//        WEB_Uhrtext += F("eis ");
+//      }
+        break;
+    case 2:
+    case 14:
+      CH_H_ZWEI;
+      WEB_Uhrtext += F("Zw&ouml;i ");
+      break;
+    case 3:
+    case 15:
+      CH_H_DREI;
+      WEB_Uhrtext += F("Dr&uuml;&uuml; ");
+      break;
+    case 4:
+    case 16:
+      CH_H_VIER;
+      WEB_Uhrtext += F("Vieri ");
+      break;
+    case 5:
+    case 17:
+      CH_H_FUENF;
+      WEB_Uhrtext += F("F&ouml;ifi ");
+      break;
+    case 6:
+    case 18:
+      CH_H_SECHS;
+      WEB_Uhrtext += F("S&auml;chsi ");
+      break;
+    case 7:
+    case 19:
+      CH_H_SIEBEN;
+      WEB_Uhrtext += F("Sebni ");
+      break;
+    case 8:
+    case 20:
+      CH_H_ACHT;
+      WEB_Uhrtext += F("Achti ");
+      break;
+    case 9:
+    case 21:
+      CH_H_NEUN;
+      WEB_Uhrtext += F("N&uuml;&uuml;ni ");
+      break;
+    case 10:
+    case 22:
+      CH_H_ZEHN;
+      WEB_Uhrtext += F("Z&auml;hni ");
+      break;
+    case 11:
+    case 23:
+  #if defined(FRONTCOVER_CH_AG) 
+      CH_H_ELF;
+      WEB_Uhrtext += F("Eufi ");
+  #else
+      CH_H_ELF;
+      WEB_Uhrtext += F("Elfi ");
+  #endif      
+      break;
+    }
+    if (settings.mySettings.itIs) 
+    {
+      if (minute() % 5 ) WEB_Uhrtext += F("gsi");
+//      if (glatt) WEB_Uhrtext += F("gsi");
+    }
+    
+#endif
+
+//########################################################################################################################
+>>>>>>> 96b59cb4a65705bd521ef611a8bb5862bcff01f0
 // ENGLISCH
 //########################################################################################################################
 
@@ -2086,11 +2225,19 @@ void Renderer::ES_hours(uint8_t hours, uint16_t matrix[])
 		ES_ESLA;
     if (settings.mySettings.itIs) 
     { 
+<<<<<<< HEAD
       WEB_Uhrtext += F("es la ");
     }
     else 
     { 
       WEB_Uhrtext += "";
+=======
+      WEB_Uhrtext = F("es la ");
+    }
+    else 
+    { 
+      WEB_Uhrtext = "";
+>>>>>>> 96b59cb4a65705bd521ef611a8bb5862bcff01f0
     }
   }
 	else
@@ -2098,11 +2245,19 @@ void Renderer::ES_hours(uint8_t hours, uint16_t matrix[])
 		ES_SONLAS;
     if (settings.mySettings.itIs) 
     { 
+<<<<<<< HEAD
       WEB_Uhrtext += F("son las ");
     }
     else 
     { 
       WEB_Uhrtext += "";
+=======
+      WEB_Uhrtext = F("son las ");
+    }
+    else 
+    { 
+      WEB_Uhrtext = "";
+>>>>>>> 96b59cb4a65705bd521ef611a8bb5862bcff01f0
     }
   }    
 }
@@ -2139,11 +2294,19 @@ void Renderer::IT_hours(uint8_t hours, uint16_t matrix[])
 	  IT_SONOLE;
     if (settings.mySettings.itIs) 
     { 
+<<<<<<< HEAD
       WEB_Uhrtext += F("Sono le ");
     }
     else 
     { 
       WEB_Uhrtext += "";
+=======
+      WEB_Uhrtext = F("Sono le ");
+    }
+    else 
+    { 
+      WEB_Uhrtext = "";
+>>>>>>> 96b59cb4a65705bd521ef611a8bb5862bcff01f0
     }
 	}
 	else
@@ -2151,11 +2314,19 @@ void Renderer::IT_hours(uint8_t hours, uint16_t matrix[])
 		IT_E;
     if (settings.mySettings.itIs) 
     { 
+<<<<<<< HEAD
       WEB_Uhrtext += F("È ");
     }
     else 
     { 
       WEB_Uhrtext += "";
+=======
+      WEB_Uhrtext = F("È ");
+    }
+    else 
+    { 
+      WEB_Uhrtext = "";
+>>>>>>> 96b59cb4a65705bd521ef611a8bb5862bcff01f0
     }
   }
 }

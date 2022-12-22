@@ -7,7 +7,7 @@
 #include <Arduino.h>
 #include <ESP8266WebServer.h>
 #include "Configuration.h"
-#include <FS.h>
+#include <LittleFS.h>
 #include <Arduino_JSON.h>
 #include "Colors.h"
 
@@ -42,7 +42,7 @@ String num_to_string(uint32_t in_color);
 String color_to_string(color_s in_color);
 color_s num_to_color(uint32_t in_color);
 color_s string_to_color(String in_color);
-bool loadFrames(uint8_t frame, String jsonBuffer);
+bool loadjsonarry( int8_t frame, uint8_t zeile, String &jsonBuffer);
 
 
 #endif

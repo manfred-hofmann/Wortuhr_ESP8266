@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+<title>WORTCLOCK</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="32x32" href="/web/favicon-32x32.png">
+<link rel="stylesheet" href="/web/events.css" >
+<style>body{background-color:#aaaaaa;text-align:left;color:#333333;font-family:Sans-serif;font-size:16px;}
+button{background-color:#1FA3EC;text-align:center;color:#FFFFFF;width:200px;padding:5px;border:2px solid #FFFFFF;font-size:14px;border-radius:15px;cursor: pointer;}
+span {color: Black;}
+h1,h2 {color: #FFFFFF;text-shadow: 2px 2px 2px Black;
+}
+</style>
+</head>
+<body>
+<h2>WORDCLOCK Message</h2>
+<hr>
+<br>
+<form action="/showText" method="get" >
+  <label for="text">Text:</label>
+  <input type="text" size="78" id="text" name="text">
+  <br><br><br>
+    <label>Color:&nbsp;
+    <select style="font-size:14px;width:150px" name="color" size="1">
+	  
+	  <option style="background-color:#ffffff" value="0">white</option>
+      <option style="background-color:#ff0000" value="1">red</option>
+      <option style="background-color:#ff8080" value="2">red 75%</option>
+      <option style="background-color:#ffa0a0" value="3">red 50%</option>
+      <option style="background-color:#ff7f00" value="4">orange</option>
+      <option style="background-color:#ffff00" value="5">yellow</option>
+      <option style="background-color:#ffff80" value="6">yellow 75%</option>
+      <option style="background-color:#ffffc0" value="7">yellow 50%</option>
+      <option style="background-color:#cfff00" value="8">green-yellow</option>
+	  <option style="background-color:#00ff00" value="9">green</option>
+	  <option style="background-color:#a0ff40" value="10">green 75%</option>
+      <option style="background-color:#c0ff80" value="11">green 50%</option>
+      <option style="background-color:#00ff7f" value="12">mint green</option>
+      <option style="background-color:#00ffff" value="13">cyan</option>
+      <option style="background-color:#a0ffff" value="14">cyan 75%</option>
+      <option style="background-color:#c0ffff" value="15">cyan 50%</option>
+      <option style="background-color:#007fff" value="16">slightly blue</option>
+      <option style="background-color:#0000ff" value="17">blue</option>
+      <option style="background-color:#4040ff" value="18">blue 75%</option>
+	  <option style="background-color:#8080ff" value="19">blue 50%</option>
+	  <option style="background-color:#7f00ff" value="20">violet</option>
+      <option style="background-color:#ff00ff" value="21">magenta</option>
+      <option style="background-color:#ff80ff" value="22">magenta 75%</option>
+      <option style="background-color:#ffa0ff" value="23">magenta 50%</option>
+      <option style="background-color:#ff007f" value="24">pink</option>
+	  
+    </select>
+  </label>
+   <br><br><br>notice tone:<br><br>
+   <label>
+    <input type="radio" id="1" name="buzzer" value="1" >
+    <label for="1"> 1 times</label> 
+    <input type="radio" id="2" name="buzzer" value="2">
+    <label for="2"> 2 times</label>
+    <input type="radio" id="3" name="buzzer" value="3" checked>
+    <label for="3"> 3 times</label> 
+	<br>
+	<br>
+	<input type="radio" id="4" name="buzzer" value="4">
+    <label for="4"> 4 times</label> 
+    <input type="radio" id="5" name="buzzer" value="5">
+    <label for="5"> 5 times</label> 
+	<input type="radio" id="6" name="buzzer" value="6">
+    <label for="6"> 6 times</label> 
+  </label>
+  <br><br>
+  <hr>
+  <button class="buttons black" style="width:200px" type="submit">&#127915; send Message</button>
+</form>
+
+
+</body>
+</html>

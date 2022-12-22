@@ -1,0 +1,402 @@
+<!doctype html>
+<html><head>
+<title>Animantios</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192"  href="/web/android-icon-192x192.png">
+<script src="/web/jquery-3.1.1.min.js"></script>
+<link rel="stylesheet" href="/web/animation.css" >
+</head>
+<body>
+
+<div class="settingtextcontainer">
+<input type ="text" id="aniname" name="aniname" size="29" minlength="3" maxlength="20" class="settingtext" value="">
+<br> Ruban:
+     <input class="loops" type ="number" id="loops" name="loops" min="1" max="20" value=5>
+	 Mode d'opér.:
+	 <select class="laufmode" name="laufmode" id="laufmode">
+	   <option value="0"> Depuis le début </option>
+	   <option value="1"> suivant précédent </option>
+	   <option value="2"> Hasard </option>
+	 </select>
+</div>
+<div class="sanduhrcontainer" id="sanduhrcontainer" style="display: none">
+<img class="sanduhr" id="sanduhr" style="width: 100px" src="/sanduhr" alt="Sanduhr">
+</div>
+<hr>
+<div class="paintcontainer"><p class="painttext" id="painttext" >sélection de couleurs</p> 
+
+<input class="colorselect" id="colorselect0" name="colorselect0" value="#000000" readonly>
+<input class="colorselect" id="colorselect1" name="colorselect1" value="#000000" readonly>
+<input class="colorselect" id="colorselect2" name="colorselect2" value="#000000" readonly>
+<input class="colorselect" id="colorselect3" name="colorselect3" value="#00FF00" readonly>
+<input class="colorselect" id="colorselect4" name="colorselect4" value="#00FFFF" readonly>
+<br>
+<input class="colorselect" id="colorselect5" name="colorselect5" value="#0000FF" readonly>
+<input class="colorselect" id="colorselect6" name="colorselect6" value="#AA00FF" readonly>
+<input class="colorselect" id="colorselect7" name="colorselect7" value="#FF00FF" readonly>
+<input class="colorselect" id="colorselect8" name="colorselect8" value="#000000" readonly>
+<input class="colorselect" id="colorselect9" name="colorselect9" value="#FFFFFF" readonly>
+<br>
+<input class="coloroutput" id="coloraktiv" name="coloraktiv" type="color" color = "#000000" value="#000000">
+<br>
+<div id="oben"></div>
+<br>
+<div id="templates" style="display: none">
+<div id="pixelTemplate">
+
+  <input id="c_0_y" name="c_0_y"  class="colorpixel" value="" readonly>
+  <input id="c_1_y" name="c_1_y"  class="colorpixel" value="" readonly>
+  <input id="c_2_y" name="c_2_y"  class="colorpixel" value="" readonly>
+  <input id="c_3_y" name="c_3_y"  class="colorpixel" value="" readonly>
+  <input id="c_4_y" name="c_4_y"  class="colorpixel" value="" readonly>
+  <input id="c_5_y" name="c_5_y"  class="colorpixel" value="" readonly>
+  <input id="c_6_y" name="c_6_y"  class="colorpixel" value="" readonly>
+  <input id="c_7_y" name="c_7_y"  class="colorpixel" value="" readonly>
+  <input id="c_8_y" name="c_8_y"  class="colorpixel" value="" readonly>
+  <input id="c_9_y" name="c_9_y"  class="colorpixel" value="" readonly>
+  <input id="c_10_y" name="c_10_y"  class="colorpixel" value="" readonly> 
+    <br>
+</div>
+</div>
+<br>
+</div>
+
+<div class="delayslidercontainer">Retard(ms):<output id="delayoutput" for="delayslider"></output>
+<input id="delayslider" name="delay" type="range"  min="0" max="500" value="500" step="10.0" value="100" class="delayslider">
+</div>
+
+<div class="buttonscontainer">
+<table border="0" cellspacing="0" cellpadding="0" width="99%">
+		<tr>
+		    <td align="left" width="33%">
+				<button class="buttons" type="button" id="bv" name="action" value="3">encadrer 1</button> 
+			</td>
+			<td align="middle" width="33%">
+			<dfn class ="tooltip">
+				<button class="buttons_cp" type="button" id="buc" name="action" value="4">
+				  <span style="font-size: .875em; margin-right: .125em; position: relative; top: -.20em; left: -.125em">&#128196;
+				    <span style="position: absolute; top: .10em; left: .30em">&#128196;
+					</span>
+				  </span>
+				  <span role="tooltip">copy</span>
+				</button> 
+			</dfn>
+			<dfn class ="tooltip">
+				<button class="buttons_cp" type="button" id="bup" name="action" value="5">&#128203;
+				  <span role="tooltip">paste</span> 
+				</button> 
+			</dfn>
+			</td>
+			<td align="right" width="33%">
+				<button class="buttons" type="button" id="bn" name="action" value="6">encadrer 2</button>
+			</td>
+		</tr>
+		</table>
+</div>
+
+<hr>
+
+<div class="buttonscontainer">
+<button class="buttons" type="button" onclick="history.back()" >&#128281; revenir</button>
+<button class="buttons" type="button" id="_action" name="_action" value="save">&#128190; sauver</button>
+</div>
+
+
+
+<script> 
+
+var urlBase = "/handlemakeanimation";
+var aktivcolor = "#000000";
+var aktivpalid;
+var y;
+var x;
+var pixel = [];
+var frame = 0;
+var maxframe = 24;
+dblclickbool = false
+
+var myAniObj = {};
+var mycopyFrame = {"Delay" : 100,
+  "Zeile_0" : [],
+  "Zeile_1" : [],
+  "Zeile_2" : [],
+  "Zeile_3" : [],
+  "Zeile_4" : [],
+  "Zeile_5" : [],
+  "Zeile_6" : [],
+  "Zeile_7" : [],
+  "Zeile_8" : [],
+  "Zeile_9" : []
+ };
+  
+// Aufbau Matrix
+ for ( y = 0;y < 10;y++)
+ {
+   var template = $("#pixelTemplate").clone();
+   template.attr("id", "pixel_group_" + y);
+   for ( x = 0; x < 11;x++)
+   {
+     pixel.push (template.find("#c_" + x + "_y"));
+     pixel[pixel.length-1].attr("id","c_" + x + "_" + y);
+     pixel[pixel.length-1].attr("name","c_" + x + "_" + y);
+//     console.log (pixel[pixel.length-1].attr("id"));
+   }
+   $ (template).appendTo( "#oben" );
+ }
+
+// wähle Farbe
+$(".colorselect").click(function() {
+  $("#" + aktivpalid).css("border", "1px solid gray");
+  aktivcolor = this.value;
+  aktivpalid = $(this).attr("id");
+  $("#" + aktivpalid).css("border", "3px solid black");
+//  console.log(aktivpalid);
+  $("#coloraktiv").val(aktivcolor);
+  postValue("aktivfarbe", aktivcolor.slice(1, 7).toUpperCase());
+});
+
+//ändere Farbe
+$("#coloraktiv").change(function() {
+  aktivcolor = this.value;
+  $(this).attr("color",aktivcolor);
+//  console.log(aktivpalid + " : " + aktivcolor);
+  $("#coloraktiv").val(aktivcolor);
+  $("#" + aktivpalid).val(aktivcolor);
+  $("#" + aktivpalid).css("background-color",aktivcolor);
+  var postval = aktivpalid + ":" + aktivcolor.slice(1, 7).toUpperCase();
+//  console.log(postval);
+  postValue("palette", postval);
+});
+
+// setze Farbe in Matrix und myAniObj bei click bzw bei doppelklick übernehme Farbe
+$(".colorpixel").on('dblclick click',function(e) {
+  
+  if ( e.type == "click" )
+  {
+    elem=$(this);
+    setTimeout(function(){
+		if ( !dblclickbool )
+		{
+			elem.css("background-color",aktivcolor);
+			var pixid = elem.attr("id");
+			var x = pixid.substring(pixid.indexOf("_")+1, pixid.lastIndexOf("_"));
+			var y = pixid.substring(pixid.lastIndexOf("_")+1);
+		//  console.log("x,y: " + x + "/" + y);
+			myAniObj["Frame_" + frame]["Zeile_" + y][x] = aktivcolor;
+			console.log("pixel:" + pixid + " : " + myAniObj["Frame_" + frame]["Zeile_" + y][x]);
+			var postval = pixid + ":" + aktivcolor.slice(1, 7).toUpperCase();
+//  console.log(postval);
+            postValue("pixel",  postval);
+		 }
+    },200);
+  }
+  else if ( e.type == "dblclick" )
+  {
+    dblclickbool = true;
+    aktrgbcolor = $(this).css("background-color");
+	aktivcolor = rgb2hex(aktrgbcolor);
+	$("#coloraktiv").attr("color",aktivcolor);
+    console.log("ändere Farbe: " + aktivcolor);
+    $("#coloraktiv").val(aktivcolor);
+    $("#" + aktivpalid).val(aktivcolor);
+    $("#" + aktivpalid).css("background-color",aktivcolor);	
+	var postval = aktivpalid + ":" + aktivcolor.slice(1, 7).toUpperCase();
+//  console.log(postval);
+    postValue("palette", postval);
+  }
+  setTimeout(function(){dblclickbool = false;},450);
+});
+
+function rgb2hex(rgb){
+ rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+ return (rgb && rgb.length === 4) ? "#" +
+  ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+  ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+  ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
+}
+
+// nächster Frame
+$("#bv").click(function() {
+  if ( frame > 0 ) frame--;
+  if ( frame == 0 ) $(this).hide();
+  if ( frame < maxframe ) $("#bn").show();
+//  console.log("bv:" + frame);
+  getframe(frame);
+  anzframe = frame + 1;
+  nextframe = anzframe + 1;
+  $("#painttext").text("sélection de couleurs (encadrer "+ anzframe +")");
+  $("#bn").text("encadrer " + nextframe);
+  $("#bv").text("encadrer " + frame);
+  postValue("frame",frame);
+});
+
+// Frame davor
+$("#bn").click(function() {
+  if ( frame < maxframe ) frame++;
+  if ( frame == maxframe ) $(this).hide();
+  if ( frame > 0 ) $("#bv").show();
+  getframe(frame);
+  anzframe = frame + 1;
+  nextframe = anzframe + 1;
+  $("#painttext").text("sélection de couleurs (encadrer "+ anzframe +")");
+  $("#bv").text("encadrer " + frame);
+  $("#bn").text("encadrer " + nextframe);
+  postValue("frame",frame);
+});
+
+
+// Frame Copy
+$("#buc").click(function() {
+  
+  for ( zeile = 0; zeile < 10; zeile++) {
+    var zeilearr = myAniObj["Frame_" + frame]["Zeile_" + zeile];
+	for ( x in zeilearr ) {
+	  mycopyFrame["Zeile_" + zeile][x] = myAniObj["Frame_" + frame]["Zeile_" + zeile][x];
+	}
+  }
+  mycopyFrame.Delay = myAniObj["Frame_" + frame].Delay;
+  postValue("copyframe",frame);
+});
+// Frame Paste
+$("#bup").click(function() {
+  
+  for ( zeile = 0; zeile < 10; zeile++) {
+    var zeilearr = mycopyFrame["Zeile_" + zeile];
+	for ( x in zeilearr ) {
+      myAniObj["Frame_" + frame]["Zeile_" + zeile][x] = mycopyFrame["Zeile_" + zeile][x];
+	}
+  }
+  myAniObj["Frame_" + frame].Delay = mycopyFrame.Delay;
+  getframe(frame);
+  postValue("pasteframe",frame);
+});
+
+
+// Delayslider
+$("#delayslider").on("input", function() {
+  delayoutput.value = this.value;
+});
+
+$("#delayslider").change(function() {
+  delayoutput.value = this.value;
+  myAniObj["Frame_" + frame].Delay = this.value;
+  postValue("delay",this.value);
+});
+
+$("#aniname").change(function() {
+postValue("aniname",this.value.toUpperCase());
+});
+
+$("#loops").change(function() {
+postValue("loops",this.value);
+});
+
+$("#laufmode").change(function() {
+postValue("laufmode",this.value);
+});
+
+
+// Initialisierung 
+// welches Animationsfile: (aus der URL: z.B.: animation.html/?animation=HERZ)
+  querystring = location.search;
+  var wertestring = querystring.slice(1);
+  var wertepaar = wertestring.split("=");
+//  console.log(wertepaar[0] +  " : " + wertepaar[1]);
+  var wert = wertepaar[1];
+  wert = unescape(wert).replace("+", " ");
+  if ( wertepaar[0] == "animation" ) var filename = "/ani_" + wert + ".json"; else var filename = "/ani_NEU.json";
+  console.log("Filename: " + filename);
+
+  $.getJSON( filename, function( data ) 
+  {
+    myAniObj = data;
+
+//    console.log(" myAniObj:" + myAniObj.Name);
+    $("#aniname").val(myAniObj.Name);
+    $("#loops").val(myAniObj.Loops);
+	$("#laufmode").val(myAniObj.Laufmode);
+    anzframe = frame + 1;
+    $("#painttext").text("sélection de couleurs (encadrer "+ anzframe +")");
+// füllen der Palette  
+    for (i in myAniObj.Palette) {
+
+     $("#colorselect" + i).css("background-color",myAniObj.Palette[i]);
+     $("#colorselect" + i).attr("value",myAniObj.Palette[i]);
+     if ( myAniObj.Palette[i] == "#000000" ) { $("#colorselect" + i).css("color","#FFFFFF");}else{$("#colorselect" + 1).css("color:","#000000");}
+     if ( i == 0) {
+      aktivpalid = $("#colorselect0").attr("id");
+      $("#" + aktivpalid).css("border", "3px solid black");
+      aktivcolor = $("#" + aktivpalid).attr("value");
+      $("#coloraktiv").attr("color",aktivcolor);
+	  $("#coloraktiv").attr("value",aktivcolor);
+     }
+   }
+   getframe(frame);
+   for ( zeile = 0; zeile < 10; zeile++) {
+    var zeilearr = myAniObj["Frame_" + frame]["Zeile_" + zeile];
+	for ( x in zeilearr ) {
+	  mycopyFrame["Zeile_" + zeile][x] = myAniObj["Frame_" + frame]["Zeile_" + zeile][x];
+	}
+   }
+   mycopyFrame.Delay = myAniObj["Frame_" + frame].Delay;
+   
+//   mycopyFrame = { ...myAniObj["Frame_0"]};
+});
+
+
+// füllen der Matrix/Delayslider
+  function getframe(frame)
+  {
+    if ( typeof myAniObj["Frame_" + frame] == "undefined" ) {
+	  myAniObj["Frame_" + frame]	  = {};
+	  myAniObj["Frame_" + frame].Delay = 0;
+	}
+//    console.log( "Frame: " + frame + " Delay: " + myAniObj["Frame_" + frame].Delay);
+	$("#delayslider").val(myAniObj["Frame_" + frame].Delay);
+	$("#delayoutput").val(myAniObj["Frame_" + frame].Delay);
+	
+	for ( zeile = 0; zeile < 10; zeile++) {
+	  if ( typeof myAniObj["Frame_" + frame]["Zeile_" + zeile] == "undefined" ) {
+	    myAniObj["Frame_" + frame]["Zeile_" + zeile] = [ "#000000","#000000","#000003","#000000","#000000","#000000","#000000","#000000","#000000","#000010","#000011" ];
+	  }
+	  var zeilearr = myAniObj["Frame_" + frame]["Zeile_" + zeile];
+//	  console.log(zeilearr);
+	  for ( x in zeilearr ) {
+//	    console.log( "Frame: " + frame + " Zeile: " + zeile + " x " + x + " : "+ zeilearr[x]);
+		$("#c_" + x + "_" + zeile).css("background-color",zeilearr[x]);
+      }
+	}
+  }
+  
+  $("#_action").click(function() {
+    document.getElementById("sanduhrcontainer").style.display = "block";
+    newvalue = this.value;
+    var body = { name: "_action", value: newvalue };
+	$.post(urlBase + "?_action" + "=" + newvalue,body,function(res){
+	    document.getElementById("sanduhrcontainer").style.display = "none";
+		if ( res == "E" ) 
+		{ 
+		  alert("Attention erreur lors de la sauvegarde !") 
+		}
+		else
+		{
+		  alert("Animation " + res + " enregistré");
+		}
+	});
+//    postValue("_action",this.value);
+  });
+  
+  function postValue(name, value) {
+   var body = { name: name, value: value };
+   $.post(urlBase + "?" + name + "=" + value);
+  } 
+
+document.addEventListener('DOMContentLoaded', function() {  
+ $("#bv").hide(); 
+
+}); 
+
+
+</script>
+</body></html>
