@@ -15,13 +15,10 @@ uint8_t VOLINTENSIT[25] = {AUDIO_H00,AUDIO_H01,AUDIO_H02,AUDIO_H03,AUDIO_H04,AUD
 //******************************************************************************
 void Temperaturansage(int ANSAGEBASE, bool in_out, float fTemperature, uint8_t setvolume)
 {
-  int vKfTemperature = int(fTemperature);
-  float fnKfTemperature;
-  int nKfTemperature;
   int AUDIO_FILENR;
-  
-  fnKfTemperature = ( fTemperature - float(vKfTemperature)) * 10.0;
-  nKfTemperature = int(fnKfTemperature);
+  float rfTemperature = String(fTemperature,1).toFloat();
+  int vKfTemperature = int(rfTemperature);
+  int nKfTemperature = int(rfTemperature*10) - vKfTemperature*10;
   vKfTemperature = abs(vKfTemperature);
   nKfTemperature = abs(nKfTemperature);
 
@@ -42,7 +39,7 @@ void Temperaturansage(int ANSAGEBASE, bool in_out, float fTemperature, uint8_t s
       Play_MP3(AUDIO_FILENR,true,setvolume);
     }
   }
-    if (fTemperature < 0  )
+  if (fTemperature < 0  )
   {
     AUDIO_FILENR = ANSAGEBASE + 54; //Minus
     if ( !MODE_BUTTON_BOOL ) {

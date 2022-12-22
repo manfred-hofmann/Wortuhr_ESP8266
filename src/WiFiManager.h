@@ -17,6 +17,11 @@
 #include <ESP8266WebServer.h>
 #include <DNSServer.h>
 #include <memory>
+#include "Configuration.h"
+#include "Audio.h"
+
+extern int ANSAGEBASE;
+extern boolean b_showip;
 
 extern "C" {
   #include "user_interface.h"

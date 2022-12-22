@@ -335,7 +335,11 @@ int8_t warteAufEinwurf()
   
   steinzeit = millis(); // wird hier für die Ansage "du bist dran" benutzt.
   do{
-    
+
+#ifdef IR_RECEIVER_GAME
+      readIRButton();
+#endif   
+ 
     if (curControl == BTN_STOP || curControl == BTN_EXIT){
       ViergewinntRunning = false;
       gameisrunning = false;

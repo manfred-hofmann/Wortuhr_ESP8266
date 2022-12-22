@@ -11,26 +11,26 @@ void startGame()
 #endif
   aktgame = webServer.arg("game").toInt();
   if ( aktgame == SNAKE )
-    gamestring = "SNAKE";
+    gamestring = F("SNAKE");
   if ( aktgame == TETRIS )
-    gamestring = "TETRIS";
+    gamestring = F("TETRIS");
   if ( aktgame == BRICKS )
-    gamestring = "BRICKS";
+    gamestring = F("BRICKS");
   if ( aktgame == VIERGEWINNT )
-    gamestring = "VIERGEWINNT";
+    gamestring = F("VIERGEWINNT");
   if ( aktgame == TIERMEMORY )
-    gamestring = "MEMORY";
+    gamestring = F("MEMORY");
   if ( aktgame == MUSIKMEMORY )
-    gamestring = "MEMORY";
+    gamestring = F("MEMORY");
   if ( aktgame == ABBAMEMORY )
-    gamestring = "MEMORY";
+    gamestring = F("MEMORY");
   aktscore = 0;
-  webstring = F("<!doctype html><html><head><script>window.onload=function(){window.location.replace('/GameControl.html?game=");
+  webstring = F("<!doctype html><html><head><script>window.onload=function(){window.location.replace('/web/GameControl.html?game=");
   webstring += gamestring;
   webstring += F("&highscore=");
   webstring += String(highscore[aktgame]);
   #ifdef AUDIO_SOUND
-    webstring += "&sound=" + String(gamesound);
+    webstring += F("&sound=") + String(gamesound);
   #else
     webstring += F("&sound=-1");
     gamesound = 0;
@@ -196,32 +196,32 @@ void handleGameControl()
   }
   else
   {
-    if ( webServer.arg("button") == "stop" ) {
+    if ( webServer.arg(F("button")) == "stop" ) {
       curControl= BTN_STOP;
       buttonret = ButtonIn(BTN_STOP);
     }
     
-    if ( webServer.arg("button") == "sound0" ) gamesound = 0;
-    if ( webServer.arg("button") == "sound1" ) gamesound = 1;
-    if ( webServer.arg("button") == "sound2" ) gamesound = 2;
-    if ( webServer.arg("button") == "sound3" ) gamesound = 3;
-    if ( webServer.arg("button") == "sound1" || webServer.arg("button") == "sound2" || webServer.arg("button") == "sound3" )
+    if ( webServer.arg(F("button")) == F("sound0") ) gamesound = 0;
+    if ( webServer.arg(F("button")) == F("sound1") ) gamesound = 1;
+    if ( webServer.arg(F("button")) == F("sound2") ) gamesound = 2;
+    if ( webServer.arg(F("button")) == F("sound3") ) gamesound = 3;
+    if ( webServer.arg(F("button")) == F("sound1") || webServer.arg(F("button")) == F("sound2") || webServer.arg(F("button")) == F("sound3") )
     {
 #ifdef AUDIO_SOUND
       if (gamesound) Play_MP3(700,false,33*gamesound);
 #endif
     }
     playerbuttonadd = 0;
-    if ( webServer.arg("player") == "2" ) playerbuttonadd = 10;
-    if ( webServer.arg("player") == "3" ) playerbuttonadd = 20;
-    if ( webServer.arg("player") == "4" ) playerbuttonadd = 30;
-    if ( webServer.arg("gb") == "up" ) buttonret = ButtonIn(BTN_UP + playerbuttonadd);
-    if ( webServer.arg("gb") == "down" ) buttonret = ButtonIn(BTN_DOWN + playerbuttonadd);
-    if ( webServer.arg("gb") == "left" ) buttonret = ButtonIn(BTN_LEFT + playerbuttonadd);
-    if ( webServer.arg("gb") == "right" ) buttonret = ButtonIn(BTN_RIGHT + playerbuttonadd);
-    if ( webServer.arg("gb") == "middle" ) buttonret = ButtonIn(BTN_MIDDLE + playerbuttonadd);
+    if ( webServer.arg(F("player")) == "2" ) playerbuttonadd = 10;
+    if ( webServer.arg(F("player")) == "3" ) playerbuttonadd = 20;
+    if ( webServer.arg(F("player")) == "4" ) playerbuttonadd = 30;
+    if ( webServer.arg("gb") == F("up") ) buttonret = ButtonIn(BTN_UP + playerbuttonadd);
+    if ( webServer.arg("gb") == F("down") ) buttonret = ButtonIn(BTN_DOWN + playerbuttonadd);
+    if ( webServer.arg("gb") == F("left") ) buttonret = ButtonIn(BTN_LEFT + playerbuttonadd);
+    if ( webServer.arg("gb") == F("right") ) buttonret = ButtonIn(BTN_RIGHT + playerbuttonadd);
+    if ( webServer.arg("gb") == F("middle") ) buttonret = ButtonIn(BTN_MIDDLE + playerbuttonadd);
 
-    if ( webServer.arg("level").length() > 0) 
+    if ( webServer.arg(F("level")).length() > 0) 
     {
       gamelevel = webServer.arg("level").toInt();
 #ifdef DEBUG_GAME
@@ -260,7 +260,7 @@ void handleGameControl()
 #endif
     }
 //################################################################
-    if ( webServer.arg("newplayer") == "init" ) 
+    if ( webServer.arg(F("newplayer")) == F("init") ) 
     {  
        if (aktgame == TIERMEMORY || aktgame == MUSIKMEMORY || aktgame == ABBAMEMORY )
        {
@@ -327,6 +327,51 @@ void handleGameControl()
   }
 }
 
+//###########################################################################
+//##################            IR-Receiver Start          ##################
+//###########################################################################
+#ifdef IR_RECEIVER_GAME
+  // Look for IR commands
+void readIRButton()
+{
+  bool buttonret;
+  if (irrecv.decode(&irDecodeResult))
+  {
+#ifdef DEBUG_IR
+    Serial.print(F("IR signal: 0x"));
+    serialPrintUint64(irDecodeResult.value, HEX);
+    Serial.println();
+#endif
+
+    switch (irDecodeResult.value)
+    {
+      case IR_CODE_LEFT:
+        buttonret = ButtonIn(BTN_LEFT);
+        break;
+      case IR_CODE_RIGHT:
+        buttonret = ButtonIn(BTN_RIGHT);
+        break;
+      case IR_CODE_UP:
+        buttonret = ButtonIn(BTN_UP);
+        break;
+      case IR_CODE_DOWN:
+        buttonret = ButtonIn(BTN_RIGHT);
+        break;
+      case IR_CODE_MIDDLE:
+        buttonret = ButtonIn(BTN_MIDDLE);
+        break;
+      case IR_CODE_STOP:
+        curControl= BTN_STOP;
+        buttonret = ButtonIn(BTN_STOP);
+        break;
+    }
+    irrecv.resume();
+  }
+}
+#endif
+//###########################################################################
+//##################           IR-Receiver  Ende           ##################
+//###########################################################################
 
 // IO-Buffer zum Einlesen der Buttons
 #define CURCONTROL_BUFFER_SIZE 8
@@ -356,8 +401,6 @@ bool ButtonIn(uint8_t buttonvalue)
 
 bool readButton()
 {
-
-
   if (buttonbuffer.read == buttonbuffer.write)
   {
     curControl = BTN_NONE;

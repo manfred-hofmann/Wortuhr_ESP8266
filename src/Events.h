@@ -7,7 +7,7 @@ Events.h
 #include "Configuration.h"
 #include "Colors.h"
 
-#include <FS.h>
+#include <LittleFS.h>
 #include <Arduino_JSON.h>
 
 #define EVENTFILE "/events.json"

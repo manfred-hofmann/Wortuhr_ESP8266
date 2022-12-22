@@ -178,6 +178,13 @@ boolean WiFiManager::autoConnect(char const *apName, char const *apPassword) {
     //connected
     return true;
   }
+  else
+  {
+#if defined(AUDIO_SOUND) && defined(WIFI_BEEPS)
+    Play_MP3(ANSAGEBASE + 51, false, STARTUPSOUNDLEVEL); //Wlan nicht OK
+#endif
+    b_showip = true;
+  }
 
   return startConfigPortal(apName, apPassword);
 }
@@ -316,8 +323,17 @@ int WiFiManager::connectWifi(String ssid, String pass) {
     ETS_UART_INTR_DISABLE();
     wifi_station_disconnect();
     ETS_UART_INTR_ENABLE();
-    res = WiFi.begin(ssid.c_str(), pass.c_str(),0,NULL,true);
-    if(res != WL_CONNECTED){
+    WiFi.begin(ssid.c_str(), pass.c_str(),0,NULL,true);
+    int versuche = 0;
+    while (WiFi.status() != WL_CONNECTED && versuche < 60 ) {
+    delay(250);
+    Serial.print(F("."));
+    versuche++;
+    }
+    Serial.println("");
+    res = WiFi.status();
+//    if(res != WL_CONNECTED){
+    if(!WiFi.isConnected()){  
       DEBUG_WM(F("[ERROR] WiFi.begin res:"));
       DEBUG_WM(res);
     }

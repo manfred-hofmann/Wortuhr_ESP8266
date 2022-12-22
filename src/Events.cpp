@@ -11,7 +11,7 @@ bool loadEvents()
    uint8_t eventnr = 0;
    
   // Open file for reading
-  File file = SPIFFS.open(filename,"r");
+  File file = LittleFS.open(filename,"r");
   if(!file)
   {
    Serial.println(F("There was an error opening the file " EVENTFILE " for reading"));
@@ -91,10 +91,10 @@ bool saveEvents()
   int bytesWritten = 0;
   bool retval = true;
   bool fk = false;
-  SPIFFS.remove(filename);
+  LittleFS.remove(filename);
 
   // Open file for writing
-  File file = SPIFFS.open(filename, "a");
+  File file = LittleFS.open(filename, "a");
   if (!file) {
     Serial.println(F("Failed to create file " EVENTFILE));
     return false;

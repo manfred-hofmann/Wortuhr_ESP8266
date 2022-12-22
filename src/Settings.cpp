@@ -69,6 +69,9 @@ void Settings::resetToDefault()
     mySettings.ani_sunset = true;
     mySettings.latitude = LATITUDE;
     mySettings.longitude = LONGITUDE;
+    mySettings.singlegong = false;
+    mySettings.dummybool = false;
+    mySettings.dummyunit16 = 0;
     saveToEEPROM();
 }
 
