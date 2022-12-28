@@ -634,6 +634,7 @@ void setup()
       Serial.println(F("End OTA update."));
     });
 #endif
+    ArduinoOTA.setHostname(settings.mySettings.systemname);
 #ifdef OTA_PASS
     ArduinoOTA.setPassword(OTA_PASS);
 #endif
