@@ -26,7 +26,7 @@
 // Flash Size 4MB ( FS:2MB OTA~1019KB)
 // SLL Support Basic
 
-// oder für ESP8266 EX: Board: "LOLIN(WEMOS) D1 pro"
+// oder für ESP8266 EX: Board: "LOLIN(WEMOS) D1 mini pro"
 // CPU Frequenz auf 160 MHz
 // Flash Size: 16MB ( FS:14MB OTA~1019KB)
 // SLL Support Basic
@@ -1007,11 +1007,15 @@ void loop()
   if (aktMinute != lastMinute)
   {
     // Check ob wir nach einem Neustart ab 5 Minuten die aktuelle Zeit haben. Wenn nicht dann Neustart.
-    if ( !b_showip && millis() / 1000 > 300 && millis() / 1000 < 600 && year() < 2010 )
+    if ( millis() / 1000 > 300 && millis() / 1000 < 600 && year() < 2010 )
     {
-      Serial.println(F("Nach 5 Minuten konnte keine aktuelle Zeit geholt werden! "));
-      Serial.println(F("Wir versuchen einen Neustart.... "));
-      ESP.restart();
+      // Wenn WLAN Verbunden und die IP-Adresse wird angezeigt erfolgt kein Neustart.
+      if ( !( WiFi.isConnected() && b_showip ) )
+      {
+        Serial.println(F("Nach 5 Minuten konnte keine aktuelle Zeit geholt werden! "));
+        Serial.println(F("Wir versuchen einen Neustart.... "));
+        ESP.restart();
+      }
     }
 
     lastMinute = aktMinute;
