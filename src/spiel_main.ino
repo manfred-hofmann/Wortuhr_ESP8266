@@ -355,7 +355,7 @@ void readIRButton()
         buttonret = ButtonIn(BTN_UP);
         break;
       case IR_CODE_DOWN:
-        buttonret = ButtonIn(BTN_RIGHT);
+        buttonret = ButtonIn(BTN_DOWN);
         break;
       case IR_CODE_MIDDLE:
         buttonret = ButtonIn(BTN_MIDDLE);
