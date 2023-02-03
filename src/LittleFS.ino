@@ -6,9 +6,9 @@ void setupFS() {
   webServer.on("/fs", handleFSExplorer);
   webServer.on(F("/fsstyle.css"),handleFSExplorerCSS);
 
-  webServer.on(F("/sanduhr"), []() {sendPcontent(p_bluespinner,sizeof(p_bluespinner),IMAGE_GIF);});
-  webServer.on(F("/sunrise"), []() {sendPcontent(p_sunrise,sizeof(p_sunrise),IMAGE_PNG);});
-  webServer.on(F("/sunset"), []() {sendPcontent(p_sunset,sizeof(p_sunset),IMAGE_PNG);});
+  webServer.on(F("/sanduhr"), []() {handleContent(p_bluespinner,sizeof(p_bluespinner),IMAGE_GIF);});
+  webServer.on(F("/sunrise"), []() {handleContent(p_sunrise,sizeof(p_sunrise),IMAGE_PNG);});
+  webServer.on(F("/sunset"), []() {handleContent(p_sunset,sizeof(p_sunset),IMAGE_PNG);});
 
   webServer.on(F("/format"), formatFS);
   webServer.on(F("/upload"), HTTP_POST, sendResponce, handleUpload);
@@ -143,7 +143,7 @@ bool handleList() {                                                             
         codeline = __LINE__;
         codetab = __NAME__;
 #ifdef DEBUG_WEB
-        Serial.printf("minFreeBlockSize: %i Tab: %s Codezeile: %u\n", minFreeBlockSize, codetab.c_str(), codezeile);
+        Serial.printf("minFreeBlockSize: %i Tab: %s Codezeile: %u\n", minFreeBlockSize, codetab.c_str(), codeline);
 #endif
       }
 #ifdef DEBUG_WEB
@@ -565,7 +565,7 @@ void handleFSExplorerCSS() {
   delay(0);
 }
 
-
+/*
 void sendPcontent(const char * p_cont, size_t size, char* ctype)
 {
   const uint16_t maxbuff = 512;
@@ -601,4 +601,28 @@ void sendPcontent(const char * p_cont, size_t size, char* ctype)
     aktsize = 0;
   }
   delay(0); 
+}
+*/
+
+void handleContent(const char * image, size_t size, const char * mime_type) {
+  uint8_t buffer[512];
+  size_t buffer_size = sizeof(buffer);
+  size_t sent_size = 0;
+
+  webServer.setContentLength(size);
+  webServer.send(200, mime_type, "");
+//  WiFiClient client = webServer.client();
+
+  while (sent_size < size) {
+    size_t chunk_size = min(buffer_size, size - sent_size);
+    memcpy_P(buffer, image + sent_size, chunk_size);
+    webServer.client().write(buffer, chunk_size);
+    sent_size += chunk_size;
+    delay(0);
+#ifdef DEBUG_WEB
+    Serial.printf("sendContent: %i byte : %i byte of %i byte\n", chunk_size, sent_size,size );
+#endif
+  }
+  webServer.sendContent("");
+  delay(0);
 }
