@@ -604,7 +604,7 @@ void sendPcontent(const char * p_cont, size_t size, char* ctype)
 }
 */
 
-void handleContent(const char * image, size_t size, const char * mime_type) {
+void handleContent(const uint8_t * image, size_t size, const char * mime_type) {
   uint8_t buffer[512];
   size_t buffer_size = sizeof(buffer);
   size_t sent_size = 0;
