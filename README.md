@@ -273,6 +273,10 @@ Und alle Dateien des jeweiligen web_xx Ordner auswählen und uploaden.
 Hier nochmal wie beschrieben:  
 ![LittleFS_Film](https://github.com/manfred-hofmann/Wortuhr_ESP8266/blob/main/pic/Load_LittleFS_2.gif "LittleFS_Film") 
 
+Alternativ können mit dem LittleFS Plugin für die Arduino IDE (Version 1.8.x)
+https://github.com/earlephilhower/arduino-esp8266littlefs-plugin
+die Files des data Verzeichnis ebenfalls hochgeladen werde.
+
 * Danach den ESP8266 neustarten und über die Webadresse des ESP in den Menüpunkt Settings die Wortuhr anpassen.  
 Hier sind folgende Punkte wichtig:
 - Systemname    

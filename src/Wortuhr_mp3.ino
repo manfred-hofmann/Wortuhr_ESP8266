@@ -5812,7 +5812,7 @@ void handleButtonSettings()
                "<script src=\"/web/jquery-3.1.1.min.js\"></script>\n"
                "</head>"
                "<body>\n");
-  message += F("<h2>"); message += String(settings.mySettings.systemname); message += F(" "LANG_SETTINGS "</h2>");
+  message += F("<h2>"); message += String(settings.mySettings.systemname); message += F(" " LANG_SETTINGS "</h2>");
   // ################################################# sende html Teil 1
   webServer.send(200, TEXT_HTML, message);
   message = "";
