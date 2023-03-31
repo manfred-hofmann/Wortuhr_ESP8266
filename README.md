@@ -203,7 +203,7 @@ Flash Size: 16MB ( FS:14MB OTA~1019KB)
 SLL Support Basic  
 
 ## Inbetriebnahme:  
-* ESP8266 Board Version >= 3.0.2    
+* ESP8266 Board Version = 3.0.2 (Versionen > 3.0.2 können funktionieren, sind aber nicht getestet!)     
 
 * folgende Libraries werden benötigt (min. Versionen) (alle zu finden unter Bibliotheken verwalten):  
     * Arduino_JSON - Version 0.1.0  
