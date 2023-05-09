@@ -405,7 +405,7 @@ void setup()
   // init serial port
   Serial.begin(SERIAL_SPEED);
   while (!Serial);
-  delay(1000);
+  delay(2000);
   setTime(12, 0, 0, 1, 2, 2003);
 
   Serial.println();
@@ -415,7 +415,7 @@ void setup()
   Serial.printf("Size of Settings: %i byte\n", sizeof(settings));
   Serial.printf("ESP BoardVersion: %s\n", ESP.getCoreVersion().c_str());
 #endif
-
+  delay(1000);
 #ifdef POWERON_SELFTEST
   renderer.setAllScreenBuffer(matrix);
   cornercolorold = settings.mySettings.corner_color;
